@@ -6,7 +6,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import me.ruslanys.vkaudiosaver.components.AudioDownloader;
 import me.ruslanys.vkaudiosaver.domain.Audio;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -81,7 +80,7 @@ public class DefaultAudioDownloader implements AudioDownloader {
             log.debug("Download started for {}", audio);
 
             HttpURLConnection connection = (HttpURLConnection) new URL(audio.getUrl()).openConnection();
-            File file = new File(getFilename(audio));
+            File file = new File(Audio.getFilename(destination.toString(), audio));
 
             try (InputStream in = connection.getInputStream();
                  OutputStream out = new FileOutputStream(file)) {
@@ -99,14 +98,6 @@ public class DefaultAudioDownloader implements AudioDownloader {
                 log.error("Download file error", e);
                 throw e;
             }
-        }
-
-        private String getFilename(Audio audio) {
-            return destination.toString() + "/"
-                    + StringUtils.substring(audio.getArtist(), 0, 15)
-                    + " - "
-                    + StringUtils.substring(audio.getTitle(), 0, 20)
-                    + ".mp3";
         }
 
     }

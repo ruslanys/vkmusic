@@ -7,7 +7,7 @@ https://oauth.vk.com/authorize?client_id=5592490&redirect_uri=https://oauth.vk.c
 Access token:
 
 ```
-d66836833d100dea3407ea92749ff56547e0e679f1bcc0179040ec5a996f9bff1ca2f8bf85638e85b45ce
+beb212c11f1c69016d7361519df5250916aab32d9d4ee5c8e9def1867bbcb25d6971bb972054317b8ca7f
 ```
 
 Запросы к API:
