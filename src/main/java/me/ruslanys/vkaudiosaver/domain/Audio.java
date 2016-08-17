@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class Audio {
 
-    private Long id;
+    private Integer id;
 
     private String artist;
 
@@ -17,7 +17,5 @@ public class Audio {
     private Integer duration;
 
     private String url;
-
-    private Integer genre;
 
 }
