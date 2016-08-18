@@ -6,7 +6,7 @@ import me.ruslanys.vkaudiosaver.exceptions.VkException;
 /**
  * @author Ruslan Molchanov (ruslanys@gmail.com)
  */
-public interface VkApi {
+public interface VkClient {
 
     VkAudioResponse getAudio() throws VkException;
 

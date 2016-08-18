@@ -4,13 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import com.jcodelab.http.HttpClient;
 import lombok.SneakyThrows;
-import me.ruslanys.vkaudiosaver.components.VkApi;
+import me.ruslanys.vkaudiosaver.components.VkClient;
 import me.ruslanys.vkaudiosaver.domain.vk.VkAudioResponse;
 import me.ruslanys.vkaudiosaver.domain.vk.VkResponse;
 import me.ruslanys.vkaudiosaver.exceptions.VkException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.Map;
@@ -18,8 +17,8 @@ import java.util.Map;
 /**
  * @author Ruslan Molchanov (ruslanys@gmail.com)
  */
-@Component
-public class DefaultVkApi extends HttpClient implements VkApi {
+//@Component
+public class ApiVkClient extends HttpClient implements VkClient {
 
     private static final String PATH_BASE = "https://api.vk.com/method/";
     private static final String VERSION = "5.53";
@@ -28,7 +27,7 @@ public class DefaultVkApi extends HttpClient implements VkApi {
     private final ObjectMapper mapper;
 
     @Autowired
-    public DefaultVkApi(@Value("${vk.access-key}") String accessToken, ObjectMapper mapper) {
+    public ApiVkClient(@Value("${vk.access-key}") String accessToken, ObjectMapper mapper) {
         this.accessToken = accessToken;
         this.mapper = mapper;
     }

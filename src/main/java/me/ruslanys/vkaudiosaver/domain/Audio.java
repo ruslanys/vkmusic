@@ -28,13 +28,15 @@ public class Audio {
             if (!destination.endsWith("/")) sb.append("/");
         }
 
-        sb.append(StringUtils.substring(audio.getArtist(), 0, 15));
+        sb.append(StringUtils.substring(audio.getArtist().replace("/", "").replace("\\", ""), 0, 15));
         sb.append(" - ");
-        sb.append(StringUtils.substring(audio.getTitle(), 0, 20));
+        sb.append(StringUtils.substring(audio.getTitle().replace("/", "").replace("\\", ""), 0, 20));
 
         sb.append(".mp3");
 
-        return sb.toString();
+        return sb.toString()
+                .replace("(", "")
+                .replace(")", "");
     }
 
 }
