@@ -103,6 +103,7 @@ public class DefaultAudioDownloader implements AudioDownloader {
                 log.debug("Download finished for {}", audio);
 
                 String updatedFilename = updateTag(source);
+                source.delete();
                 return new File(updatedFilename);
             } catch (Exception e) {
                 log.error("Failed to download: {}", audio);
