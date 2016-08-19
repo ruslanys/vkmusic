@@ -87,8 +87,8 @@ public class DefaultAudioDownloader implements AudioDownloader {
             HttpURLConnection connection = (HttpURLConnection) new URL(audio.getUrl()).openConnection();
             File file = new File(Audio.getFilename(destination.toString(), audio));
 
-            try (InputStream in = connection.getInputStream();
-                 OutputStream out = new FileOutputStream(file)) {
+            try (InputStream in = connection.getInputStream()) {
+                OutputStream out = new FileOutputStream(file);
 
                 byte[] buff = new byte[1024];
                 int len;
