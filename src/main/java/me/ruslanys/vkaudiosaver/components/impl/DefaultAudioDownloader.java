@@ -59,7 +59,7 @@ public class DefaultAudioDownloader implements AudioDownloader {
         }
 
         executor.shutdown();
-        executor.awaitTermination(10, TimeUnit.MINUTES);
+        executor.awaitTermination(1, TimeUnit.HOURS);
         listenerExecutor.shutdown();
         listenerExecutor.awaitTermination(1, TimeUnit.MINUTES);
     }
