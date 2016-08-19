@@ -112,7 +112,7 @@ public class DefaultAudioDownloader implements AudioDownloader {
             }
         }
 
-        private String updateTag(File source) throws IOException, UnsupportedTagException, InvalidDataException, NotSupportedException {
+        private String updateTag(File source) throws IOException, UnsupportedTagException, InvalidDataException {
             Mp3File mp3File = new Mp3File(source);
 
             mp3File.removeCustomTag();
@@ -140,7 +140,16 @@ public class DefaultAudioDownloader implements AudioDownloader {
             }
 
             String filename = Audio.getFilename(destination.toString(), audio);
-            mp3File.save(filename);
+            try {
+                mp3File.save(filename);
+            } catch (NotSupportedException e) {
+                mp3File.removeId3v2Tag();
+                try {
+                    mp3File.save(filename);
+                } catch (NotSupportedException e1) {
+                    return source.toString();
+                }
+            }
             return filename;
         }
 
