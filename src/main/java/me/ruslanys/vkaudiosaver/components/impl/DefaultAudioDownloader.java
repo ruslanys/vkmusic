@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -57,6 +58,10 @@ public class DefaultAudioDownloader implements AudioDownloader {
                     .addListener(() -> log.info(STATUS_TEMPLATE, counter.decrementAndGet()), listenerExecutor);
         }
 
+        executor.shutdown();
+        executor.awaitTermination(10, TimeUnit.MINUTES);
+        listenerExecutor.shutdown();
+        listenerExecutor.awaitTermination(1, TimeUnit.MINUTES);
     }
 
     @Override
