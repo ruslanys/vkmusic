@@ -146,7 +146,7 @@ public class ScraperVkClient extends HttpClient implements VkClient {
             );
 
             json = response.getData();
-            log.info("json: {}", json);
+            log.debug("json: {}", json);
 
             // parsing json
             if (!json.contains("<!json>")) {
