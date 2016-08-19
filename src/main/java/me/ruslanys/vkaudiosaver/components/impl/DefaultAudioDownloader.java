@@ -2,10 +2,12 @@ package me.ruslanys.vkaudiosaver.components.impl;
 
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
+import com.mpatric.mp3agic.*;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import me.ruslanys.vkaudiosaver.components.AudioDownloader;
 import me.ruslanys.vkaudiosaver.domain.Audio;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -85,25 +87,65 @@ public class DefaultAudioDownloader implements AudioDownloader {
             log.debug("Download started for {}", audio);
 
             HttpURLConnection connection = (HttpURLConnection) new URL(audio.getUrl()).openConnection();
-            File file = new File(Audio.getFilename(destination.toString(), audio));
+            File source = new File(audio.getId() + ".mp3");
 
             try (InputStream in = connection.getInputStream()) {
-                OutputStream out = new FileOutputStream(file);
+                OutputStream out = new FileOutputStream(source);
 
-                byte[] buff = new byte[1024];
+                byte[] buff = new byte[5120];
                 int len;
                 while ((len = in.read(buff)) != -1) {
                     out.write(buff, 0, len);
                 }
                 out.flush();
+                out.close();
 
                 log.debug("Download finished for {}", audio);
-                return file;
-            } catch (IOException e) {
+
+                String updatedFilename = updateTag(source);
+                return new File(updatedFilename);
+            } catch (Exception e) {
                 log.error("Failed to download: {}", audio);
                 log.error("Download file error: {}", e);
                 throw e;
             }
+        }
+
+        private String updateTag(File source) throws IOException, UnsupportedTagException, InvalidDataException, NotSupportedException {
+            Mp3File mp3File = new Mp3File(source);
+
+            mp3File.removeCustomTag();
+
+            if (mp3File.hasId3v1Tag()) {
+                ID3v1 tag = mp3File.getId3v1Tag();
+
+                tag.setArtist(fixString(tag.getArtist()));
+                tag.setTitle(fixString(tag.getTitle()));
+                tag.setAlbum(fixString(tag.getAlbum()));
+                tag.setComment(fixString(tag.getComment()));
+
+                mp3File.setId3v1Tag(tag);
+            }
+
+            if (mp3File.hasId3v2Tag()) {
+                ID3v2 tag = mp3File.getId3v2Tag();
+
+                tag.setArtist(fixString(tag.getArtist()));
+                tag.setTitle(fixString(tag.getTitle()));
+                tag.setAlbum(fixString(tag.getAlbum()));
+                tag.setComment(fixString(tag.getComment()));
+
+                mp3File.setId3v2Tag(tag);
+            }
+
+            String filename = Audio.getFilename(destination.toString(), audio);
+            mp3File.save(filename);
+            return filename;
+        }
+
+        private String fixString(String string) throws UnsupportedEncodingException {
+            if (StringUtils.isEmpty(string)) return string;
+            return new String(string.getBytes("ISO-8859-1"), "windows-1251");
         }
 
     }
