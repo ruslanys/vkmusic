@@ -12,6 +12,7 @@ public class VkException extends Exception {
     private final VkError error;
 
     public VkException(VkError error) {
+        super(error.getMessage());
         this.error = error;
     }
 

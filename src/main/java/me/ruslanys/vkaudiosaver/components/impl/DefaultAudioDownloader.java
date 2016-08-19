@@ -95,7 +95,8 @@ public class DefaultAudioDownloader implements AudioDownloader {
                 log.debug("Download finished for {}", audio);
                 return file;
             } catch (IOException e) {
-                log.error("Download file error", e);
+                log.error("Failed to download: {}", audio);
+                log.error("Download file error: {}", e);
                 throw e;
             }
         }
