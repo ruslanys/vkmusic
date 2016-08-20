@@ -1,2 +1,2 @@
-  ${AnsiBackground.BLUE}${AnsiColor.BRIGHT_WHITE}${AnsiStyle.BOLD}                            :: VK Audio Saver ::                            ${Ansi.DEFAULT}
+  ${AnsiBackground.BLUE}${AnsiColor.BRIGHT_WHITE}${AnsiStyle.BOLD}                            :: VK Audio Saver ::                            ${AnsiBackground.DEFAULT}${AnsiColor.DEFAULT}${AnsiStyle.NORMAL}
 
