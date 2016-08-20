@@ -7,9 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import me.ruslanys.vkaudiosaver.components.PlaylistCreator;
 import me.ruslanys.vkaudiosaver.components.impl.DefaultFileDownloader;
 import me.ruslanys.vkaudiosaver.domain.Audio;
+import me.ruslanys.vkaudiosaver.properties.DownloaderProperties;
 import me.ruslanys.vkaudiosaver.services.DownloadService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -29,22 +29,27 @@ public class DefaultDownloadService implements DownloadService {
 
     private static final String STATUS_TEMPLATE = "{} files in the queue to download.";
 
-    private final ListeningExecutorService executor;
-    private final ExecutorService listenerExecutor;
+    private ListeningExecutorService executor;
+    private ExecutorService listenerExecutor;
 
     private final PlaylistCreator playlistCreator;
-    private final File destinationFolder;
+    private File destinationFolder;
 
     private final AtomicInteger counter = new AtomicInteger();
 
     @Autowired
-    public DefaultDownloadService(@Value("${downloader.pool-size}") int poolSize,
-                                  @Value("${downloader.destination}") String destination,
-                                  PlaylistCreator playlistCreator) {
-        this.executor = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(poolSize));
-        this.listenerExecutor = Executors.newSingleThreadExecutor();
-        this.destinationFolder = new File(destination);
+    public DefaultDownloadService(PlaylistCreator playlistCreator) {
         this.playlistCreator = playlistCreator;
+    }
+
+    @Override
+    public void init(DownloaderProperties properties) {
+        log.info("Download pool-size: {}", properties.getPoolSize());
+        log.info("Download destination: {}", properties.getDestination());
+
+        executor = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(properties.getPoolSize()));
+        listenerExecutor = Executors.newSingleThreadExecutor();
+        destinationFolder = new File(properties.getDestination());
 
         if (!destinationFolder.exists()) {
             if (!destinationFolder.mkdirs()) {

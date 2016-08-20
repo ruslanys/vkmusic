@@ -9,12 +9,11 @@ import org.springframework.stereotype.Component;
  */
 @Data
 
-@ConfigurationProperties(prefix = "vk", ignoreUnknownFields = false)
+@ConfigurationProperties(prefix = "downloader", ignoreUnknownFields = false)
 @Component
-public class VkProperties {
+public class DownloaderProperties {
 
-    private String username;
-    private String password;
-    private String accessKey;
+    private Integer poolSize = 5;
+    private String destination;
 
 }
