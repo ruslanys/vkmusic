@@ -9,7 +9,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author Ruslan Molchanov (ruslanys@gmail.com)
@@ -19,9 +19,8 @@ import java.util.List;
 @Component
 public class M3uPlaylistCreator implements PlaylistCreator {
 
-//    @SneakyThrows
     @Override
-    public void playlist(String destination, List<Audio> audios) {
+    public void playlist(String destination, Collection<Audio> audios) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(new File(destination + "/" + "playlist.m3u")))) {
             writer.write("#EXTM3U");
             writer.newLine();

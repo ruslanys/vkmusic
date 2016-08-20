@@ -1,6 +1,5 @@
 package me.ruslanys.vkaudiosaver;
 
-import me.ruslanys.vkaudiosaver.components.PlaylistCreator;
 import me.ruslanys.vkaudiosaver.components.VkClient;
 import me.ruslanys.vkaudiosaver.domain.Audio;
 import me.ruslanys.vkaudiosaver.exceptions.VkException;
@@ -20,12 +19,10 @@ public class Application {
         // --
         VkClient vkClient = context.getBean(VkClient.class);
         DownloadService downloadService = context.getBean(DownloadService.class);
-        PlaylistCreator playlistCreator = context.getBean(PlaylistCreator.class);
 
         try {
             List<Audio> audios = vkClient.getAudio().getItems();
             downloadService.download(audios);
-            playlistCreator.playlist("/home/ruslanys/Music", audios);
         } catch (VkException e) {
             System.out.println("SUKA LUBOFF");
         }

@@ -13,6 +13,7 @@ import me.ruslanys.vkaudiosaver.domain.Audio;
 import me.ruslanys.vkaudiosaver.domain.vk.VkAudioResponse;
 import me.ruslanys.vkaudiosaver.domain.vk.VkError;
 import me.ruslanys.vkaudiosaver.exceptions.VkException;
+import me.ruslanys.vkaudiosaver.properties.VkProperties;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
@@ -20,7 +21,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -43,9 +43,7 @@ public class ScraperVkClient extends HttpClient implements VkClient {
 
     private static final String PATH_BASE = "https://vk.com";
 
-    private final String username;
-    private final String password;
-
+    private final VkProperties vkProperties;
     private final ObjectMapper mapper;
 //    private final Random random = new Random(); // toIndex += 1 + random.nextInt(10);
 
@@ -53,10 +51,8 @@ public class ScraperVkClient extends HttpClient implements VkClient {
     private Long userId;
 
     @Autowired
-    public ScraperVkClient(@Value("${vk.username}") String username, @Value("${vk.password}") String password, ObjectMapper mapper) {
-        this.username = username;
-        this.password = password;
-
+    public ScraperVkClient(VkProperties vkProperties, ObjectMapper mapper) {
+        this.vkProperties = vkProperties;
         this.mapper = mapper;
     }
 
@@ -193,8 +189,8 @@ public class ScraperVkClient extends HttpClient implements VkClient {
             loginForm.put(childElement.attr("name"), childElement.attr("value"));
         }
 
-        loginForm.put("email", username);
-        loginForm.put("pass", password);
+        loginForm.put("email", vkProperties.getUsername());
+        loginForm.put("pass", vkProperties.getPassword());
         return loginForm;
     }
 

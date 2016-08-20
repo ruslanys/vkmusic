@@ -4,6 +4,7 @@ import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import me.ruslanys.vkaudiosaver.components.PlaylistCreator;
 import me.ruslanys.vkaudiosaver.components.impl.DefaultFileDownloader;
 import me.ruslanys.vkaudiosaver.domain.Audio;
 import me.ruslanys.vkaudiosaver.services.DownloadService;
@@ -31,16 +32,19 @@ public class DefaultDownloadService implements DownloadService {
     private final ListeningExecutorService executor;
     private final ExecutorService listenerExecutor;
 
+    private final PlaylistCreator playlistCreator;
     private final File destinationFolder;
 
     private final AtomicInteger counter = new AtomicInteger();
 
     @Autowired
     public DefaultDownloadService(@Value("${downloader.pool-size}") int poolSize,
-                                  @Value("${downloader.destination}") String destination) {
+                                  @Value("${downloader.destination}") String destination,
+                                  PlaylistCreator playlistCreator) {
         this.executor = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(poolSize));
         this.listenerExecutor = Executors.newSingleThreadExecutor();
         this.destinationFolder = new File(destination);
+        this.playlistCreator = playlistCreator;
 
         if (!destinationFolder.exists()) {
             if (!destinationFolder.mkdirs()) {
@@ -63,6 +67,9 @@ public class DefaultDownloadService implements DownloadService {
             executor.submit(downloader)
                     .addListener(() -> log.info(STATUS_TEMPLATE, counter.decrementAndGet()), listenerExecutor);
         }
+
+        log.info("Making playlist...");
+        playlistCreator.playlist(destinationFolder.toString(), audios);
 
         executor.shutdown();
         executor.awaitTermination(1, TimeUnit.HOURS);

@@ -8,8 +8,8 @@ import me.ruslanys.vkaudiosaver.components.VkClient;
 import me.ruslanys.vkaudiosaver.domain.vk.VkAudioResponse;
 import me.ruslanys.vkaudiosaver.domain.vk.VkResponse;
 import me.ruslanys.vkaudiosaver.exceptions.VkException;
+import me.ruslanys.vkaudiosaver.properties.VkProperties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Collections;
 import java.util.Map;
@@ -23,12 +23,12 @@ public class ApiVkClient extends HttpClient implements VkClient {
     private static final String PATH_BASE = "https://api.vk.com/method/";
     private static final String VERSION = "5.53";
 
-    private final String accessToken;
+    private final VkProperties vkProperties;
     private final ObjectMapper mapper;
 
     @Autowired
-    public ApiVkClient(@Value("${vk.access-key}") String accessToken, ObjectMapper mapper) {
-        this.accessToken = accessToken;
+    public ApiVkClient(VkProperties vkProperties, ObjectMapper mapper) {
+        this.vkProperties = vkProperties;
         this.mapper = mapper;
     }
 
@@ -57,7 +57,7 @@ public class ApiVkClient extends HttpClient implements VkClient {
                 PATH_BASE + methodName,
                 ImmutableMap.<String, String>builder()
                         .putAll(params)
-                        .put("access_token", accessToken)
+                        .put("access_token", vkProperties.getAccessKey())
                         .put("v", VERSION)
                         .build()
         ).getData();
