@@ -1,10 +1,10 @@
 package me.ruslanys.vkaudiosaver;
 
-import me.ruslanys.vkaudiosaver.components.AudioDownloader;
 import me.ruslanys.vkaudiosaver.components.PlaylistCreator;
 import me.ruslanys.vkaudiosaver.components.VkClient;
 import me.ruslanys.vkaudiosaver.domain.Audio;
 import me.ruslanys.vkaudiosaver.exceptions.VkException;
+import me.ruslanys.vkaudiosaver.services.DownloadService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -19,12 +19,12 @@ public class Application {
 
         // --
         VkClient vkClient = context.getBean(VkClient.class);
-        AudioDownloader audioDownloader = context.getBean(AudioDownloader.class);
+        DownloadService downloadService = context.getBean(DownloadService.class);
         PlaylistCreator playlistCreator = context.getBean(PlaylistCreator.class);
 
         try {
             List<Audio> audios = vkClient.getAudio().getItems();
-            audioDownloader.download(audios);
+            downloadService.download(audios);
             playlistCreator.playlist("/home/ruslanys/Music", audios);
         } catch (VkException e) {
             System.out.println("SUKA LUBOFF");
