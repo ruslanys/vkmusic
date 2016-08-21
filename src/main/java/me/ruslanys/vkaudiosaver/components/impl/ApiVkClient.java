@@ -8,8 +8,9 @@ import me.ruslanys.vkaudiosaver.components.VkClient;
 import me.ruslanys.vkaudiosaver.domain.vk.VkAudioResponse;
 import me.ruslanys.vkaudiosaver.domain.vk.VkResponse;
 import me.ruslanys.vkaudiosaver.exceptions.VkException;
+import me.ruslanys.vkaudiosaver.properties.VkProperties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.Map;
@@ -17,19 +18,24 @@ import java.util.Map;
 /**
  * @author Ruslan Molchanov (ruslanys@gmail.com)
  */
-//@Component
+@Component
 public class ApiVkClient extends HttpClient implements VkClient {
 
     private static final String PATH_BASE = "https://api.vk.com/method/";
     private static final String VERSION = "5.53";
 
     private final ObjectMapper mapper;
-    private final String accessKey;
+
+    private String accessKey;
 
     @Autowired
-    public ApiVkClient(@Value("${vk.access-key}") String accessKey, ObjectMapper mapper) {
-        this.accessKey = accessKey;
+    public ApiVkClient(ObjectMapper mapper) {
         this.mapper = mapper;
+    }
+
+    @Override
+    public void init(VkProperties vkProperties) throws VkException {
+        this.accessKey = vkProperties.getAccessKey();
     }
 
     @Override

@@ -13,6 +13,7 @@ import me.ruslanys.vkaudiosaver.domain.Audio;
 import me.ruslanys.vkaudiosaver.domain.vk.VkAudioResponse;
 import me.ruslanys.vkaudiosaver.domain.vk.VkError;
 import me.ruslanys.vkaudiosaver.exceptions.VkException;
+import me.ruslanys.vkaudiosaver.properties.VkProperties;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
@@ -22,7 +23,6 @@ import org.jsoup.nodes.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,10 +52,12 @@ public class ScraperVkClient extends HttpClient implements VkClient {
         this.mapper = mapper;
     }
 
-    public void login(String username, String password) throws IOException, VkException {
+    @SneakyThrows
+    @Override
+    public void init(VkProperties vkProperties) throws VkException {
         Map<String, String> loginForm = getLoginForm();
-        loginForm.put("email", username);
-        loginForm.put("pass", password);
+        loginForm.put("email", vkProperties.getUsername());
+        loginForm.put("pass", vkProperties.getPassword());
 
         Response<String> authResponse = sendPostForString(loginForm.get("action"), loginForm);
 
