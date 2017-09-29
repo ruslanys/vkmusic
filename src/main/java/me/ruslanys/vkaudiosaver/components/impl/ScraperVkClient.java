@@ -23,10 +23,12 @@ import org.jsoup.nodes.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -42,6 +44,7 @@ public class ScraperVkClient extends HttpClient implements VkClient {
     private static final String PATH_BASE = "https://vk.com";
 
     private final ObjectMapper mapper;
+    private final ScriptEngine scriptEngine;
 //    private final Random random = new Random(); // toIndex += 1 + random.nextInt(10);
 
     private String homePage;
@@ -50,6 +53,7 @@ public class ScraperVkClient extends HttpClient implements VkClient {
     @Autowired
     public ScraperVkClient(ObjectMapper mapper) {
         this.mapper = mapper;
+        this.scriptEngine = new ScriptEngineManager().getEngineByName("JavaScript");
     }
 
     @SneakyThrows
@@ -95,18 +99,21 @@ public class ScraperVkClient extends HttpClient implements VkClient {
         // fetching audio list
         response = sendPostForString(
                 PATH_BASE + "/al_audio.php",
-                ImmutableMap.of(
-                        "act", "load_silent",
-                        "al", "1",
-//                        "album_id", "-2",
-                        "band", "false",
-                        "owner_id", userId.toString()
-                )
+                ImmutableMap.<String, String>builder()
+                        .put("access_hash", "")
+                        .put("act", "load_section")
+                        .put("al", "1")
+                        .put("claim", "0")
+                        .put("offset", "1")
+                        .put("owner_id", userId.toString())
+                        .put("playlist_id", "-1")
+                        .put("type", "playlist")
+                        .build()
         );
         json = response.getData();
         json = json.substring(json.indexOf("<!json>") + "<!json>".length());
 
-        VkAudioJson audioJson = mapping(json, VkAudioJson.class);
+        VkAudioDto audioJson = mapping(json, VkAudioDto.class);
         for (List<String> strings : audioJson.getList()) {
             Audio audio = new Audio();
             audio.setId(Integer.valueOf(strings.get(0)));
@@ -116,6 +123,11 @@ public class ScraperVkClient extends HttpClient implements VkClient {
 
             audios.add(audio);
         }
+        Map<Integer, Audio> audioMap = new LinkedHashMap<>();
+        for (Audio audio : audios) {
+            audioMap.put(audio.getId(), audio);
+        }
+        log.info("Audio collection size: {}", audios.size());
 
         // fetching urls
         int fromIndex = 0;
@@ -153,11 +165,16 @@ public class ScraperVkClient extends HttpClient implements VkClient {
 
             json = json.substring(json.indexOf("<!json>") + "<!json>".length());
             json = json.substring(0, json.indexOf("<!>"));
-            List<List<String>> lists = mapping(json, new TypeReference<List<List<String>>>() {});
+            List<List> lists = mapping(json, List.class);
 
             // models mapping
-            for (int i = fromIndex, k = 0; i < toIndex; i++, k++) {
-                audios.get(i).setUrl(lists.get(k).get(2));
+            for (int i = fromIndex, k = 0; i < toIndex && k < lists.size(); i++, k++) {
+                List obj = lists.get(k);
+                Audio audio = audioMap.get(obj.get(0));
+                String url = (String) obj.get(2);
+                url = decrypt(url);
+
+                audio.setUrl(url);
             }
 
             // increment borders
@@ -169,8 +186,21 @@ public class ScraperVkClient extends HttpClient implements VkClient {
             Thread.sleep(200);
         }
 
+        audios.removeIf(audio -> audio.getUrl() == null);
+
         // --
         return new VkAudioResponse(audios.size(), audios);
+    }
+
+    @SneakyThrows
+    private String decrypt(String url) {
+        // read script file
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("decrypt.js")));
+        scriptEngine.eval(bufferedReader);
+
+        Invocable inv = (Invocable) scriptEngine;
+// call function from script file
+        return (String) inv.invokeFunction("decode", url);
     }
 
     @SneakyThrows
@@ -203,7 +233,7 @@ public class ScraperVkClient extends HttpClient implements VkClient {
     }
 
     @Data
-    private static class VkAudioJson {
+    private static class VkAudioDto {
         private String type;
         private Long ownerId;
         private Integer albumId;
