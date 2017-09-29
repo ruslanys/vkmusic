@@ -112,14 +112,17 @@ public class ScraperVkClient extends HttpClient implements VkClient {
         );
         json = response.getData();
         json = json.substring(json.indexOf("<!json>") + "<!json>".length());
+        if (json.contains("<!>")) {
+            json = json.substring(0, json.indexOf("<!>"));
+        }
 
         VkAudioDto audioJson = mapping(json, VkAudioDto.class);
-        for (List<String> strings : audioJson.getList()) {
+        for (List values : audioJson.getList()) {
             Audio audio = new Audio();
-            audio.setId(Integer.valueOf(strings.get(0)));
-            audio.setArtist(StringEscapeUtils.unescapeHtml4(strings.get(4)));
-            audio.setTitle(StringEscapeUtils.unescapeHtml4(strings.get(3)));
-            audio.setDuration(Integer.valueOf(strings.get(5)));
+            audio.setId((Integer) values.get(0));
+            audio.setArtist(StringEscapeUtils.unescapeHtml4((String) values.get(4)));
+            audio.setTitle(StringEscapeUtils.unescapeHtml4((String) values.get(3)));
+            audio.setDuration((Integer) values.get(5));
 
             audios.add(audio);
         }
@@ -242,7 +245,7 @@ public class ScraperVkClient extends HttpClient implements VkClient {
         private Integer nextOffset;
         private Integer totalCount;
 
-        private List<List<String>> list;
+        private List<List> list;
     }
 
 }
