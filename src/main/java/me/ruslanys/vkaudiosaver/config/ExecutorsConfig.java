@@ -1,4 +1,4 @@
-package me.ruslanys.vkaudiosaver.configs;
+package me.ruslanys.vkaudiosaver.config;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;

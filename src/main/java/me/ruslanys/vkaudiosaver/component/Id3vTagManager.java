@@ -1,4 +1,4 @@
-package me.ruslanys.vkaudiosaver.components;
+package me.ruslanys.vkaudiosaver.component;
 
 import java.io.File;
 

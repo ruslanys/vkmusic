@@ -1,7 +1,7 @@
-package me.ruslanys.vkaudiosaver.components.impl;
+package me.ruslanys.vkaudiosaver.component.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import me.ruslanys.vkaudiosaver.components.FileDownloader;
+import me.ruslanys.vkaudiosaver.component.FileDownloader;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -30,9 +30,8 @@ public class DefaultFileDownloader implements FileDownloader {
 
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
 
-        try (InputStream in = connection.getInputStream()) {
-            OutputStream out = new FileOutputStream(destination);
-
+        try (InputStream in = connection.getInputStream();
+             OutputStream out = new FileOutputStream(destination)) {
             byte[] buff = new byte[5120];
             int len;
             while ((len = in.read(buff)) != -1) {

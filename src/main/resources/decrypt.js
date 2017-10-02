@@ -66,7 +66,7 @@ function s(t, e) {
         , o = [];
     if (i) {
         var a = i;
-        for (e = Math.abs(e); a--; )
+        for (e = Math.abs(e); a--;)
             o[a] = (e += e * (a + i) / e) % i | 0
     }
     return o

@@ -1,11 +1,11 @@
-package me.ruslanys.vkaudiosaver.components.impl;
+package me.ruslanys.vkaudiosaver.component.impl;
 
 import com.mpatric.mp3agic.ID3v1;
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.Mp3File;
 import com.mpatric.mp3agic.NotSupportedException;
 import lombok.SneakyThrows;
-import me.ruslanys.vkaudiosaver.components.Id3vTagManager;
+import me.ruslanys.vkaudiosaver.component.Id3vTagManager;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
