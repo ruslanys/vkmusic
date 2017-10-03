@@ -12,7 +12,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
@@ -42,8 +41,31 @@ public class CredentialsFrame extends JFrame implements ActionListener {
         setResizable(false);
         setLocationRelativeTo(null);
 
-        setMainLayout();
+        setMainLayout0();
         pack();
+    }
+
+    private void setMainLayout0() {
+        getContentPane().setLayout(new BorderLayout(0, 0));
+
+        final JPanel controls = new JPanel();
+        controls.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+
+        getContentPane().add(controls, BorderLayout.SOUTH);
+
+        JButton destinationBtn = new JButton("Указать папку");
+        controls.add(destinationBtn);
+
+        JButton changeUserBtn = new JButton("Сменить пользователя");
+        controls.add(changeUserBtn);
+
+        JButton exitBtn = new JButton("Выход");
+        controls.add(exitBtn);
+
+        JTable table = new JTable();
+
+        table.setSize(200, 300);
+        getContentPane().add(table, BorderLayout.CENTER);
     }
 
     private void setMainLayout() {
@@ -115,11 +137,11 @@ public class CredentialsFrame extends JFrame implements ActionListener {
 
         setLoadingLayout();
 
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.submit(() -> {
+        Executors.newSingleThreadExecutor().submit(() -> {
             try {
                 client.auth(properties);
                 propertyService.save(properties);
+                client.getAudio();
 
                 setVisible(false);
             } catch (Exception ex) {
