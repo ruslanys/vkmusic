@@ -3,10 +3,7 @@ package me.ruslanys.vkaudiosaver.domain;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 /**
  * @author Ruslan Molchanov (ruslanys@gmail.com)
@@ -27,6 +24,10 @@ public class Audio {
 
     @Column
     private Integer duration;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Status status = Status.NEW;
 
     @Transient
     private String url;
@@ -49,6 +50,10 @@ public class Audio {
         return sb.toString()
                 .replace("(", "")
                 .replace(")", "");
+    }
+
+    public enum Status {
+        NEW, DOWNLOADED, SKIPPED
     }
 
 }

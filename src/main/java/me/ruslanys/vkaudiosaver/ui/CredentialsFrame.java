@@ -4,7 +4,6 @@ import me.ruslanys.vkaudiosaver.component.VkClient;
 import me.ruslanys.vkaudiosaver.property.VkProperties;
 import me.ruslanys.vkaudiosaver.services.PropertyService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
@@ -12,19 +11,22 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.net.URL;
 import java.util.concurrent.Executors;
+
+import static java.awt.GridBagConstraints.HORIZONTAL;
+import static java.awt.GridBagConstraints.NORTH;
 
 /**
  * @author Ruslan Molchanov (ruslanys@gmail.com)
  */
-@Lazy
+// TODO: handle On Enter button
 @Component
 public class CredentialsFrame extends JFrame implements ActionListener {
 
     private final VkClient client;
     private final PropertyService propertyService;
 
-    private JButton okBtn;
     private JPasswordField passwordFld;
     private JTextField usernameFld;
 
@@ -36,106 +38,72 @@ public class CredentialsFrame extends JFrame implements ActionListener {
     }
 
     private void initComponents() throws IOException {
-        setTitle("VKMusic");
+        setTitle("Авторизация");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setSize(300, 170);
         setResizable(false);
+
+        JPanel loginPanel = initLoginPanel();
+        JPanel loadingPanel = initLoadingPanel();
+
+        getContentPane().setLayout(new CardLayout());
+        add(loginPanel, State.LOGIN.name());
+        add(loadingPanel, State.LOADING.name());
+
         setLocationRelativeTo(null);
-
-        setMainLayout0();
-        pack();
     }
 
-    private void setMainLayout0() {
-        getContentPane().setLayout(new BorderLayout(0, 0));
+    private JPanel initLoginPanel() {
+        JPanel panel = new JPanel();
+        Insets padding = new Insets(0, 5, 5, 5);
 
-        final JPanel controls = new JPanel();
-        controls.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        panel.setLayout(new GridBagLayout());
 
-        getContentPane().add(controls, BorderLayout.SOUTH);
-
-        JButton destinationBtn = new JButton("Указать папку");
-        controls.add(destinationBtn);
-
-        JButton changeUserBtn = new JButton("Сменить пользователя");
-        controls.add(changeUserBtn);
-
-        JButton exitBtn = new JButton("Выход");
-        controls.add(exitBtn);
-
-        JTable table = new JTable();
-
-        table.setSize(200, 300);
-        getContentPane().add(table, BorderLayout.CENTER);
-    }
-
-    private void setMainLayout() {
-        okBtn = new JButton("Войти");
-        okBtn.addActionListener(this);
-        passwordFld = new JPasswordField();
-        usernameFld = new JTextField();
+        // username
         JLabel usernameLbl = new JLabel("Имя пользователя:");
+        panel.add(usernameLbl, new GridBagConstraints(0, 0, 1, 1, 1., 0., NORTH, HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
+
+        usernameFld = new JTextField();
+        panel.add(usernameFld, new GridBagConstraints(0, 1, 1, 1, 1., 0., NORTH, HORIZONTAL, padding, 0, 0));
+
+        // password
         JLabel passwordLbl = new JLabel("Пароль:");
+        panel.add(passwordLbl, new GridBagConstraints(0, 2, 1, 1, 1., 0., NORTH, HORIZONTAL, padding, 0, 0));
 
-        getContentPane().removeAll();
+        passwordFld = new JPasswordField();
+        panel.add(passwordFld, new GridBagConstraints(0, 3, 1, 1, 1., 0., NORTH, HORIZONTAL, padding, 0, 0));
 
-        //region Generated code
-        GroupLayout mainLayout = new GroupLayout(getContentPane());
-        mainLayout.setHorizontalGroup(
-                mainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(mainLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(mainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(okBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(passwordFld)
-                                        .addComponent(usernameFld)
-                                        .addGroup(mainLayout.createSequentialGroup()
-                                                .addGroup(mainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(passwordLbl)
-                                                        .addComponent(usernameLbl))
-                                                .addGap(0, 150, Short.MAX_VALUE)))
-                                .addContainerGap())
-        );
-        mainLayout.setVerticalGroup(
-                mainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainLayout.createSequentialGroup()
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(usernameLbl)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(usernameFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(passwordLbl)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(passwordFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(okBtn)
-                                .addContainerGap())
-        );
-        //endregion
-
-        getContentPane().setLayout(mainLayout);
-
-        revalidate();
-        repaint();
+        // submit
+        JButton loginBtn = new JButton("Войти");
+        loginBtn.addActionListener(this);
+        panel.add(loginBtn, new GridBagConstraints(0, 4, 1, 1, 1., 0., NORTH, HORIZONTAL, new Insets(5, 5, 10, 5), 0, 0));
+        return panel;
     }
 
-    private void setLoadingLayout() {
-        getContentPane().removeAll();
+    private JPanel initLoadingPanel() {
+        URL spinner = getClass().getClassLoader().getResource("images/loading.gif");
 
-        ImageIcon loadingIcon = new ImageIcon(getClass().getClassLoader().getResource("images/loading.gif"));
-        JLabel loadingLbl = new JLabel(loadingIcon);
-
-        getContentPane().setLayout(new BorderLayout(0, 0));
-        getContentPane().add(loadingLbl, BorderLayout.CENTER);
-
-        revalidate();
-        repaint();
+        JPanel panel = new JPanel(new BorderLayout(0, 0));
+        panel.add(new JLabel(new ImageIcon(spinner)), BorderLayout.CENTER);
+        return panel;
     }
 
+    private void setState(State state) {
+        CardLayout cl = (CardLayout) (getContentPane().getLayout());
+        cl.show(getContentPane(), state.name());
+    }
+
+    /**
+     * Here is could be OnSubmit interface, for example.
+     *
+     * @deprecated Logic is gonna be moved to the Controller layer.
+     */
+    @Deprecated
     @Override
     public void actionPerformed(ActionEvent event) {
         final VkProperties properties = new VkProperties(usernameFld.getText(), passwordFld.getText());
 
-        setLoadingLayout();
+        setState(State.LOADING);
 
         Executors.newSingleThreadExecutor().submit(() -> {
             try {
@@ -145,7 +113,7 @@ public class CredentialsFrame extends JFrame implements ActionListener {
 
                 setVisible(false);
             } catch (Exception ex) {
-                setMainLayout();
+                setState(State.LOGIN);
 
                 JOptionPane.showMessageDialog(null,
                         ex.getClass().getSimpleName() + ":\r\n" + ex.getMessage(),
@@ -153,5 +121,9 @@ public class CredentialsFrame extends JFrame implements ActionListener {
                         JOptionPane.ERROR_MESSAGE);
             }
         });
+    }
+
+    private enum State {
+        LOGIN, LOADING
     }
 }
