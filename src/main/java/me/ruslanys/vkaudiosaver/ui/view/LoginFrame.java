@@ -1,4 +1,4 @@
-package me.ruslanys.vkaudiosaver.ui;
+package me.ruslanys.vkaudiosaver.ui.view;
 
 import me.ruslanys.vkaudiosaver.util.Dialogs;
 import org.apache.commons.lang3.StringUtils;

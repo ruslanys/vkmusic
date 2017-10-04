@@ -1,6 +1,7 @@
 package me.ruslanys.vkaudiosaver.domain;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
@@ -9,6 +10,7 @@ import javax.persistence.*;
  * @author Ruslan Molchanov (ruslanys@gmail.com)
  */
 @Data
+@EqualsAndHashCode(exclude = "url")
 
 @Entity
 public class Audio {
@@ -24,6 +26,9 @@ public class Audio {
 
     @Column
     private Integer duration;
+
+    @Column(nullable = false)
+    private Integer position;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
