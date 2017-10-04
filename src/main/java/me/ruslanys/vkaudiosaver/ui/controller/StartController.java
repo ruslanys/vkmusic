@@ -81,7 +81,7 @@ public class StartController implements CommandLineRunner, Runnable {
     }
 
     private void onAuthSuccess() {
-        loginFrame.setVisible(false);
+        loginFrame.dispose();
         mainController.run();
     }
 
@@ -92,7 +92,7 @@ public class StartController implements CommandLineRunner, Runnable {
 
     @EventListener
     public void logout(LogoutEvent event) {
-        event.getSource().setVisible(false);
+        event.getSource().dispose();
         onAuthFailed();
     }
 
