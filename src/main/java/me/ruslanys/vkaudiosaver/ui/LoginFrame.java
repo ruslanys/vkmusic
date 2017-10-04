@@ -1,9 +1,7 @@
 package me.ruslanys.vkaudiosaver.ui;
 
-import me.ruslanys.vkaudiosaver.component.VkClient;
-import me.ruslanys.vkaudiosaver.property.VkProperties;
-import me.ruslanys.vkaudiosaver.services.PropertyService;
-import org.springframework.beans.factory.annotation.Autowired;
+import me.ruslanys.vkaudiosaver.util.Dialogs;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
@@ -20,20 +18,15 @@ import static java.awt.GridBagConstraints.NORTH;
 /**
  * @author Ruslan Molchanov (ruslanys@gmail.com)
  */
-// TODO: handle On Enter button
 @Component
 public class LoginFrame extends JFrame implements ActionListener {
-
-    private final VkClient client;
-    private final PropertyService propertyService;
 
     private JPasswordField passwordFld;
     private JTextField usernameFld;
 
-    @Autowired
-    public LoginFrame(VkClient client, PropertyService propertyService) throws IOException {
-        this.client = client;
-        this.propertyService = propertyService;
+    private OnSubmitListener submitListener;
+
+    public LoginFrame() throws IOException {
         initComponents();
     }
 
@@ -93,37 +86,43 @@ public class LoginFrame extends JFrame implements ActionListener {
         cl.show(getContentPane(), state.name());
     }
 
-    /**
-     * Here is could be OnSubmit interface, for example.
-     *
-     * @deprecated Logic is gonna be moved to the Controller layer.
-     */
-    @Deprecated
+    public void setSubmitListener(OnSubmitListener submitListener) {
+        this.submitListener = submitListener;
+    }
+
     @Override
     public void actionPerformed(ActionEvent event) {
-        final VkProperties properties = new VkProperties(usernameFld.getText(), passwordFld.getText());
+        final String username = usernameFld.getText();
+        final String password = passwordFld.getText();
 
-        setState(State.LOADING);
+        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
+            Dialogs.showError("Укажите имя пользователя и пароль!");
+            return;
+        }
 
         Executors.newSingleThreadExecutor().submit(() -> {
-            try {
-                client.auth(properties);
-                propertyService.save(properties);
-                client.getAudio();
+            setState(State.LOADING);
 
-                setVisible(false);
-            } catch (Exception ex) {
-                setState(State.LOGIN);
-
-                JOptionPane.showMessageDialog(null,
-                        ex.getClass().getSimpleName() + ":\r\n" + ex.getMessage(),
-                        "Ошибка авторизации",
-                        JOptionPane.ERROR_MESSAGE);
+            if (submitListener != null) {
+                try {
+                    submitListener.onSubmit(username, password);
+                } catch (Exception e) {
+                    Dialogs.showError(e);
+                }
             }
+
+            setState(State.LOGIN);
         });
     }
 
     private enum State {
         LOGIN, LOADING
     }
+
+    public interface OnSubmitListener {
+
+        void onSubmit(String username, String password);
+
+    }
+
 }

@@ -17,4 +17,6 @@ public interface PropertyService {
 
     DownloaderProperties getDownloaderProperties();
 
+    void cleanVkProperties();
+
 }

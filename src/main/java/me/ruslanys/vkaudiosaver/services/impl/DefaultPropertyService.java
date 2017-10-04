@@ -8,10 +8,12 @@ import me.ruslanys.vkaudiosaver.services.PropertyService;
 import me.ruslanys.vkaudiosaver.util.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Ruslan Molchanov (ruslanys@gmail.com)
  */
+@Transactional
 @Service
 public class DefaultPropertyService implements PropertyService {
 
@@ -39,7 +41,7 @@ public class DefaultPropertyService implements PropertyService {
 
     @Override
     public VkProperties getVkProperties() {
-        Property property = propertyRepository.getOne(KEY_VK);
+        Property property = propertyRepository.findOne(KEY_VK);
         if (property == null) {
             return null;
         }
@@ -48,10 +50,17 @@ public class DefaultPropertyService implements PropertyService {
 
     @Override
     public DownloaderProperties getDownloaderProperties() {
-        Property property = propertyRepository.getOne(KEY_DOWNLOADER);
+        Property property = propertyRepository.findOne(KEY_DOWNLOADER);
         if (property == null) {
             return null;
         }
         return JsonUtils.fromString(property.getJson(), DownloaderProperties.class);
+    }
+
+    @Override
+    public void cleanVkProperties() {
+        if (propertyRepository.exists(KEY_VK)) {
+            propertyRepository.delete(KEY_VK);
+        }
     }
 }
