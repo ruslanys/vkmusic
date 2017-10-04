@@ -4,7 +4,6 @@ import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import me.ruslanys.vkaudiosaver.component.VkClient;
-import me.ruslanys.vkaudiosaver.exception.VkException;
 import me.ruslanys.vkaudiosaver.property.VkProperties;
 import me.ruslanys.vkaudiosaver.services.PropertyService;
 import me.ruslanys.vkaudiosaver.util.Notifications;
@@ -16,6 +15,7 @@ import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.concurrent.Executors;
 
 /**
  * @author Ruslan Molchanov (ruslanys@gmail.com)
@@ -49,34 +49,40 @@ public class MainController implements CommandLineRunner, Runnable {
 
     @Override
     public void run(String... args) throws Exception {
-        java.awt.EventQueue.invokeLater(this);
+        EventQueue.invokeLater(this);
     }
 
     @Override
     public void run() {
         VkProperties vkProperties = propertyService.getVkProperties();
         if (vkProperties == null) {
-            showLoginForm();
+            showLoginForm(LoginFrame.State.LOGIN);
         } else {
             auth(vkProperties.getUsername(), vkProperties.getPassword());
-            showMainForm();
-            displayTray();
         }
     }
 
-    private void auth(String username, String password) {
-        try {
-            VkProperties properties = new VkProperties(username, password);
-            vkClient.auth(properties);
-            propertyService.save(properties);
-        } catch (VkException e) {
-            propertyService.cleanVkProperties();
-            showLoginForm();
-        }
+    private void auth(final String username, final String password) {
+        showLoginForm(LoginFrame.State.LOADING);
+
+        Executors.newSingleThreadExecutor().submit(() -> {
+            try {
+                VkProperties properties = new VkProperties(username, password);
+                vkClient.auth(properties);
+                propertyService.save(properties);
+
+                showMainForm();
+                displayTray();
+            } catch (Exception e) {
+                propertyService.cleanVkProperties();
+                showLoginForm(LoginFrame.State.LOGIN);
+            }
+        });
     }
 
-    private void showLoginForm() {
+    private void showLoginForm(LoginFrame.State state) {
         mainFrame.setVisible(false);
+        loginFrame.setState(state);
         loginFrame.setVisible(true);
     }
 

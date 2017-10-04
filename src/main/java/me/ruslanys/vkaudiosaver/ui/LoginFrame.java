@@ -81,7 +81,7 @@ public class LoginFrame extends JFrame implements ActionListener {
         return panel;
     }
 
-    private void setState(State state) {
+    public void setState(State state) {
         CardLayout cl = (CardLayout) (getContentPane().getLayout());
         cl.show(getContentPane(), state.name());
     }
@@ -115,7 +115,7 @@ public class LoginFrame extends JFrame implements ActionListener {
         });
     }
 
-    private enum State {
+    public enum State {
         LOGIN, LOADING
     }
 
