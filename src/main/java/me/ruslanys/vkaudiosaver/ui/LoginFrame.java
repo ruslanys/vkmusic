@@ -22,7 +22,7 @@ import static java.awt.GridBagConstraints.NORTH;
  */
 // TODO: handle On Enter button
 @Component
-public class CredentialsFrame extends JFrame implements ActionListener {
+public class LoginFrame extends JFrame implements ActionListener {
 
     private final VkClient client;
     private final PropertyService propertyService;
@@ -31,7 +31,7 @@ public class CredentialsFrame extends JFrame implements ActionListener {
     private JTextField usernameFld;
 
     @Autowired
-    public CredentialsFrame(VkClient client, PropertyService propertyService) throws IOException {
+    public LoginFrame(VkClient client, PropertyService propertyService) throws IOException {
         this.client = client;
         this.propertyService = propertyService;
         initComponents();
@@ -40,7 +40,6 @@ public class CredentialsFrame extends JFrame implements ActionListener {
     private void initComponents() throws IOException {
         setTitle("Авторизация");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setSize(300, 170);
         setResizable(false);
 
         JPanel loginPanel = initLoginPanel();
@@ -50,6 +49,7 @@ public class CredentialsFrame extends JFrame implements ActionListener {
         add(loginPanel, State.LOGIN.name());
         add(loadingPanel, State.LOADING.name());
 
+        pack();
         setLocationRelativeTo(null);
     }
 
