@@ -14,7 +14,7 @@ public interface VkClient {
 
     void auth(VkProperties properties) throws VkException;
 
-    List<Audio> getAudio() throws VkException;
+    List<Audio> getAudio();
 
     void getUrls(List<Audio> audioList) throws IOException, InterruptedException;
 }

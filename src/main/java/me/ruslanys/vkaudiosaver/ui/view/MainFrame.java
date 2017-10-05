@@ -1,11 +1,13 @@
 package me.ruslanys.vkaudiosaver.ui.view;
 
 import me.ruslanys.vkaudiosaver.domain.event.LogoutEvent;
+import me.ruslanys.vkaudiosaver.ui.model.AudioTableModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
 /**
@@ -16,7 +18,8 @@ public class MainFrame extends JFrame {
 
     private final ApplicationEventPublisher publisher;
 
-    private JTable table;
+    private final AudioTableModel model = new AudioTableModel();
+
     private JLabel toolbarLabel;
 
     @Autowired
@@ -30,7 +33,7 @@ public class MainFrame extends JFrame {
     private void initComponents() {
         setTitle("VKMusic");
         setDefaultCloseOperation(HIDE_ON_CLOSE);
-        setSize(400, 300);
+        setSize(550, 300);
         setLocationRelativeTo(null);
 
         // ui components
@@ -39,7 +42,15 @@ public class MainFrame extends JFrame {
         final JScrollPane scrollPane = new JScrollPane();
         getContentPane().add(scrollPane, BorderLayout.CENTER);
 
-        table = new JTable();
+        JTable table = new JTable();
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        table.setModel(model);
+
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        table.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
+        table.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
+
         scrollPane.setViewportView(table);
 
         final JToolBar toolBar = new JToolBar();
@@ -80,6 +91,10 @@ public class MainFrame extends JFrame {
 
     public void setStatus(String status) {
         toolbarLabel.setText(status);
+    }
+
+    public AudioTableModel getModel() {
+        return model;
     }
 
 }
