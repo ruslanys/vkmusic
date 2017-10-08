@@ -106,7 +106,7 @@ public class StartController implements CommandLineRunner, Runnable {
         SystemTray tray = SystemTray.getSystemTray();
 
 //        Image image = Toolkit.getDefaultToolkit().createImage(getClass().getClassLoader().getResource("images/icon.png"));
-        BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource("images/icon.png"));
+        BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource("images/icon/base.png"));
         TrayIcon trayIcon = new TrayIcon(image, "VkMusic");
         trayIcon.setImageAutoSize(true);
         trayIcon.addActionListener(event -> mainController.run());
