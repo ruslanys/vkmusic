@@ -8,8 +8,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.net.URL;
 import java.util.concurrent.Executors;
 
 import static java.awt.GridBagConstraints.HORIZONTAL;
@@ -19,34 +17,28 @@ import static java.awt.GridBagConstraints.NORTH;
  * @author Ruslan Molchanov (ruslanys@gmail.com)
  */
 @Component
-public class LoginFrame extends JFrame implements ActionListener {
+public class LoginFrame extends LoadingFrame implements ActionListener {
 
     private JPasswordField passwordFld;
     private JTextField usernameFld;
 
     private OnSubmitListener submitListener;
 
-    public LoginFrame() throws IOException {
-        initComponents();
+    public LoginFrame() throws Exception {
     }
 
-    private void initComponents() throws IOException {
+    @Override
+    protected void initWindow() {
+        pack();
+        setLocationRelativeTo(null);
+
         setTitle("Авторизация");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
-
-        JPanel loginPanel = initLoginPanel();
-        JPanel loadingPanel = initLoadingPanel();
-
-        getContentPane().setLayout(new CardLayout());
-        add(loginPanel, State.LOGIN.name());
-        add(loadingPanel, State.LOADING.name());
-
-        pack();
-        setLocationRelativeTo(null);
     }
 
-    private JPanel initLoginPanel() {
+    @Override
+    protected JPanel initMainPanel() {
         JPanel panel = new JPanel();
         Insets padding = new Insets(0, 5, 5, 5);
 
@@ -71,19 +63,6 @@ public class LoginFrame extends JFrame implements ActionListener {
         loginBtn.addActionListener(this);
         panel.add(loginBtn, new GridBagConstraints(0, 4, 1, 1, 1., 0., NORTH, HORIZONTAL, new Insets(5, 5, 10, 5), 0, 0));
         return panel;
-    }
-
-    private JPanel initLoadingPanel() {
-        URL spinner = getClass().getClassLoader().getResource("images/loading.gif");
-
-        JPanel panel = new JPanel(new BorderLayout(0, 0));
-        panel.add(new JLabel(new ImageIcon(spinner)), BorderLayout.CENTER);
-        return panel;
-    }
-
-    public void setState(State state) {
-        CardLayout cl = (CardLayout) (getContentPane().getLayout());
-        cl.show(getContentPane(), state.name());
     }
 
     public void setSubmitListener(OnSubmitListener submitListener) {
@@ -111,18 +90,12 @@ public class LoginFrame extends JFrame implements ActionListener {
                 }
             }
 
-            setState(State.LOGIN);
+            setState(State.MAIN);
         });
     }
 
-    public enum State {
-        LOGIN, LOADING
-    }
-
     public interface OnSubmitListener {
-
         void onSubmit(String username, String password);
-
     }
 
 }

@@ -14,36 +14,41 @@ import java.awt.*;
  * @author Ruslan Molchanov (ruslanys@gmail.com)
  */
 @Component
-public class MainFrame extends JFrame {
+public class MainFrame extends LoadingFrame {
 
     private final ApplicationEventPublisher publisher;
 
-    private final AudioTableModel model = new AudioTableModel();
+    private AudioTableModel model;
 
     private JLabel toolbarLabel;
 
     @Autowired
-    public MainFrame(ApplicationEventPublisher publisher) {
+    public MainFrame(ApplicationEventPublisher publisher) throws Exception {
+        super();
         this.publisher = publisher;
 
-        initComponents();
         initMenu();
     }
 
-    private void initComponents() {
+    @Override
+    protected void initWindow() {
         setTitle("VKMusic");
         setDefaultCloseOperation(HIDE_ON_CLOSE);
         setSize(550, 300);
         setLocationRelativeTo(null);
+    }
 
-        // ui components
-        getContentPane().setLayout(new BorderLayout(0, 0));
+    @Override
+    protected JPanel initMainPanel() {
+        JPanel panel = new JPanel(new BorderLayout(0, 0));
 
         final JScrollPane scrollPane = new JScrollPane();
-        getContentPane().add(scrollPane, BorderLayout.CENTER);
+        panel.add(scrollPane, BorderLayout.CENTER);
 
         JTable table = new JTable();
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+
+        model = new AudioTableModel();
         table.setModel(model);
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -56,10 +61,12 @@ public class MainFrame extends JFrame {
         final JToolBar toolBar = new JToolBar();
         toolBar.setFloatable(false);
         toolBar.setMargin(new Insets(0, 5, 0, 0));
-        getContentPane().add(toolBar, BorderLayout.SOUTH);
+        panel.add(toolBar, BorderLayout.SOUTH);
 
         toolbarLabel = new JLabel("...");
         toolBar.add(toolbarLabel);
+
+        return panel;
     }
 
     private void initMenu() {

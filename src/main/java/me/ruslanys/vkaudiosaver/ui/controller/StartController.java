@@ -60,7 +60,7 @@ public class StartController implements CommandLineRunner, Runnable {
     public void run() {
         VkProperties vkProperties = propertyService.getVkProperties();
         if (vkProperties == null) {
-            showLoginForm(LoginFrame.State.LOGIN);
+            showLoginForm(LoginFrame.State.MAIN);
         } else {
             showLoginForm(LoginFrame.State.LOADING);
             Executors.newSingleThreadExecutor()
@@ -87,7 +87,7 @@ public class StartController implements CommandLineRunner, Runnable {
 
     private void onAuthFailed() {
         propertyService.cleanVkProperties();
-        showLoginForm(LoginFrame.State.LOGIN);
+        showLoginForm(LoginFrame.State.MAIN);
     }
 
     @EventListener

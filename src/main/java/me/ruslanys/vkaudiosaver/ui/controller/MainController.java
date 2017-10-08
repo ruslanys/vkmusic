@@ -5,6 +5,7 @@ import me.ruslanys.vkaudiosaver.component.VkClient;
 import me.ruslanys.vkaudiosaver.domain.Audio;
 import me.ruslanys.vkaudiosaver.services.AudioService;
 import me.ruslanys.vkaudiosaver.services.PropertyService;
+import me.ruslanys.vkaudiosaver.ui.view.LoadingFrame;
 import me.ruslanys.vkaudiosaver.ui.view.MainFrame;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -38,8 +39,10 @@ public class MainController implements Runnable {
     public void run() {
         mainFrame.setStatus(propertyService.getVkProperties().getUsername());
         mainFrame.setVisible(true);
+        mainFrame.setState(LoadingFrame.State.LOADING);
 
         List<Audio> audioList = vkClient.getAudio();
         mainFrame.getModel().addEntities(audioList);
+        mainFrame.setState(LoadingFrame.State.MAIN);
     }
 }
