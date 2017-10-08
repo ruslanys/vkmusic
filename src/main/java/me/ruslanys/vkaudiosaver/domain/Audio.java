@@ -35,8 +35,7 @@ public class Audio {
         sb.append(".mp3");
 
         return sb.toString()
-                .replace(" ", "_")
-                .replaceAll("[!\"#$%&'()*+,\\-./:;<=>?@\\[\\]^`{|}~]", "");
+                .replaceAll("[!\"#$%&'()*+,:;<=>?@\\[\\]^`{|}~]", "");
     }
 
 }
