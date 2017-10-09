@@ -8,11 +8,7 @@ import lombok.Data;
 @Data
 public class DownloaderProperties {
 
+    private String destination = "./Music/";
     private Integer poolSize = 5;
-    private String destination;
-
-    public DownloaderProperties(String destination) {
-        this.destination = destination;
-    }
 
 }

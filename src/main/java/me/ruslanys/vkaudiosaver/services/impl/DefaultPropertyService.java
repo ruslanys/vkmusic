@@ -1,5 +1,6 @@
 package me.ruslanys.vkaudiosaver.services.impl;
 
+import lombok.NonNull;
 import me.ruslanys.vkaudiosaver.domain.Property;
 import me.ruslanys.vkaudiosaver.property.DownloaderProperties;
 import me.ruslanys.vkaudiosaver.property.VkProperties;
@@ -23,7 +24,7 @@ public class DefaultPropertyService implements PropertyService {
     private final PropertyRepository propertyRepository;
 
     @Autowired
-    public DefaultPropertyService(PropertyRepository propertyRepository) {
+    public DefaultPropertyService(@NonNull PropertyRepository propertyRepository) {
         this.propertyRepository = propertyRepository;
     }
 
@@ -51,10 +52,14 @@ public class DefaultPropertyService implements PropertyService {
     @Override
     public DownloaderProperties getDownloaderProperties() {
         Property property = propertyRepository.findOne(KEY_DOWNLOADER);
+        DownloaderProperties properties;
         if (property == null) {
-            return null;
+            properties = new DownloaderProperties();
+            save(properties);
+        } else {
+            properties = JsonUtils.fromString(property.getJson(), DownloaderProperties.class);
         }
-        return JsonUtils.fromString(property.getJson(), DownloaderProperties.class);
+        return properties;
     }
 
     @Override

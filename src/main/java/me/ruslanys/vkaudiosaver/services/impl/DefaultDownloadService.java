@@ -62,16 +62,12 @@ public class DefaultDownloadService implements DownloadService {
         List<Audio> list = perform(audios);
 
         DownloaderProperties properties = propertyService.getDownloaderProperties();
-        if (properties == null) {
-            properties = new DownloaderProperties("./Music/");
-        }
-
         download(properties, list);
     }
 
     private List<Audio> perform(List<Audio> audios) {
         List<Audio> list = new ArrayList<>(audios);
-        list.removeIf(audio -> audio.getStatus() == Audio.Status.DOWNLOADED);
+        list.removeIf(audio -> audio.getStatus() != Audio.Status.NEW);
 
         vkClient.fetchUrl(list);
 

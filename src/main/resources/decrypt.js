@@ -1,3 +1,9 @@
+/**
+ * Обфусцированный код на JS от ВК, который получилось выдрать с фронта.
+ *
+ * Дойдут руки, перепишу.
+ */
+
 var mask = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMN0PQRSTUVWXYZO123456789+/=";
 
 function decode(url) {
