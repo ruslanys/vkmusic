@@ -5,7 +5,9 @@ import me.ruslanys.vkaudiosaver.domain.Audio;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.table.AbstractTableModel;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Ruslan Molchanov (ruslanys@gmail.com)
@@ -61,30 +63,24 @@ public class AudioTableModel extends AbstractTableModel {
         return COLUMN_LABELS[column];
     }
 
-    public void add(Audio entity) {
-        if (hashMap.get(entity.getId()) != null) {
+    private void addInternal(Audio audio) {
+        if (hashMap.get(audio.getId()) != null) {
             return;
         }
 
-        this.entities.add(entity);
-        this.entities.sort(Comparator.comparing(Audio::getPosition));
-        this.hashMap.put(entity.getId(), entity);
+        hashMap.put(audio.getId(), audio);
+        entities.add(audio.getPosition() - 1, audio);
+    }
+
+    public void add(Audio audio) {
+        addInternal(audio);
         fireTableDataChanged();
     }
 
-    public void add(List<Audio> entities) {
-        List<Audio> list = new ArrayList<>(entities);
-        Iterator<Audio> it = list.iterator();
-        while (it.hasNext()) {
-            Audio audio = it.next();
-            if (hashMap.get(audio.getId()) != null) {
-                it.remove();
-            } else {
-                this.hashMap.put(audio.getId(), audio);
-                this.entities.add(audio);
-            }
+    public void add(List<Audio> audioList) {
+        for (Audio audio : audioList) {
+            addInternal(audio);
         }
-        this.entities.sort(Comparator.comparing(Audio::getPosition));
 
         fireTableDataChanged();
     }

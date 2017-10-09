@@ -38,8 +38,11 @@ public class DefaultAudioService implements AudioService, ApplicationListener<Lo
             audio.setPosition(i + 1);
 
             Audio audioInDb = audioRepository.findOne(audio.getId());
-            if (audioInDb == null || !audioInDb.equals(audio)) {
+            if (audioInDb == null) {
                 audioRepository.save(audio);
+            } else if (!audioInDb.getPosition().equals(audio.getPosition())) {
+                audioInDb.setPosition(audio.getPosition());
+                audioRepository.save(audioInDb);
             }
         }
 

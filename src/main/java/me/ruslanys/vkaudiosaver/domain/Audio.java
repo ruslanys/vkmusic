@@ -10,7 +10,7 @@ import javax.persistence.*;
  * @author Ruslan Molchanov (ruslanys@gmail.com)
  */
 @Data
-@EqualsAndHashCode(exclude = {"url", "status"})
+@EqualsAndHashCode(exclude = {"url", "status", "position"})
 
 @Entity
 public class Audio {
