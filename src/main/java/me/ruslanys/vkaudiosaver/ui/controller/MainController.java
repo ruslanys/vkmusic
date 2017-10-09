@@ -5,7 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import me.ruslanys.vkaudiosaver.component.impl.TrayHandler;
 import me.ruslanys.vkaudiosaver.domain.Audio;
 import me.ruslanys.vkaudiosaver.domain.event.AudioUpdatedEvent;
+import me.ruslanys.vkaudiosaver.domain.event.LogoutEvent;
 import me.ruslanys.vkaudiosaver.domain.event.TrayStateEvent;
+import me.ruslanys.vkaudiosaver.property.VkProperties;
 import me.ruslanys.vkaudiosaver.services.AudioService;
 import me.ruslanys.vkaudiosaver.services.DownloadService;
 import me.ruslanys.vkaudiosaver.services.PropertyService;
@@ -14,7 +16,7 @@ import me.ruslanys.vkaudiosaver.ui.view.MainFrame;
 import me.ruslanys.vkaudiosaver.util.Notifications;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -30,7 +32,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Slf4j
 
 @Component
-public class MainController implements Runnable, ApplicationListener<AudioUpdatedEvent> {
+public class MainController implements Runnable {
 
     private final MainFrame mainFrame;
 
@@ -60,7 +62,7 @@ public class MainController implements Runnable, ApplicationListener<AudioUpdate
     public void run() {
         publisher.publishEvent(new TrayStateEvent(this, TrayHandler.State.BASE, e -> mainFrame.setVisible(true)));
 
-        mainFrame.setStatus(propertyService.getVkProperties().getUsername());
+        mainFrame.setStatus(propertyService.get(VkProperties.class).getUsername());
         mainFrame.setVisible(true);
 
         loadAudio();
@@ -104,17 +106,22 @@ public class MainController implements Runnable, ApplicationListener<AudioUpdate
         downloadService.download(audioList);
     }
 
-    @Override
-    public void onApplicationEvent(AudioUpdatedEvent event) {
+    @EventListener
+    public void onAudioUpdated(AudioUpdatedEvent event) {
         long queueSize = counter.decrementAndGet();
         if (queueSize > 0) {
             mainFrame.setStatus(String.format("В очереди на загрузку: %d", queueSize));
         } else {
-            mainFrame.setStatus(propertyService.getVkProperties().getUsername());
+            mainFrame.setStatus(propertyService.get(VkProperties.class).getUsername());
             Notifications.showNotification("Синхронизация завершена.");
         }
 
         mainFrame.getModel().fireTableDataChanged();
+    }
+
+    @EventListener
+    public void onLogout(LogoutEvent event) {
+        scheduler.shutdown();
     }
 
 }

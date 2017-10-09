@@ -54,7 +54,7 @@ public class StartController implements CommandLineRunner, Runnable {
 
     @Override
     public void run() {
-        VkProperties vkProperties = propertyService.getVkProperties();
+        VkProperties vkProperties = propertyService.get(VkProperties.class);
         if (vkProperties == null) {
             showLoginForm(LoginFrame.State.MAIN);
         } else {
@@ -67,7 +67,7 @@ public class StartController implements CommandLineRunner, Runnable {
         try {
             VkProperties properties = new VkProperties(username, password);
             vkClient.auth(properties);
-            propertyService.save(properties);
+            propertyService.set(properties);
 
             onAuthSuccess();
         } catch (Exception e) {
@@ -81,7 +81,8 @@ public class StartController implements CommandLineRunner, Runnable {
     }
 
     private void onAuthFailed() {
-        propertyService.cleanVkProperties();
+        vkClient.clear();
+        propertyService.remove(VkProperties.class);
         showLoginForm(LoginFrame.State.MAIN);
     }
 

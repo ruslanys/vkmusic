@@ -53,10 +53,17 @@ public class ScraperVkClient implements VkClient {
     @SneakyThrows
     @Override
     public void auth(VkProperties properties) throws VkException {
-        cookies.clear();
+        clear();
 
         homePage = submitLoginForm(properties.getUsername(), properties.getPassword());
         userId = fetchUserId();
+    }
+
+    @Override
+    public void clear() {
+        cookies.clear();
+        homePage = null;
+        userId = null;
     }
 
     private void handleCookies(Map<String, String> cookies) {

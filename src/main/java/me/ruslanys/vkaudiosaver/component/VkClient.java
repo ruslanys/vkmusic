@@ -13,6 +13,8 @@ public interface VkClient {
 
     void auth(VkProperties properties) throws VkException;
 
+    void clear();
+
     List<Audio> getAudio();
 
     void fetchUrl(List<Audio> audioList);

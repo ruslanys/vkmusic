@@ -3,13 +3,15 @@ package me.ruslanys.vkaudiosaver.services.impl;
 import lombok.NonNull;
 import me.ruslanys.vkaudiosaver.domain.Property;
 import me.ruslanys.vkaudiosaver.property.DownloaderProperties;
-import me.ruslanys.vkaudiosaver.property.VkProperties;
+import me.ruslanys.vkaudiosaver.property.Properties;
 import me.ruslanys.vkaudiosaver.repository.PropertyRepository;
 import me.ruslanys.vkaudiosaver.services.PropertyService;
 import me.ruslanys.vkaudiosaver.util.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.PostConstruct;
 
 /**
  * @author Ruslan Molchanov (ruslanys@gmail.com)
@@ -18,9 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class DefaultPropertyService implements PropertyService {
 
-    private static final String KEY_VK = "VK";
-    private static final String KEY_DOWNLOADER = "DOWNLOADER";
-
     private final PropertyRepository propertyRepository;
 
     @Autowired
@@ -28,44 +27,35 @@ public class DefaultPropertyService implements PropertyService {
         this.propertyRepository = propertyRepository;
     }
 
-    @Override
-    public void save(VkProperties vkProperties) {
-        Property property = new Property(KEY_VK, JsonUtils.toString(vkProperties));
-        propertyRepository.save(property);
-    }
-
-    @Override
-    public void save(DownloaderProperties downloaderProperties) {
-        Property property = new Property(KEY_DOWNLOADER, JsonUtils.toString(downloaderProperties));
-        propertyRepository.save(property);
-    }
-
-    @Override
-    public VkProperties getVkProperties() {
-        Property property = propertyRepository.findOne(KEY_VK);
-        if (property == null) {
-            return null;
-        }
-        return JsonUtils.fromString(property.getJson(), VkProperties.class);
-    }
-
-    @Override
-    public DownloaderProperties getDownloaderProperties() {
-        Property property = propertyRepository.findOne(KEY_DOWNLOADER);
-        DownloaderProperties properties;
-        if (property == null) {
-            properties = new DownloaderProperties();
-            save(properties);
-        } else {
-            properties = JsonUtils.fromString(property.getJson(), DownloaderProperties.class);
-        }
-        return properties;
-    }
-
-    @Override
-    public void cleanVkProperties() {
-        if (propertyRepository.exists(KEY_VK)) {
-            propertyRepository.delete(KEY_VK);
+    @PostConstruct
+    private void init() {
+        if (get(DownloaderProperties.class) == null) {
+            set(new DownloaderProperties());
         }
     }
+
+    @Override
+    public void set(Properties properties) {
+        Property entity = new Property(properties.getClass().getSimpleName(), JsonUtils.toString(properties));
+        propertyRepository.save(entity);
+    }
+
+    @Override
+    public <T extends Properties> T get(Class<T> clazz) {
+        Property entity = propertyRepository.findOne(clazz.getSimpleName());
+        if (entity != null) {
+            return JsonUtils.fromString(entity.getJson(), clazz);
+        }
+
+        return null;
+    }
+
+    @Override
+    public <T extends Properties> void remove(Class<T> clazz) {
+        String key = clazz.getSimpleName();
+        if (propertyRepository.exists(key)) {
+            propertyRepository.delete(key);
+        }
+    }
+
 }

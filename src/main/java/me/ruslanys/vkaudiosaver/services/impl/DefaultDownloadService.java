@@ -61,7 +61,7 @@ public class DefaultDownloadService implements DownloadService {
     public void download(List<Audio> audios) {
         List<Audio> list = perform(audios);
 
-        DownloaderProperties properties = propertyService.getDownloaderProperties();
+        DownloaderProperties properties = propertyService.get(DownloaderProperties.class);
         download(properties, list);
     }
 
