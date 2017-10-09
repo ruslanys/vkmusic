@@ -1,5 +1,6 @@
 package me.ruslanys.vkaudiosaver.ui.view;
 
+import lombok.NonNull;
 import me.ruslanys.vkaudiosaver.domain.event.LogoutEvent;
 import me.ruslanys.vkaudiosaver.ui.model.AudioTableModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,7 +97,7 @@ public class MainFrame extends LoadingFrame {
         setJMenuBar(menuBar);
     }
 
-    public void setStatus(String status) {
+    public void setStatus(@NonNull String status) {
         toolbarLabel.setText(status);
     }
 

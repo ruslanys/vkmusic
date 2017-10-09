@@ -1,41 +1,35 @@
 package me.ruslanys.vkaudiosaver.util;
 
-import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.SystemUtils;
 
 import java.awt.*;
 
+@Slf4j
 public class Notifications {
 
-    @SneakyThrows
-    public static void ubuntuHello() {
-        Runtime.getRuntime().exec("notify-send Hello world!");
+    public static void showNotification(String message) {
+        if (SystemUtils.IS_OS_LINUX) {
+            showLinuxNotification(message);
+        } else {
+            showDefaultNotification(message);
+        }
     }
 
-    public static void windowsHello() {
+    private static void showDefaultNotification(String message) {
         SystemTray.getSystemTray().getTrayIcons()[0]
-                .displayMessage("Hello", "World", TrayIcon.MessageType.INFO);
-        // trayIcon.displayMessage("Yep!", "I'm here", TrayIcon.MessageType.NONE);
-
+                .displayMessage("VKMusic", message, TrayIcon.MessageType.INFO);
     }
 
-//    public static void showFormValidationAlert(String message) {
-//        JOptionPane.showMessageDialog(null,
-//                message,
-//                ConstMessagesEN.Messages.INFORMATION_TITLE,
-//                JOptionPane.INFORMATION_MESSAGE);
-//    }
-//
-//    public static void showTableRowNotSelectedAlert() {
-//        JOptionPane.showMessageDialog(null,
-//                ConstMessagesEN.Messages.NON_ROW_SELECTED,
-//                ConstMessagesEN.Messages.ALERT_TILE,
-//                JOptionPane.ERROR_MESSAGE);
-//    }
-//
-//    public static void showDeleteRowErrorMessage() {
-//        JOptionPane.showMessageDialog(null,
-//                ConstMessagesEN.Messages.DELETE_ROW_ERROR,
-//                ConstMessagesEN.Messages.ALERT_TILE,
-//                JOptionPane.ERROR_MESSAGE);
-//    }
+    private static void showLinuxNotification(String message) {
+
+        try {
+            Process process = new ProcessBuilder("notify-send", "-i", "user-info", "VKMusic", message)
+                    .start();
+            process.waitFor();
+        } catch (Exception e) {
+            showDefaultNotification(message);
+        }
+    }
+
 }

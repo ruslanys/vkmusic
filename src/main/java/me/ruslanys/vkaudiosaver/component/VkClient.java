@@ -4,7 +4,6 @@ import me.ruslanys.vkaudiosaver.domain.Audio;
 import me.ruslanys.vkaudiosaver.exception.VkException;
 import me.ruslanys.vkaudiosaver.property.VkProperties;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -16,5 +15,6 @@ public interface VkClient {
 
     List<Audio> getAudio();
 
-    void getUrls(List<Audio> audioList) throws IOException, InterruptedException;
+    void fetchUrl(List<Audio> audioList);
+
 }

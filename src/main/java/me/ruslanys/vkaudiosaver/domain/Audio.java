@@ -10,7 +10,7 @@ import javax.persistence.*;
  * @author Ruslan Molchanov (ruslanys@gmail.com)
  */
 @Data
-@EqualsAndHashCode(exclude = "url")
+@EqualsAndHashCode(exclude = {"url", "status"})
 
 @Entity
 public class Audio {
@@ -18,13 +18,13 @@ public class Audio {
     @Id
     private Integer id;
 
-    @Column
+    @Column(nullable = false)
     private String artist;
 
-    @Column
+    @Column(nullable = false)
     private String title;
 
-    @Column
+    @Column(nullable = false)
     private Integer duration;
 
     @Column(nullable = false)
@@ -37,24 +37,19 @@ public class Audio {
     @Transient
     private String url;
 
-    public static String getFilename(String destination, Audio audio) {
+    public String getFilename() {
         StringBuilder sb = new StringBuilder();
 
-        if (StringUtils.isNotEmpty(destination)) {
-            sb.append(destination);
+        String formattedArtist = getArtist().trim().replaceAll("[!\"#$%&'()*+,\\-/:;<=>?@\\[\\]^_`{|}~]", "");
+        String formattedTitle = getTitle().trim().replaceAll("[!\"#$%&'()*+,\\-/:;<=>?@\\[\\]^_`{|}~]", "");
 
-            if (!destination.endsWith("/")) sb.append("/");
-        }
-
-        sb.append(StringUtils.substring(audio.getArtist().replace("/", "").replace("\\", ""), 0, 15));
+        sb.append(StringUtils.substring(formattedArtist, 0, 15));
         sb.append(" - ");
-        sb.append(StringUtils.substring(audio.getTitle().replace("/", "").replace("\\", ""), 0, 20));
+        sb.append(StringUtils.substring(formattedTitle, 0, 20));
 
         sb.append(".mp3");
 
-        return sb.toString()
-                .replace("(", "")
-                .replace(")", "");
+        return sb.toString();
     }
 
     public enum Status {

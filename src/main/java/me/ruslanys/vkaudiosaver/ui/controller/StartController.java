@@ -1,7 +1,6 @@
 package me.ruslanys.vkaudiosaver.ui.controller;
 
 import lombok.NonNull;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import me.ruslanys.vkaudiosaver.component.VkClient;
 import me.ruslanys.vkaudiosaver.domain.event.LogoutEvent;
@@ -14,10 +13,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.util.concurrent.Executors;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author Ruslan Molchanov (ruslanys@gmail.com)
@@ -53,7 +50,6 @@ public class StartController implements CommandLineRunner, Runnable {
     @Override
     public void run(String... args) throws Exception {
         EventQueue.invokeLater(this);
-        displayTray();
     }
 
     @Override
@@ -63,8 +59,7 @@ public class StartController implements CommandLineRunner, Runnable {
             showLoginForm(LoginFrame.State.MAIN);
         } else {
             showLoginForm(LoginFrame.State.LOADING);
-            Executors.newSingleThreadExecutor()
-                    .submit(() -> auth(vkProperties.getUsername(), vkProperties.getPassword()));
+            CompletableFuture.runAsync(() -> auth(vkProperties.getUsername(), vkProperties.getPassword()));
         }
     }
 
@@ -91,7 +86,7 @@ public class StartController implements CommandLineRunner, Runnable {
     }
 
     @EventListener
-    public void logout(LogoutEvent event) {
+    public void logout(@NonNull LogoutEvent event) {
         event.getSource().dispose();
         onAuthFailed();
     }
@@ -99,19 +94,6 @@ public class StartController implements CommandLineRunner, Runnable {
     private void showLoginForm(LoginFrame.State state) {
         loginFrame.setState(state);
         loginFrame.setVisible(true);
-    }
-
-    @SneakyThrows
-    private void displayTray() {
-        SystemTray tray = SystemTray.getSystemTray();
-
-//        Image image = Toolkit.getDefaultToolkit().createImage(getClass().getClassLoader().getResource("images/icon.png"));
-        BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource("images/icon/base.png"));
-        TrayIcon trayIcon = new TrayIcon(image, "VkMusic");
-        trayIcon.setImageAutoSize(true);
-        trayIcon.addActionListener(event -> mainController.run());
-
-        tray.add(trayIcon);
     }
 
 }

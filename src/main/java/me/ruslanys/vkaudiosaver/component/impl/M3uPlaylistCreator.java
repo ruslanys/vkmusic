@@ -30,7 +30,7 @@ public class M3uPlaylistCreator implements PlaylistCreator {
                 writer.write(String.format("#EXTINF:%d, %s - %s", audio.getDuration(), audio.getArtist(), audio.getTitle()));
                 writer.newLine();
 
-                writer.write(Audio.getFilename(null, audio));
+                writer.write(audio.getFilename());
                 writer.newLine();
                 writer.newLine();
             }

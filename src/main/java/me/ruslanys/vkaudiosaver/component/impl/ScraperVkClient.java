@@ -21,7 +21,6 @@ import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +40,7 @@ public class ScraperVkClient implements VkClient {
 
     private static final String USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36";
     private static final String PATH_BASE = "https://vk.com";
-    private static final int DEFAULT_INTERVAL = 5_000;
+    private static final int SLEEP_INTERVAL = 5_000;
 
     private final ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("JavaScript");;
 
@@ -180,18 +179,17 @@ public class ScraperVkClient implements VkClient {
         return list;
     }
 
+    @SneakyThrows
     @Override
-    public void getUrls(List<Audio> audioList) throws IOException, InterruptedException {
+    public void fetchUrl(List<Audio> audioList) {
         Map<Integer, Audio> audioMap = new HashMap<>();
         for (Audio audio : audioList) {
             audioMap.put(audio.getId(), audio);
         }
 
-        int interval = DEFAULT_INTERVAL;
-        for (int fromIndex = 0, toIndex = Math.min(fromIndex + 10, audioList.size());
-             fromIndex != toIndex;
-             fromIndex = toIndex, toIndex = Math.min(fromIndex + 10, audioList.size())) {
-
+        int sleepInterval = SLEEP_INTERVAL;
+        int fromIndex = 0, toIndex = Math.min(fromIndex + 10, audioList.size());
+        while (fromIndex != toIndex) {
             log.info("Fetching urls: {} - {}", fromIndex, toIndex);
 
             // making request
@@ -211,12 +209,12 @@ public class ScraperVkClient implements VkClient {
 
             String body = response.body();
             if (!body.contains("<!json>")) {
-                log.info("Sleeping {} sec...", interval / 1000);
-                Thread.sleep(interval);
-                interval *= 2;
+                log.info("Sleeping {} sec...", sleepInterval / 1000);
+                Thread.sleep(sleepInterval);
+                sleepInterval += SLEEP_INTERVAL;
                 continue;
-            } else if (interval != DEFAULT_INTERVAL) {
-                interval = DEFAULT_INTERVAL;
+            } else if (sleepInterval != SLEEP_INTERVAL) {
+                sleepInterval = SLEEP_INTERVAL;
             }
 
             String json = body.substring(body.indexOf("<!json>") + "<!json>".length());
@@ -234,6 +232,8 @@ public class ScraperVkClient implements VkClient {
 
             // sleeping
             Thread.sleep(200);
+            fromIndex = toIndex;
+            toIndex = Math.min(fromIndex + 10, audioList.size());
         }
     }
 

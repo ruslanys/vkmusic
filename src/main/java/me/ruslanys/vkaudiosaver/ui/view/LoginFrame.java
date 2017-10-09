@@ -8,7 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.concurrent.Executors;
+import java.util.concurrent.CompletableFuture;
 
 import static java.awt.GridBagConstraints.HORIZONTAL;
 import static java.awt.GridBagConstraints.NORTH;
@@ -79,19 +79,17 @@ public class LoginFrame extends LoadingFrame implements ActionListener {
             return;
         }
 
-        Executors.newSingleThreadExecutor().submit(() -> {
+        if (submitListener != null) {
             setState(State.LOADING);
 
-            if (submitListener != null) {
-                try {
-                    submitListener.onSubmit(username, password);
-                } catch (Exception e) {
-                    Dialogs.showError(e);
-                }
-            }
-
-            setState(State.MAIN);
-        });
+            CompletableFuture
+                    .runAsync(() -> submitListener.onSubmit(username, password))
+                    .exceptionally(throwable -> {
+                        Dialogs.showError(throwable.getCause());
+                        return null;
+                    })
+                    .thenRunAsync(() -> setState(State.MAIN));
+        }
     }
 
     public interface OnSubmitListener {

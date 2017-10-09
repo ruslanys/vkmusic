@@ -7,7 +7,7 @@ import javax.swing.*;
 @Slf4j
 public class Dialogs {
 
-    public static void showError(Exception ex) {
+    public static void showError(Throwable ex) {
         if (ex instanceof RuntimeException) {
             log.error("Execution error", ex);
         }

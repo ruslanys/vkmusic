@@ -11,4 +11,8 @@ public class DownloaderProperties {
     private Integer poolSize = 5;
     private String destination;
 
+    public DownloaderProperties(String destination) {
+        this.destination = destination;
+    }
+
 }
