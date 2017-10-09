@@ -45,7 +45,7 @@ public class TrayHandler {
     @SneakyThrows
     private Image loadImage(State state) {
         // Image image = Toolkit.getDefaultToolkit().createImage(getClass().getClassLoader().getResource("images/icon.png"));
-        return ImageIO.read(getClass().getClassLoader().getResource("images/icon/" + state.name().toLowerCase() + ".png"));
+        return ImageIO.read(getClass().getClassLoader().getResource("images/tray/" + state.name().toLowerCase() + ".png"));
     }
 
     public enum State {

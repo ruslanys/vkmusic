@@ -1,10 +1,17 @@
 package me.ruslanys.vkaudiosaver.ui.model;
 
 import com.google.common.collect.Lists;
+import lombok.SneakyThrows;
 import me.ruslanys.vkaudiosaver.entity.Audio;
+import me.ruslanys.vkaudiosaver.entity.domain.DownloadStatus;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
+import java.awt.*;
+import java.net.URL;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,8 +24,17 @@ public class AudioTableModel extends AbstractTableModel {
     private static final String[] COLUMN_LABELS = new String[] { "ID", "Исполнитель", "Наименование",
             "Продолжительность", "Статус" };
 
-    protected final List<Audio> entities = Lists.newArrayList();
-    protected final Map<Integer, Audio> hashMap = new HashMap<>();
+    private final List<Audio> entities = Lists.newArrayList();
+    private final Map<Integer, Audio> hashMap = new HashMap<>();
+
+    private final EnumMap<DownloadStatus, ImageIcon> statusIcon = new EnumMap<>(DownloadStatus.class);
+
+    public AudioTableModel() {
+        for (DownloadStatus status : DownloadStatus.values()) {
+            Image image = loadImage(status).getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+            statusIcon.put(status, new ImageIcon(image));
+        }
+    }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
@@ -33,10 +49,16 @@ public class AudioTableModel extends AbstractTableModel {
             case 3:
                 return getDuration(audio.getDuration());
             case 4:
-                return audio.getStatus();
+                return statusIcon.get(audio.getStatus());
             default:
                 return "";
         }
+    }
+
+    @SneakyThrows
+    private Image loadImage(DownloadStatus status) {
+        URL resource = getClass().getClassLoader().getResource("images/status/" + status.name().toLowerCase() + ".png");
+        return ImageIO.read(resource);
     }
 
     private String getDuration(int durationInSec) {

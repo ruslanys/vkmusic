@@ -46,16 +46,24 @@ public class MainFrame extends LoadingFrame {
         final JScrollPane scrollPane = new JScrollPane();
         panel.add(scrollPane, BorderLayout.CENTER);
 
-        JTable table = new JTable();
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        JTable table = new JTable() {
+            @Override
+            public Class<?> getColumnClass(int column) {
+                return getValueAt(0, column).getClass();
+            }
+        };
 
         model = new AudioTableModel();
         table.setModel(model);
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        table.getColumnModel().getColumn(0).setPreferredWidth(50);
+        table.getColumnModel().getColumn(1).setPreferredWidth(200);
+        table.getColumnModel().getColumn(2).setPreferredWidth(200);
         table.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
-        table.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
+        table.getColumnModel().getColumn(3).setPreferredWidth(55);
+        table.getColumnModel().getColumn(4).setPreferredWidth(55);
 
         scrollPane.setViewportView(table);
 

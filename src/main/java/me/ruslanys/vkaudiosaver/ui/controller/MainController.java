@@ -21,6 +21,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
@@ -74,8 +75,7 @@ public class MainController implements Runnable {
         mainFrame.setState(LoadingFrame.State.LOADING);
 
         CompletableFuture
-                .supplyAsync(audioService::findAll)
-                 .thenApply(audios -> !audios.isEmpty() ? audios : audioService.fetchAll())
+                .supplyAsync(audioService::fetchAll)
                 .thenApply(audios -> {
                     mainFrame.getModel().add(audios);
                     mainFrame.setState(LoadingFrame.State.MAIN);
@@ -85,27 +85,28 @@ public class MainController implements Runnable {
                 .thenAccept(this::download) // todo: move
                 .thenRun(() -> { // todo: move
                     scheduler = Executors.newSingleThreadScheduledExecutor();
-                    scheduler.scheduleAtFixedRate(MainController.this::sync, 0L, 30L, TimeUnit.SECONDS);
+                    scheduler.scheduleAtFixedRate(MainController.this::onSync, 0L, 30L, TimeUnit.SECONDS);
                 });
     }
 
-    private void sync() {
+    public void onSync() {
         List<Audio> audioList = audioService.fetchAll();
         mainFrame.getModel().add(audioList);
         download(audioList);
     }
 
-    private void download(List<Audio> audioList) {
-        long count = audioList.stream().filter(a -> a.getStatus() == DownloadStatus.NEW).count();
-        if (count == 0) {
+    private void download(List<Audio> audios) {
+        List<Audio> audioList = new ArrayList<>(audios);
+        audioList.removeIf(a -> a.getStatus() != DownloadStatus.NEW);
+        if (audioList.isEmpty()) {
             return;
         }
 
-        Notifications.showNotification(String.format("Доступно к загрузке: %d", count));
+        Notifications.showNotification(String.format("Доступно к загрузке: %d", audioList.size()));
         mainFrame.setStatus("Синхронизация...");
 
         // --
-        counter.set(count);
+        counter.set(audioList.size());
         downloadService.download(audioList);
     }
 
