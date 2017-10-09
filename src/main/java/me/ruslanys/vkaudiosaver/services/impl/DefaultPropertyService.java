@@ -1,7 +1,7 @@
 package me.ruslanys.vkaudiosaver.services.impl;
 
 import lombok.NonNull;
-import me.ruslanys.vkaudiosaver.domain.Property;
+import me.ruslanys.vkaudiosaver.entity.Property;
 import me.ruslanys.vkaudiosaver.property.DownloaderProperties;
 import me.ruslanys.vkaudiosaver.property.Properties;
 import me.ruslanys.vkaudiosaver.repository.PropertyRepository;

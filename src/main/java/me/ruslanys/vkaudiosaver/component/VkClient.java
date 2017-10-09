@@ -1,6 +1,6 @@
 package me.ruslanys.vkaudiosaver.component;
 
-import me.ruslanys.vkaudiosaver.domain.Audio;
+import me.ruslanys.vkaudiosaver.entity.Audio;
 import me.ruslanys.vkaudiosaver.exception.VkException;
 import me.ruslanys.vkaudiosaver.property.VkProperties;
 
@@ -17,6 +17,6 @@ public interface VkClient {
 
     List<Audio> getAudio();
 
-    void fetchUrl(List<Audio> audioList);
+    void fetchUrls(List<Audio> audioList);
 
 }

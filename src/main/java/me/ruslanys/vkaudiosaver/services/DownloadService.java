@@ -1,6 +1,6 @@
 package me.ruslanys.vkaudiosaver.services;
 
-import me.ruslanys.vkaudiosaver.domain.Audio;
+import me.ruslanys.vkaudiosaver.entity.Audio;
 
 import java.util.List;
 

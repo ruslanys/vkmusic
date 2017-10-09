@@ -1,7 +1,7 @@
 package me.ruslanys.vkaudiosaver.component.impl;
 
 import lombok.SneakyThrows;
-import me.ruslanys.vkaudiosaver.domain.event.TrayStateEvent;
+import me.ruslanys.vkaudiosaver.entity.domain.event.TrayStateEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 

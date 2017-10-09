@@ -3,7 +3,7 @@ package me.ruslanys.vkaudiosaver.ui.controller;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import me.ruslanys.vkaudiosaver.component.VkClient;
-import me.ruslanys.vkaudiosaver.domain.event.LogoutEvent;
+import me.ruslanys.vkaudiosaver.entity.domain.event.LogoutEvent;
 import me.ruslanys.vkaudiosaver.property.VkProperties;
 import me.ruslanys.vkaudiosaver.services.PropertyService;
 import me.ruslanys.vkaudiosaver.ui.view.LoginFrame;

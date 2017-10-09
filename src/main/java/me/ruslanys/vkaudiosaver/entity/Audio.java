@@ -1,7 +1,8 @@
-package me.ruslanys.vkaudiosaver.domain;
+package me.ruslanys.vkaudiosaver.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import me.ruslanys.vkaudiosaver.entity.domain.DownloadStatus;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
@@ -32,7 +33,7 @@ public class Audio {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Status status = Status.NEW;
+    private DownloadStatus status = DownloadStatus.NEW;
 
     @Transient
     private String url;
@@ -50,10 +51,6 @@ public class Audio {
         sb.append(".mp3");
 
         return sb.toString();
-    }
-
-    public enum Status {
-        NEW, DOWNLOADED, SKIPPED
     }
 
 }

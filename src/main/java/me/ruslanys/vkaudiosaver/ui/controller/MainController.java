@@ -3,10 +3,12 @@ package me.ruslanys.vkaudiosaver.ui.controller;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import me.ruslanys.vkaudiosaver.component.impl.TrayHandler;
-import me.ruslanys.vkaudiosaver.domain.Audio;
-import me.ruslanys.vkaudiosaver.domain.event.AudioUpdatedEvent;
-import me.ruslanys.vkaudiosaver.domain.event.LogoutEvent;
-import me.ruslanys.vkaudiosaver.domain.event.TrayStateEvent;
+import me.ruslanys.vkaudiosaver.entity.Audio;
+import me.ruslanys.vkaudiosaver.entity.domain.DownloadStatus;
+import me.ruslanys.vkaudiosaver.entity.domain.event.DownloadFinishEvent;
+import me.ruslanys.vkaudiosaver.entity.domain.event.DownloadStatusEvent;
+import me.ruslanys.vkaudiosaver.entity.domain.event.LogoutEvent;
+import me.ruslanys.vkaudiosaver.entity.domain.event.TrayStateEvent;
 import me.ruslanys.vkaudiosaver.property.VkProperties;
 import me.ruslanys.vkaudiosaver.services.AudioService;
 import me.ruslanys.vkaudiosaver.services.DownloadService;
@@ -72,28 +74,29 @@ public class MainController implements Runnable {
         mainFrame.setState(LoadingFrame.State.LOADING);
 
         CompletableFuture
-                .supplyAsync(audioService::getAll)
+                .supplyAsync(audioService::findAll)
+                 .thenApply(audios -> !audios.isEmpty() ? audios : audioService.fetchAll())
                 .thenApply(audios -> {
                     mainFrame.getModel().add(audios);
                     mainFrame.setState(LoadingFrame.State.MAIN);
 
                     return audios;
                 })
-                .thenAccept(this::download)
-                .thenRun(() -> {
+                .thenAccept(this::download) // todo: move
+                .thenRun(() -> { // todo: move
                     scheduler = Executors.newSingleThreadScheduledExecutor();
                     scheduler.scheduleAtFixedRate(MainController.this::sync, 0L, 30L, TimeUnit.SECONDS);
                 });
     }
 
     private void sync() {
-        List<Audio> audioList = audioService.getAll();
+        List<Audio> audioList = audioService.fetchAll();
         mainFrame.getModel().add(audioList);
         download(audioList);
     }
 
     private void download(List<Audio> audioList) {
-        long count = audioList.stream().filter(a -> a.getStatus() == Audio.Status.NEW).count();
+        long count = audioList.stream().filter(a -> a.getStatus() == DownloadStatus.NEW).count();
         if (count == 0) {
             return;
         }
@@ -107,16 +110,17 @@ public class MainController implements Runnable {
     }
 
     @EventListener
-    public void onAudioUpdated(AudioUpdatedEvent event) {
-        long queueSize = counter.decrementAndGet();
-        if (queueSize > 0) {
-            mainFrame.setStatus(String.format("В очереди на загрузку: %d", queueSize));
-        } else {
-            mainFrame.setStatus(propertyService.get(VkProperties.class).getUsername());
-            Notifications.showNotification("Синхронизация завершена.");
-        }
+    public void onDownloadStatusEvent(DownloadStatusEvent event) {
+        mainFrame.setStatus(String.format("В очереди на загрузку: %d", counter.decrementAndGet()));
 
+        mainFrame.getModel().get(event.getAudio().getId()).setStatus(event.getStatus());
         mainFrame.getModel().fireTableDataChanged();
+    }
+
+    @EventListener
+    public void onDownloadFinishEvent(DownloadFinishEvent event) {
+        mainFrame.setStatus(propertyService.get(VkProperties.class).getUsername());
+        Notifications.showNotification("Синхронизация завершена, обработано " + event.getAudioList().size() + ".");
     }
 
     @EventListener

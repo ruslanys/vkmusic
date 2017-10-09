@@ -1,4 +1,4 @@
-package me.ruslanys.vkaudiosaver.domain.event;
+package me.ruslanys.vkaudiosaver.entity.domain.event;
 
 import lombok.Getter;
 import me.ruslanys.vkaudiosaver.component.impl.TrayHandler;

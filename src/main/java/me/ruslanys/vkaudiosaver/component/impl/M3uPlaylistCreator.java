@@ -2,7 +2,7 @@ package me.ruslanys.vkaudiosaver.component.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import me.ruslanys.vkaudiosaver.component.PlaylistCreator;
-import me.ruslanys.vkaudiosaver.domain.Audio;
+import me.ruslanys.vkaudiosaver.entity.Audio;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedWriter;

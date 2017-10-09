@@ -1,7 +1,7 @@
 package me.ruslanys.vkaudiosaver.ui.view;
 
 import lombok.NonNull;
-import me.ruslanys.vkaudiosaver.domain.event.LogoutEvent;
+import me.ruslanys.vkaudiosaver.entity.domain.event.LogoutEvent;
 import me.ruslanys.vkaudiosaver.ui.model.AudioTableModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;

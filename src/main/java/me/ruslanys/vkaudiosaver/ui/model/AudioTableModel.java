@@ -1,7 +1,7 @@
 package me.ruslanys.vkaudiosaver.ui.model;
 
 import com.google.common.collect.Lists;
-import me.ruslanys.vkaudiosaver.domain.Audio;
+import me.ruslanys.vkaudiosaver.entity.Audio;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.table.AbstractTableModel;

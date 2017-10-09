@@ -1,4 +1,4 @@
-package me.ruslanys.vkaudiosaver.domain.event;
+package me.ruslanys.vkaudiosaver.entity.domain.event;
 
 import org.springframework.context.ApplicationEvent;
 

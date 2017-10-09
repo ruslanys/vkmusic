@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import me.ruslanys.vkaudiosaver.component.VkClient;
-import me.ruslanys.vkaudiosaver.domain.Audio;
+import me.ruslanys.vkaudiosaver.entity.Audio;
 import me.ruslanys.vkaudiosaver.exception.VkException;
 import me.ruslanys.vkaudiosaver.property.VkProperties;
 import me.ruslanys.vkaudiosaver.util.JsonUtils;
@@ -188,7 +188,7 @@ public class ScraperVkClient implements VkClient {
 
     @SneakyThrows
     @Override
-    public void fetchUrl(List<Audio> audioList) {
+    public void fetchUrls(List<Audio> audioList) {
         Map<Integer, Audio> audioMap = new HashMap<>();
         for (Audio audio : audioList) {
             audioMap.put(audio.getId(), audio);

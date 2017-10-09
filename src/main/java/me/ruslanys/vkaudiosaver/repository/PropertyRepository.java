@@ -1,6 +1,6 @@
 package me.ruslanys.vkaudiosaver.repository;
 
-import me.ruslanys.vkaudiosaver.domain.Property;
+import me.ruslanys.vkaudiosaver.entity.Property;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
