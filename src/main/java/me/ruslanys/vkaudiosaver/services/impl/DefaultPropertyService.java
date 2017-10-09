@@ -8,6 +8,7 @@ import me.ruslanys.vkaudiosaver.repository.PropertyRepository;
 import me.ruslanys.vkaudiosaver.services.PropertyService;
 import me.ruslanys.vkaudiosaver.util.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,7 @@ import javax.annotation.PostConstruct;
  */
 @Transactional
 @Service
+@DependsOn("jsonUtils")
 public class DefaultPropertyService implements PropertyService {
 
     private final PropertyRepository propertyRepository;
