@@ -67,13 +67,13 @@ public class DefaultDownloadService implements DownloadService {
         log.info("Download pool-size: {}", properties.getPoolSize());
         log.info("Download destination: {}", properties.getDestination());
 
-        ExecutorService executor = Executors.newFixedThreadPool(properties.getPoolSize());
-        CompletionService<DownloadTask.Result> completionService = new ExecutorCompletionService<>(executor);
-
         File destinationFolder = new File(properties.getDestination());
         if (!destinationFolder.exists() && !destinationFolder.mkdirs()) {
             throw new IllegalStateException("Can not create destination folder.");
         }
+
+        ExecutorService executor = Executors.newFixedThreadPool(properties.getPoolSize());
+        CompletionService<DownloadTask.Result> completionService = new ExecutorCompletionService<>(executor);
 
         for (Audio audio : audios) {
             completionService.submit(new DownloadTask(destinationFolder, audio));
@@ -90,7 +90,7 @@ public class DefaultDownloadService implements DownloadService {
         }
 
         executor.shutdown();
-        executor.awaitTermination(1, TimeUnit.HOURS);
+        executor.awaitTermination(5, TimeUnit.MINUTES);
 
         publisher.publishEvent(new DownloadFinishEvent(this, audios));
     }

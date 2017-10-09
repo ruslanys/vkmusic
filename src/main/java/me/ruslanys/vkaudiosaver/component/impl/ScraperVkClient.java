@@ -22,10 +22,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -69,9 +66,10 @@ public class ScraperVkClient implements VkClient {
     private void handleCookies(Map<String, String> cookies) {
         this.cookies.putAll(cookies);
 
-        this.cookies.entrySet().removeIf(entry -> entry.getKey().isEmpty());
-        this.cookies.entrySet().removeIf(entry -> entry.getValue().isEmpty());
-        this.cookies.entrySet().removeIf(entry -> "DELETED".equals(entry.getValue()));
+        Set<Map.Entry<String, String>> entries = cookies.entrySet();
+        entries.removeIf(entry -> entry.getKey().isEmpty());
+        entries.removeIf(entry -> entry.getValue().isEmpty());
+        entries.removeIf(entry -> "DELETED".equals(entry.getValue()));
     }
 
     private void handleCookies(Connection.Response response) {
