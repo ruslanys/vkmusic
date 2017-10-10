@@ -8,7 +8,7 @@ import me.ruslanys.vkmusic.property.Properties;
  */
 public interface PropertyService {
 
-    void set(@NonNull Properties Properties);
+    <T extends Properties> T set(@NonNull T properties);
 
     <T extends Properties> T get(Class<T> clazz);
 

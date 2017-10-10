@@ -8,6 +8,10 @@ import me.ruslanys.vkmusic.repository.PropertyRepository;
 import me.ruslanys.vkmusic.services.PropertyService;
 import me.ruslanys.vkmusic.util.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +24,7 @@ import javax.annotation.PostConstruct;
 @Transactional
 @Service
 @DependsOn("jsonUtils")
+@CacheConfig(cacheNames = "properties")
 public class DefaultPropertyService implements PropertyService {
 
     private final PropertyRepository propertyRepository;
@@ -36,12 +41,15 @@ public class DefaultPropertyService implements PropertyService {
         }
     }
 
+    @CachePut(key = "#properties.class")
     @Override
-    public void set(Properties properties) {
+    public <T extends Properties> T set(T properties) {
         Property entity = new Property(properties.getClass().getSimpleName(), JsonUtils.toString(properties));
         propertyRepository.save(entity);
+        return properties;
     }
 
+    @Cacheable
     @Override
     public <T extends Properties> T get(Class<T> clazz) {
         Property entity = propertyRepository.findOne(clazz.getSimpleName());
@@ -52,6 +60,7 @@ public class DefaultPropertyService implements PropertyService {
         return null;
     }
 
+    @CacheEvict
     @Override
     public <T extends Properties> void remove(Class<T> clazz) {
         String key = clazz.getSimpleName();
