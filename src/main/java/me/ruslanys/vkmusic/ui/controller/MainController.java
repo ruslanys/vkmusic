@@ -121,6 +121,7 @@ public class MainController implements Runnable, MainFrame.OnSyncListener, MainF
         if (properties.isAutoSync()) {
             mainFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
             mainFrame.setActionSync(properties.isAutoSync());
+            mainFrame.setVisible(false);
 
             syncFuture = executor.scheduleAtFixedRate(this::onSync, 0, properties.getAutoSyncDelay(), TimeUnit.SECONDS);
         } else {
@@ -153,7 +154,6 @@ public class MainController implements Runnable, MainFrame.OnSyncListener, MainF
         propertyService.set(properties);
 
         updateAutoSyncState();
-        // TODO: hide main on menu click
     }
 
     private void download(List<Audio> audios) {
