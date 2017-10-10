@@ -1,6 +1,7 @@
 package me.ruslanys.vkmusic.ui.view;
 
 import lombok.extern.slf4j.Slf4j;
+import me.ruslanys.vkmusic.util.DesktopUtils;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
@@ -78,10 +79,7 @@ public class AboutFrame extends JFrame implements HyperlinkListener {
     @Override
     public void hyperlinkUpdate(HyperlinkEvent event) {
         if (HyperlinkEvent.EventType.ACTIVATED.equals(event.getEventType())) {
-            Desktop desktop = Desktop.getDesktop();
-            try {
-                desktop.browse(event.getURL().toURI());
-            } catch (Exception ignored) {}
+            DesktopUtils.browse(event.getURL());
         }
     }
 }
