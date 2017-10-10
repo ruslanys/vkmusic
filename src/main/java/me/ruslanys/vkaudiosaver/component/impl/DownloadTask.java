@@ -33,6 +33,8 @@ public class DownloadTask implements Callable<DownloadTask.Result> {
             log.debug("Download started for {}", audio.getUrl());
 
             HttpURLConnection connection = (HttpURLConnection) new URL(audio.getUrl()).openConnection();
+            connection.setConnectTimeout(10_000);
+            connection.setReadTimeout(10_000);
 
             File file = new File(destinationFolder, audio.getFilename());
             try (BufferedInputStream in = new BufferedInputStream(connection.getInputStream());

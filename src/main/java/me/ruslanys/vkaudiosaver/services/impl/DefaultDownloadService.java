@@ -16,6 +16,7 @@ import me.ruslanys.vkaudiosaver.services.DownloadService;
 import me.ruslanys.vkaudiosaver.services.PropertyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -44,6 +45,12 @@ public class DefaultDownloadService implements DownloadService {
         this.publisher = publisher;
         this.vkClient = vkClient;
         this.propertyService = propertyService;
+    }
+
+    @Async
+    @Override
+    public void downloadAsync(List<Audio> audios) {
+        download(audios);
     }
 
     @Override
@@ -90,7 +97,7 @@ public class DefaultDownloadService implements DownloadService {
         }
 
         executor.shutdown();
-        executor.awaitTermination(5, TimeUnit.MINUTES);
+        executor.awaitTermination(1, TimeUnit.MINUTES);
 
         publisher.publishEvent(new DownloadFinishEvent(this, audios));
     }

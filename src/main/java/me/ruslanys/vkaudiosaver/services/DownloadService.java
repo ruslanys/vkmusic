@@ -11,4 +11,6 @@ public interface DownloadService {
 
     void download(List<Audio> audios);
 
+    void downloadAsync(List<Audio> audios);
+
 }

@@ -1,14 +1,13 @@
 package me.ruslanys.vkaudiosaver.ui.controller;
 
 import lombok.NonNull;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import me.ruslanys.vkaudiosaver.component.impl.TrayHandler;
 import me.ruslanys.vkaudiosaver.entity.Audio;
 import me.ruslanys.vkaudiosaver.entity.domain.DownloadStatus;
 import me.ruslanys.vkaudiosaver.entity.domain.event.DownloadFinishEvent;
 import me.ruslanys.vkaudiosaver.entity.domain.event.DownloadStatusEvent;
 import me.ruslanys.vkaudiosaver.entity.domain.event.LogoutEvent;
-import me.ruslanys.vkaudiosaver.entity.domain.event.TrayStateEvent;
 import me.ruslanys.vkaudiosaver.property.VkProperties;
 import me.ruslanys.vkaudiosaver.services.AudioService;
 import me.ruslanys.vkaudiosaver.services.DownloadService;
@@ -17,16 +16,17 @@ import me.ruslanys.vkaudiosaver.ui.view.LoadingFrame;
 import me.ruslanys.vkaudiosaver.ui.view.MainFrame;
 import me.ruslanys.vkaudiosaver.util.Notifications;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -35,11 +35,11 @@ import java.util.concurrent.atomic.AtomicLong;
 @Slf4j
 
 @Component
+@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class MainController implements Runnable {
 
     private final MainFrame mainFrame;
 
-    private final ApplicationEventPublisher publisher;
     private final AudioService audioService;
     private final DownloadService downloadService;
 
@@ -50,12 +50,10 @@ public class MainController implements Runnable {
 
     @Autowired
     public MainController(@NonNull MainFrame mainFrame,
-                          @NonNull ApplicationEventPublisher publisher,
                           @NonNull AudioService audioService,
                           @NonNull DownloadService downloadService,
                           @NonNull PropertyService propertyService) {
         this.mainFrame = mainFrame;
-        this.publisher = publisher;
         this.audioService = audioService;
         this.downloadService = downloadService;
         this.propertyService = propertyService;
@@ -63,7 +61,7 @@ public class MainController implements Runnable {
 
     @Override
     public void run() {
-        publisher.publishEvent(new TrayStateEvent(this, TrayHandler.State.BASE, e -> mainFrame.setVisible(true)));
+        displayTray();
 
         mainFrame.setStatus(propertyService.get(VkProperties.class).getUsername());
         mainFrame.setVisible(true);
@@ -74,8 +72,8 @@ public class MainController implements Runnable {
     private void loadAudio() {
         mainFrame.setState(LoadingFrame.State.LOADING);
 
-        CompletableFuture
-                .supplyAsync(audioService::fetchAll)
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        CompletableFuture.supplyAsync(audioService::fetchAll, executor)
                 .thenApply(audios -> {
                     mainFrame.getModel().add(audios);
                     mainFrame.setState(LoadingFrame.State.MAIN);
@@ -87,6 +85,7 @@ public class MainController implements Runnable {
                     scheduler = Executors.newSingleThreadScheduledExecutor();
                     scheduler.scheduleAtFixedRate(MainController.this::onSync, 0L, 30L, TimeUnit.SECONDS);
                 });
+        executor.shutdown();
     }
 
     public void onSync() {
@@ -110,6 +109,18 @@ public class MainController implements Runnable {
         downloadService.download(audioList);
     }
 
+    @SneakyThrows
+    private void displayTray() {
+        SystemTray tray = SystemTray.getSystemTray();
+
+        TrayIcon trayIcon = new TrayIcon(ImageIO.read(getClass().getClassLoader().getResource("images/tray/base.png")), "VKMusic");
+        trayIcon.setImageAutoSize(true);
+        trayIcon.addActionListener(e -> mainFrame.setVisible(true));
+
+        tray.add(trayIcon);
+    }
+
+    @Async
     @EventListener
     public void onDownloadStatusEvent(DownloadStatusEvent event) {
         mainFrame.setStatus(String.format("В очереди на загрузку: %d", counter.decrementAndGet()));
@@ -126,7 +137,11 @@ public class MainController implements Runnable {
 
     @EventListener
     public void onLogout(LogoutEvent event) {
-        scheduler.shutdown();
+        if (scheduler != null) {
+            scheduler.shutdown();
+        }
+        mainFrame.getModel().clear();
+        // TODO: Remove tray icon
     }
 
 }
