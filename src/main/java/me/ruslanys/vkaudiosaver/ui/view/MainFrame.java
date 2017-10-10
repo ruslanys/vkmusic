@@ -59,11 +59,14 @@ public class MainFrame extends LoadingFrame {
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         table.getColumnModel().getColumn(0).setPreferredWidth(50);
+        table.getColumnModel().getColumn(0).setMaxWidth(100);
         table.getColumnModel().getColumn(1).setPreferredWidth(200);
         table.getColumnModel().getColumn(2).setPreferredWidth(200);
         table.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
         table.getColumnModel().getColumn(3).setPreferredWidth(55);
+        table.getColumnModel().getColumn(3).setMaxWidth(70);
         table.getColumnModel().getColumn(4).setPreferredWidth(55);
+        table.getColumnModel().getColumn(4).setMaxWidth(70);
 
         scrollPane.setViewportView(table);
 
