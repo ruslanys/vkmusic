@@ -20,6 +20,7 @@ public class MainFrame extends LoadingFrame {
     private final ApplicationEventPublisher publisher;
 
     private AudioTableModel model;
+    private AboutFrame aboutFrame;
 
     private JLabel toolbarLabel;
 
@@ -41,6 +42,9 @@ public class MainFrame extends LoadingFrame {
 
     @Override
     protected JPanel initMainPanel() {
+        model = new AudioTableModel();
+        aboutFrame = new AboutFrame();
+
         JPanel panel = new JPanel(new BorderLayout(0, 0));
 
         final JScrollPane scrollPane = new JScrollPane();
@@ -52,8 +56,6 @@ public class MainFrame extends LoadingFrame {
                 return getValueAt(0, column).getClass();
             }
         };
-
-        model = new AudioTableModel();
         table.setModel(model);
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -87,23 +89,31 @@ public class MainFrame extends LoadingFrame {
         // file
         JMenu fileMenu = new JMenu("Файл");
 
-        JMenuItem logoutMI = new JMenuItem("Сменить пользователя");
-        logoutMI.addActionListener(e -> publisher.publishEvent(new LogoutEvent(MainFrame.this)));
-        JMenuItem exitMI = new JMenuItem("Выход");
-        exitMI.addActionListener(e -> System.exit(0));
+        JMenuItem logoutItem = new JMenuItem("Сменить пользователя");
+        logoutItem.addActionListener(e -> publisher.publishEvent(new LogoutEvent(MainFrame.this)));
+        JMenuItem exitItem = new JMenuItem("Выход");
+        exitItem.addActionListener(e -> System.exit(0));
 
-        fileMenu.add(logoutMI);
-        fileMenu.add(exitMI);
+        fileMenu.add(logoutItem);
+        fileMenu.add(exitItem);
 
         // settings
         JMenu settingsMenu = new JMenu("Настройки");
 
-        JMenuItem destinationMI = new JMenuItem("Указать папку");
-        settingsMenu.add(destinationMI);
+        JMenuItem destinationItem = new JMenuItem("Указать папку");
+        settingsMenu.add(destinationItem);
+
+        // Help
+        JMenu helpMenu = new JMenu("Помощь");
+
+        JMenuItem aboutItem = new JMenuItem("О программе");
+        aboutItem.addActionListener(e -> aboutFrame.setVisible(true));
+        helpMenu.add(aboutItem);
 
         // --
         menuBar.add(fileMenu);
         menuBar.add(settingsMenu);
+        menuBar.add(helpMenu);
 
         setJMenuBar(menuBar);
     }
