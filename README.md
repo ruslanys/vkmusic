@@ -25,13 +25,13 @@ P.S. Старался максимально качественно написа
 
 Можно сделать файл исполняемым:
 
-```$ chmod +x vkaudiosaver-*.jar```
+```$ chmod +x vkmusic-*.jar```
 
 И запускать командой:
 
-```$ ./vkaudiosaver-*.jar```
+```$ ./vkmusic-*.jar```
 
 
 #### Linux / Windows / MacOS
 
-```$ java -jar vkaudiosaver-*.jar```
+```$ java -jar vkmusic-*.jar```
