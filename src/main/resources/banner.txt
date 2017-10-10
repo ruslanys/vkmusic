@@ -1,2 +1,2 @@
 
-${AnsiBackground.BLUE}${AnsiColor.BRIGHT_WHITE}${AnsiStyle.BOLD}     :: VK Music ${application.formatted-version} ::     ${AnsiBackground.DEFAULT}${AnsiColor.DEFAULT}${AnsiStyle.NORMAL}
+${AnsiBackground.BLUE}${AnsiColor.BRIGHT_WHITE}${AnsiStyle.BOLD}     :: VK Music${application.formatted-version} ::     ${AnsiBackground.DEFAULT}${AnsiColor.DEFAULT}${AnsiStyle.NORMAL}
