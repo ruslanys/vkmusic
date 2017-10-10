@@ -54,7 +54,7 @@ public class AboutFrame extends JFrame implements HyperlinkListener {
 
         JButton btnOk = new JButton("OK");
         btnOk.setPreferredSize(new Dimension(100, 30));
-        btnOk.addActionListener((e) -> AboutFrame.this.dispose());
+        btnOk.addActionListener(e -> AboutFrame.this.dispose());
         navPanel.add(btnOk);
 
         // --

@@ -46,7 +46,7 @@ public class MainFrame extends LoadingFrame implements ActionListener, ItemListe
 
     @Autowired
     public MainFrame(@NonNull ApplicationEventPublisher publisher,
-                     @NonNull AboutFrame aboutFrame) throws Exception {
+                     @NonNull AboutFrame aboutFrame) {
         super();
         this.publisher = publisher;
         this.aboutFrame = aboutFrame;

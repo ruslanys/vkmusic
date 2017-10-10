@@ -9,12 +9,12 @@ import java.net.URL;
  */
 public abstract class LoadingFrame extends JFrame {
 
-    public LoadingFrame() throws Exception {
+    public LoadingFrame() {
         initComponents();
         initWindow();
     }
 
-    private void initComponents() throws Exception {
+    private void initComponents() {
         JPanel loginPanel = initMainPanel();
         JPanel loadingPanel = initLoadingPanel();
 

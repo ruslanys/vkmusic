@@ -26,8 +26,6 @@ public class LoginFrame extends LoadingFrame implements ActionListener {
 
     private OnSubmitListener submitListener;
 
-    public LoginFrame() throws Exception {
-    }
 
     @Override
     protected void initWindow() {

@@ -13,6 +13,10 @@ public class DesktopUtils {
 
     private static final Desktop DESKTOP = Desktop.getDesktop();
 
+    private DesktopUtils() {
+        throw new UnsupportedOperationException();
+    }
+
     @SneakyThrows
     public static void browse(URI uri) {
         DESKTOP.browse(uri);
