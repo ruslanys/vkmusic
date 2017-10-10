@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import me.ruslanys.vkmusic.component.VkClient;
 import me.ruslanys.vkmusic.component.impl.DownloadTask;
 import me.ruslanys.vkmusic.entity.Audio;
-import me.ruslanys.vkmusic.entity.domain.DownloadStatus;
 import me.ruslanys.vkmusic.entity.domain.event.DownloadFailEvent;
 import me.ruslanys.vkmusic.entity.domain.event.DownloadFinishEvent;
 import me.ruslanys.vkmusic.entity.domain.event.DownloadSuccessEvent;
@@ -20,7 +19,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -55,18 +53,11 @@ public class DefaultDownloadService implements DownloadService {
 
     @Override
     public void download(List<Audio> audios) {
-        List<Audio> list = fetchUrls(audios);
+        log.info("Download queue: {}", audios.size());
+        vkClient.fetchUrls(audios);
 
         DownloaderProperties properties = propertyService.get(DownloaderProperties.class);
-        download(properties, list);
-    }
-
-    private List<Audio> fetchUrls(List<Audio> audios) {
-        List<Audio> list = new ArrayList<>(audios);
-        list.removeIf(audio -> audio.getStatus() != DownloadStatus.NEW);
-
-        vkClient.fetchUrls(list);
-        return list;
+        download(properties, audios);
     }
 
     @SneakyThrows
