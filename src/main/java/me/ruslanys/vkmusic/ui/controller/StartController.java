@@ -22,7 +22,7 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 
 @Component
-public class StartController implements CommandLineRunner, Runnable {
+public class StartController implements CommandLineRunner, Runnable, LoginFrame.OnSubmitListener {
 
     private final LoginFrame loginFrame;
 
@@ -44,7 +44,7 @@ public class StartController implements CommandLineRunner, Runnable {
 
     @PostConstruct
     private void init() {
-        loginFrame.setSubmitListener(this::auth);
+        loginFrame.setSubmitListener(this);
     }
 
     @Override
@@ -59,11 +59,12 @@ public class StartController implements CommandLineRunner, Runnable {
             showLoginForm(LoginFrame.State.MAIN);
         } else {
             showLoginForm(LoginFrame.State.LOADING);
-            CompletableFuture.runAsync(() -> auth(vkProperties.getUsername(), vkProperties.getPassword()));
+            CompletableFuture.runAsync(() -> onSubmit(vkProperties.getUsername(), vkProperties.getPassword()));
         }
     }
 
-    private void auth(@NonNull final String username, @NonNull final String password) {
+    @Override
+    public void onSubmit(@NonNull String username, @NonNull String password) {
         try {
             VkProperties properties = new VkProperties(username, password);
             vkClient.auth(properties);
@@ -96,5 +97,4 @@ public class StartController implements CommandLineRunner, Runnable {
         loginFrame.setState(state);
         loginFrame.setVisible(true);
     }
-
 }

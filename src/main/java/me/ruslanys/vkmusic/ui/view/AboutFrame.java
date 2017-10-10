@@ -1,6 +1,7 @@
 package me.ruslanys.vkmusic.ui.view;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -13,6 +14,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 @Slf4j
+@Component
 public class AboutFrame extends JFrame implements HyperlinkListener {
 
     public AboutFrame() {
@@ -42,6 +44,7 @@ public class AboutFrame extends JFrame implements HyperlinkListener {
         textPane.setBackground(null);
         textPane.setBorder(null);
         textPane.addHyperlinkListener(this);
+        textPane.setBorder(new EmptyBorder(0, 0, 5, 10));
         panel.add(textPane, BorderLayout.CENTER);
 
         // navigation panel

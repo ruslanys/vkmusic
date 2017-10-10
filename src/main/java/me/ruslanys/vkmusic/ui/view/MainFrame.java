@@ -1,6 +1,7 @@
 package me.ruslanys.vkmusic.ui.view;
 
 import lombok.NonNull;
+import lombok.Setter;
 import me.ruslanys.vkmusic.entity.domain.event.LogoutEvent;
 import me.ruslanys.vkmusic.ui.model.AudioTableModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,24 +11,41 @@ import org.springframework.stereotype.Component;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 /**
  * @author Ruslan Molchanov (ruslanys@gmail.com)
  */
 @Component
-public class MainFrame extends LoadingFrame {
+public class MainFrame extends LoadingFrame implements ActionListener, ItemListener {
+
+    private static final String ACTION_SYNC = "SYNC";
+    private static final String ACTION_SYNC_FAILED = "SYNC_FAILED";
 
     private final ApplicationEventPublisher publisher;
+    private final AboutFrame aboutFrame;
+
 
     private AudioTableModel model;
-    private AboutFrame aboutFrame;
-
     private JLabel toolbarLabel;
 
+    @Setter
+    private OnSyncListener listener;
+
+    private JMenu syncMenu;
+    private JCheckBoxMenuItem autoSyncItem;
+    private JMenuItem startSyncItem;
+
+
     @Autowired
-    public MainFrame(ApplicationEventPublisher publisher) throws Exception {
+    public MainFrame(@NonNull ApplicationEventPublisher publisher,
+                     @NonNull AboutFrame aboutFrame) throws Exception {
         super();
         this.publisher = publisher;
+        this.aboutFrame = aboutFrame;
 
         initMenu();
     }
@@ -42,9 +60,6 @@ public class MainFrame extends LoadingFrame {
 
     @Override
     protected JPanel initMainPanel() {
-        model = new AudioTableModel();
-        aboutFrame = new AboutFrame();
-
         JPanel panel = new JPanel(new BorderLayout(0, 0));
 
         final JScrollPane scrollPane = new JScrollPane();
@@ -56,6 +71,7 @@ public class MainFrame extends LoadingFrame {
                 return getValueAt(0, column).getClass();
             }
         };
+        model = new AudioTableModel();
         table.setModel(model);
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -85,37 +101,65 @@ public class MainFrame extends LoadingFrame {
 
     private void initMenu() {
         JMenuBar menuBar = new JMenuBar();
+        menuBar.add(initFileMenu());
+        menuBar.add(initSettingsMenu());
+        menuBar.add(initSyncMenu());
+        menuBar.add(initHelpMenu());
 
-        // file
-        JMenu fileMenu = new JMenu("Файл");
+        setJMenuBar(menuBar);
+    }
 
-        JMenuItem logoutItem = new JMenuItem("Сменить пользователя");
-        logoutItem.addActionListener(e -> publisher.publishEvent(new LogoutEvent(MainFrame.this)));
-        JMenuItem exitItem = new JMenuItem("Выход");
-        exitItem.addActionListener(e -> System.exit(0));
-
-        fileMenu.add(logoutItem);
-        fileMenu.add(exitItem);
-
-        // settings
-        JMenu settingsMenu = new JMenu("Настройки");
-
-        JMenuItem destinationItem = new JMenuItem("Указать папку");
-        settingsMenu.add(destinationItem);
-
-        // Help
+    private JMenu initHelpMenu() {
         JMenu helpMenu = new JMenu("Помощь");
 
         JMenuItem aboutItem = new JMenuItem("О программе");
         aboutItem.addActionListener(e -> aboutFrame.setVisible(true));
         helpMenu.add(aboutItem);
+        return helpMenu;
+    }
 
-        // --
-        menuBar.add(fileMenu);
-        menuBar.add(settingsMenu);
-        menuBar.add(helpMenu);
+    private JMenu initSyncMenu() {
+        syncMenu = new JMenu("Синхронизация");
 
-        setJMenuBar(menuBar);
+        autoSyncItem = new JCheckBoxMenuItem("Автоматическая синхронизация");
+        startSyncItem = new JMenuItem("Запуск");
+        JMenuItem startFailedSyncItem = new JMenuItem("Запуск проваленных");
+
+        startSyncItem.setActionCommand(ACTION_SYNC);
+        startFailedSyncItem.setActionCommand(ACTION_SYNC_FAILED);
+
+        autoSyncItem.addItemListener(this);
+        startSyncItem.addActionListener(this);
+        startFailedSyncItem.addActionListener(this);
+
+        syncMenu.add(autoSyncItem);
+        syncMenu.addSeparator();
+        syncMenu.add(startSyncItem);
+        syncMenu.add(startFailedSyncItem);
+
+        return syncMenu;
+    }
+
+    private JMenu initSettingsMenu() {
+        JMenu settingsMenu = new JMenu("Настройки");
+
+        JMenuItem destinationItem = new JMenuItem("Указать папку");
+        settingsMenu.add(destinationItem);
+        return settingsMenu;
+    }
+
+    private JMenu initFileMenu() {
+        JMenu fileMenu = new JMenu("Файл");
+
+        JMenuItem logoutItem = new JMenuItem("Сменить пользователя");
+        JMenuItem exitItem = new JMenuItem("Выход");
+
+        logoutItem.addActionListener(e -> publisher.publishEvent(new LogoutEvent(MainFrame.this)));
+        exitItem.addActionListener(e -> System.exit(0));
+
+        fileMenu.add(logoutItem);
+        fileMenu.add(exitItem);
+        return fileMenu;
     }
 
     public void setStatus(@NonNull String status) {
@@ -124,6 +168,48 @@ public class MainFrame extends LoadingFrame {
 
     public AudioTableModel getModel() {
         return model;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (listener == null) {
+            return;
+        }
+
+        switch (e.getActionCommand()) {
+            case ACTION_SYNC:
+                listener.onSync();
+                break;
+            case ACTION_SYNC_FAILED:
+                listener.onSyncFailed();
+                break;
+            default:
+                throw new IllegalArgumentException("Unimplemented action command: " + e.getActionCommand());
+        }
+    }
+
+    public void setActionSync(boolean enabled) {
+        autoSyncItem.setState(enabled);
+        startSyncItem.setEnabled(!enabled);
+        syncMenu.updateUI();
+    }
+
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+        boolean state = e.getStateChange() == ItemEvent.SELECTED;
+        setActionSync(state);
+
+        if (listener != null) {
+            listener.onAutoSyncStateChange(state);
+        }
+    }
+
+    public interface OnSyncListener {
+        void onSync();
+
+        void onSyncFailed();
+
+        void onAutoSyncStateChange(boolean enabled);
     }
 
 }

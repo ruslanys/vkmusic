@@ -13,6 +13,8 @@ public interface AudioService {
 
     List<Audio> findAll();
 
+    List<Audio> findFailed();
+
     List<Audio> fetchAll();
 
     void save(Audio audio);

@@ -3,6 +3,7 @@ package me.ruslanys.vkmusic.services.impl;
 import lombok.NonNull;
 import me.ruslanys.vkmusic.component.VkClient;
 import me.ruslanys.vkmusic.entity.Audio;
+import me.ruslanys.vkmusic.entity.domain.DownloadStatus;
 import me.ruslanys.vkmusic.entity.domain.event.DownloadStatusEvent;
 import me.ruslanys.vkmusic.entity.domain.event.LogoutEvent;
 import me.ruslanys.vkmusic.repository.AudioRepository;
@@ -34,6 +35,11 @@ public class DefaultAudioService implements AudioService, ApplicationListener<Lo
     @Override
     public List<Audio> findAll() {
         return audioRepository.findAllByOrderByPositionAsc();
+    }
+
+    @Override
+    public List<Audio> findFailed() {
+        return audioRepository.findByStatusOrderByPositionAsc(DownloadStatus.FAIL);
     }
 
     @Override

@@ -26,9 +26,11 @@ import org.springframework.stereotype.Component;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -38,17 +40,19 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Component
 @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
-public class MainController implements Runnable {
+public class MainController implements Runnable, MainFrame.OnSyncListener {
 
     private final MainFrame mainFrame;
 
     private final AudioService audioService;
     private final DownloadService downloadService;
-
     private final PropertyService propertyService;
 
     private final AtomicLong counter = new AtomicLong();
+
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private ScheduledExecutorService scheduler;
+
 
     @Autowired
     public MainController(@NonNull MainFrame mainFrame,
@@ -59,22 +63,22 @@ public class MainController implements Runnable {
         this.audioService = audioService;
         this.downloadService = downloadService;
         this.propertyService = propertyService;
+
+        mainFrame.setListener(this);
     }
 
     @Override
     public void run() {
-        if (propertyService.get(DownloaderProperties.class).getDestination() == null) {
+        DownloaderProperties properties = propertyService.get(DownloaderProperties.class);
+        if (properties.getDestination() == null) {
             chooseDestination();
         }
         
         displayTray();
-
-        mainFrame.setStatus(propertyService.get(VkProperties.class).getUsername());
-        mainFrame.setVisible(true);
-
-        loadAudio();
+        initComponents();
+        updateAutoSyncState();
     }
-    
+
     private void chooseDestination() {
         DownloaderProperties properties = propertyService.get(DownloaderProperties.class);
         JFileChooser chooser = new JFileChooser(properties.getDestination());
@@ -87,44 +91,76 @@ public class MainController implements Runnable {
         }
     }
 
-    private void loadAudio() {
+    private void initComponents() {
+        mainFrame.setStatus(propertyService.get(VkProperties.class).getUsername());
+        mainFrame.setVisible(true);
         mainFrame.setState(LoadingFrame.State.LOADING);
 
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        CompletableFuture.supplyAsync(audioService::fetchAll, executor)
-                .thenApply(audios -> {
-                    mainFrame.getModel().add(audios);
-                    mainFrame.setState(LoadingFrame.State.MAIN);
-
-                    return audios;
-                })
-                .thenAccept(this::download) // todo: move
-                .thenRun(() -> { // todo: move
-                    scheduler = Executors.newSingleThreadScheduledExecutor();
-                    scheduler.scheduleAtFixedRate(MainController.this::onSync, 0L, 30L, TimeUnit.SECONDS);
-                });
-        executor.shutdown();
+        executor.execute(this::loadEntities);
     }
 
-    public void onSync() {
+    private List<Audio> loadEntities() {
         List<Audio> audioList = audioService.fetchAll();
         mainFrame.getModel().add(audioList);
-        download(audioList);
+        mainFrame.setState(LoadingFrame.State.MAIN); // needs only once
+
+        return audioList;
+    }
+
+    private void updateAutoSyncState() {
+        DownloaderProperties properties = propertyService.get(DownloaderProperties.class);
+
+        if (scheduler != null) {
+            scheduler.shutdown();
+            scheduler = null;
+        }
+
+        if (properties.isAutoSync()) {
+            mainFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+            mainFrame.setActionSync(properties.isAutoSync());
+            scheduler = Executors.newSingleThreadScheduledExecutor();
+            scheduler.scheduleAtFixedRate(this::onSync, 0, properties.getAutoSyncDelay(), TimeUnit.MINUTES);
+        } else {
+            mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        }
+    }
+
+    @Override
+    public void onSync() {
+        executor.execute(() -> {
+            List<Audio> entities = loadEntities();
+            entities.removeIf(e -> e.getStatus() != DownloadStatus.NEW);
+
+            download(entities);
+        });
+    }
+
+    @Override
+    public synchronized void onSyncFailed() {
+        executor.execute(() -> {
+            List<Audio> failed = audioService.findFailed();
+            download(failed);
+        });
+    }
+
+    @Override
+    public void onAutoSyncStateChange(boolean state) {
+        DownloaderProperties properties = propertyService.get(DownloaderProperties.class);
+        properties.setAutoSync(state);
+        propertyService.set(properties);
+
+        updateAutoSyncState();
     }
 
     private void download(List<Audio> audios) {
-        List<Audio> audioList = new ArrayList<>(audios);
-        audioList.removeIf(a -> a.getStatus() != DownloadStatus.NEW);
-        if (audioList.isEmpty()) {
-            return;
-        }
+        if (audios.isEmpty()) return;
 
-        Notifications.showNotification(String.format("Доступно к загрузке: %d", audioList.size()));
+        Notifications.showNotification(String.format("Доступно для загрузки: %d", audios.size()));
         mainFrame.setStatus("Синхронизация...");
 
         // --
-        counter.set(audioList.size());
-        downloadService.download(audioList);
+        counter.set(audios.size());
+        downloadService.download(audios);
     }
 
     @SneakyThrows
