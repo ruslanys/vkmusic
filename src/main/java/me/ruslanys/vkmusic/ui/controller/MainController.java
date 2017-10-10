@@ -89,7 +89,7 @@ public class MainController implements Runnable, MainFrame.OnSyncListener, MainF
         if (chooser.showDialog(mainFrame, "Choose") == JFileChooser.APPROVE_OPTION) {
             properties.setDestination(chooser.getSelectedFile().toString());
             propertyService.set(properties);
-        } else {
+        } else if (properties.getDestination() == null) {
             System.exit(0);
         }
     }
