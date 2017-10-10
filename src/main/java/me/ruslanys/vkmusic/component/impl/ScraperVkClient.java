@@ -47,7 +47,6 @@ public class ScraperVkClient implements VkClient {
     private Long userId;
 
 
-    @SneakyThrows
     @Override
     public void auth(VkProperties properties) throws VkException {
         clear();

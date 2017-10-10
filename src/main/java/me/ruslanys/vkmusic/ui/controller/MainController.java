@@ -8,6 +8,7 @@ import me.ruslanys.vkmusic.entity.domain.DownloadStatus;
 import me.ruslanys.vkmusic.entity.domain.event.DownloadFinishEvent;
 import me.ruslanys.vkmusic.entity.domain.event.DownloadStatusEvent;
 import me.ruslanys.vkmusic.entity.domain.event.LogoutEvent;
+import me.ruslanys.vkmusic.property.DownloaderProperties;
 import me.ruslanys.vkmusic.property.VkProperties;
 import me.ruslanys.vkmusic.services.AudioService;
 import me.ruslanys.vkmusic.services.DownloadService;
@@ -23,6 +24,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,12 +63,28 @@ public class MainController implements Runnable {
 
     @Override
     public void run() {
+        if (propertyService.get(DownloaderProperties.class).getDestination() == null) {
+            chooseDestination();
+        }
+        
         displayTray();
 
         mainFrame.setStatus(propertyService.get(VkProperties.class).getUsername());
         mainFrame.setVisible(true);
 
         loadAudio();
+    }
+    
+    private void chooseDestination() {
+        DownloaderProperties properties = propertyService.get(DownloaderProperties.class);
+        JFileChooser chooser = new JFileChooser(properties.getDestination());
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        if (chooser.showDialog(mainFrame, "Choose") == JFileChooser.APPROVE_OPTION) {
+            properties.setDestination(chooser.getSelectedFile().toString());
+            propertyService.set(properties);
+        } else {
+            System.exit(0);
+        }
     }
 
     private void loadAudio() {

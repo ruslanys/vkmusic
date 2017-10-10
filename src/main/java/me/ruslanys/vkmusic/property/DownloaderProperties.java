@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class DownloaderProperties extends Properties {
 
-    private String destination = "./Music/";
-    private Integer poolSize = 5;
+    private String destination;
+    private int poolSize = 5;
 
 }
