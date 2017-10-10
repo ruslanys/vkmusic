@@ -13,20 +13,20 @@ import org.springframework.stereotype.Component;
 @Component
 public class JsonUtils implements ApplicationContextAware {
 
-    private static ObjectMapper MAPPER;
+    private static ObjectMapper mapper;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        MAPPER = applicationContext.getBean(ObjectMapper.class);
+        mapper = applicationContext.getBean(ObjectMapper.class);
     }
 
     @SneakyThrows
     public static String toString(Object obj) {
-        return MAPPER.writeValueAsString(obj);
+        return mapper.writeValueAsString(obj);
     }
 
     @SneakyThrows
     public static <T> T fromString(String json, Class<T> clazz) {
-        return MAPPER.readValue(json, clazz);
+        return mapper.readValue(json, clazz);
     }
 }

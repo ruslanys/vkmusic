@@ -8,6 +8,10 @@ import java.awt.*;
 @Slf4j
 public class Notifications {
 
+    private Notifications() {
+        throw new UnsupportedOperationException();
+    }
+
     public static void showNotification(String message) {
         if (SystemUtils.IS_OS_LINUX) {
             showLinuxNotification(message);

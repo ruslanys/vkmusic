@@ -6,6 +6,7 @@ import me.ruslanys.vkmusic.entity.domain.DownloadStatus;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * @author Ruslan Molchanov (ruslanys@gmail.com)
@@ -14,7 +15,7 @@ import javax.persistence.*;
 @EqualsAndHashCode(exclude = {"url", "status", "position"})
 
 @Entity
-public class Audio {
+public class Audio implements Serializable {
 
     @Id
     private Integer id;

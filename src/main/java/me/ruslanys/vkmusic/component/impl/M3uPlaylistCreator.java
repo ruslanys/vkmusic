@@ -21,7 +21,7 @@ public class M3uPlaylistCreator implements PlaylistCreator {
 
     @Override
     public void playlist(String destination, Collection<Audio> audios) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(new File(destination + "/" + "playlist.m3u")))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(new File(destination, "playlist.m3u")))) {
             writer.write("#EXTM3U");
             writer.newLine();
             writer.newLine();

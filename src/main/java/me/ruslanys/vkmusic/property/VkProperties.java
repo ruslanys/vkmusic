@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class VkProperties extends Properties {
+public class VkProperties implements Properties {
 
     private String username;
     private String password;

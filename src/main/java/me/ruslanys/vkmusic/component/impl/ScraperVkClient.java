@@ -37,9 +37,13 @@ public class ScraperVkClient implements VkClient {
 
     private static final String USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36";
     private static final String PATH_BASE = "https://vk.com";
+    
+    private static final String FORM_ACTION_KEY = "action";
+    private static final String JSON_DELIMITER = "<!json>";
+    
     private static final int SLEEP_INTERVAL = 5_000;
 
-    private final ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("JavaScript");;
+    private final ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("JavaScript");
 
     private final Map<String, String> cookies = new HashMap<>();
 
@@ -98,7 +102,7 @@ public class ScraperVkClient implements VkClient {
         loginForm.put("email", username);
         loginForm.put("pass", password);
 
-        Connection connection = Jsoup.connect(loginForm.get("action"))
+        Connection connection = Jsoup.connect(loginForm.get(FORM_ACTION_KEY))
                 .userAgent(USER_AGENT).cookies(cookies).method(Connection.Method.POST)
                 .data(loginForm);
         Connection.Response response = connection.execute();
@@ -126,7 +130,7 @@ public class ScraperVkClient implements VkClient {
         Element element = document.getElementById("quick_login_form");
 
         Map<String, String> loginForm = new HashMap<>();
-        loginForm.put("action", element.attr("action"));
+        loginForm.put(FORM_ACTION_KEY, element.attr(FORM_ACTION_KEY));
 
         for (Node node : element.childNodes()) {
             if (!(node instanceof Element)) continue;
@@ -162,7 +166,7 @@ public class ScraperVkClient implements VkClient {
                     .execute();
 
             String body = response.body();
-            String json = body.substring(body.indexOf("<!json>") + "<!json>".length());
+            String json = body.substring(body.indexOf(JSON_DELIMITER) + JSON_DELIMITER.length());
             json = json.substring(0, json.indexOf("<!>"));
 
             audioDto = JsonUtils.fromString(json, VkAudioDto.class);
@@ -192,7 +196,9 @@ public class ScraperVkClient implements VkClient {
         }
 
         int sleepInterval = SLEEP_INTERVAL;
-        int fromIndex = 0, toIndex = Math.min(fromIndex + 10, audioList.size());
+        int fromIndex = 0;
+        int toIndex = Math.min(fromIndex + 10, audioList.size());
+
         while (fromIndex != toIndex) {
             log.info("Fetching urls: {} - {}", fromIndex, toIndex);
 
@@ -212,7 +218,7 @@ public class ScraperVkClient implements VkClient {
                     .execute();
 
             String body = response.body();
-            if (!body.contains("<!json>")) {
+            if (!body.contains(JSON_DELIMITER)) {
                 log.info("Sleeping {} sec...", sleepInterval / 1000);
                 Thread.sleep(sleepInterval);
                 sleepInterval += SLEEP_INTERVAL;
@@ -221,7 +227,7 @@ public class ScraperVkClient implements VkClient {
                 sleepInterval = SLEEP_INTERVAL;
             }
 
-            String json = body.substring(body.indexOf("<!json>") + "<!json>".length());
+            String json = body.substring(body.indexOf(JSON_DELIMITER) + JSON_DELIMITER.length());
             json = json.substring(0, json.indexOf("<!>"));
             List<List> lists = JsonUtils.fromString(json, List.class);
 

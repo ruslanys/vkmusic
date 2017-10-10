@@ -1,4 +1,4 @@
 package me.ruslanys.vkmusic.property;
 
-public abstract class Properties {
+public interface Properties {
 }

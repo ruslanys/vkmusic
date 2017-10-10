@@ -44,11 +44,8 @@ public class DownloadTask implements Callable<DownloadTask.Result> {
                 while ((len = in.read(buff)) != -1) {
                     out.write(buff, 0, len);
                 }
-                out.flush();
-                out.close();
 
                 log.debug("Download finished for {}", audio.getUrl());
-
                 return new Result(audio, file);
             }
         } catch (Exception e) {

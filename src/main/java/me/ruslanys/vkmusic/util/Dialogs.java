@@ -7,6 +7,10 @@ import javax.swing.*;
 @Slf4j
 public class Dialogs {
 
+    private Dialogs() {
+        throw new UnsupportedOperationException();
+    }
+
     public static void showError(Throwable ex) {
         if (ex instanceof RuntimeException) {
             log.error("Execution error", ex);

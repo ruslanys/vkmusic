@@ -12,6 +12,7 @@ public class LogoutEvent extends ApplicationEvent {
         super(source);
     }
 
+    @Override
     public JFrame getSource() {
         return (JFrame) super.getSource();
     }
