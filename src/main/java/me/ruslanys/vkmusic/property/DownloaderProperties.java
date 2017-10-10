@@ -11,7 +11,7 @@ public class DownloaderProperties extends Properties {
     private String destination;
     private int poolSize = 5;
 
-    private long autoSyncDelay = 1;
+    private long autoSyncDelay = 60;
     private boolean autoSync = false;
 
 }

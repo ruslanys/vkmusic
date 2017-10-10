@@ -24,6 +24,7 @@ public class MainFrame extends LoadingFrame implements ActionListener, ItemListe
 
     private static final String ACTION_SYNC = "SYNC";
     private static final String ACTION_SYNC_FAILED = "SYNC_FAILED";
+    private static final String ACTION_CHANGE_DESTINATION = "DESTINATION";
 
     private final ApplicationEventPublisher publisher;
     private final AboutFrame aboutFrame;
@@ -33,7 +34,10 @@ public class MainFrame extends LoadingFrame implements ActionListener, ItemListe
     private JLabel toolbarLabel;
 
     @Setter
-    private OnSyncListener listener;
+    private OnSyncListener syncListener;
+
+    @Setter
+    private OnChangeDestinationListener destinationListener;
 
     private JMenu syncMenu;
     private JCheckBoxMenuItem autoSyncItem;
@@ -144,6 +148,8 @@ public class MainFrame extends LoadingFrame implements ActionListener, ItemListe
         JMenu settingsMenu = new JMenu("Настройки");
 
         JMenuItem destinationItem = new JMenuItem("Указать папку");
+        destinationItem.setActionCommand(ACTION_CHANGE_DESTINATION);
+        destinationItem.addActionListener(this);
         settingsMenu.add(destinationItem);
         return settingsMenu;
     }
@@ -172,16 +178,21 @@ public class MainFrame extends LoadingFrame implements ActionListener, ItemListe
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (listener == null) {
-            return;
-        }
-
         switch (e.getActionCommand()) {
             case ACTION_SYNC:
-                listener.onSync();
+                if (syncListener != null) {
+                    syncListener.onSync();
+                }
                 break;
             case ACTION_SYNC_FAILED:
-                listener.onSyncFailed();
+                if (syncListener != null) {
+                    syncListener.onSyncFailed();
+                }
+                break;
+            case ACTION_CHANGE_DESTINATION:
+                if (destinationListener != null) {
+                    destinationListener.chooseDestination();
+                }
                 break;
             default:
                 throw new IllegalArgumentException("Unimplemented action command: " + e.getActionCommand());
@@ -199,8 +210,8 @@ public class MainFrame extends LoadingFrame implements ActionListener, ItemListe
         boolean state = e.getStateChange() == ItemEvent.SELECTED;
         setActionSync(state);
 
-        if (listener != null) {
-            listener.onAutoSyncStateChange(state);
+        if (syncListener != null) {
+            syncListener.onAutoSyncStateChange(state);
         }
     }
 
@@ -210,6 +221,10 @@ public class MainFrame extends LoadingFrame implements ActionListener, ItemListe
         void onSyncFailed();
 
         void onAutoSyncStateChange(boolean enabled);
+    }
+
+    public interface OnChangeDestinationListener {
+        void chooseDestination();
     }
 
 }

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.awt.*;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * @author Ruslan Molchanov (ruslanys@gmail.com)
@@ -26,19 +26,22 @@ public class StartController implements CommandLineRunner, Runnable, LoginFrame.
 
     private final LoginFrame loginFrame;
 
-    private final PropertyService propertyService;
     private final VkClient vkClient;
+    private final PropertyService propertyService;
+    private final ScheduledExecutorService executor;
 
     private final MainController mainController;
 
     @Autowired
     public StartController(@NonNull LoginFrame loginFrame,
-                           @NonNull PropertyService propertyService,
                            @NonNull VkClient vkClient,
+                           @NonNull PropertyService propertyService,
+                           @NonNull ScheduledExecutorService executor,
                            @NonNull MainController mainController) {
         this.loginFrame = loginFrame;
         this.propertyService = propertyService;
         this.vkClient = vkClient;
+        this.executor = executor;
         this.mainController = mainController;
     }
 
@@ -59,7 +62,7 @@ public class StartController implements CommandLineRunner, Runnable, LoginFrame.
             showLoginForm(LoginFrame.State.MAIN);
         } else {
             showLoginForm(LoginFrame.State.LOADING);
-            CompletableFuture.runAsync(() -> onSubmit(vkProperties.getUsername(), vkProperties.getPassword()));
+            executor.submit(() -> onSubmit(vkProperties.getUsername(), vkProperties.getPassword()));
         }
     }
 

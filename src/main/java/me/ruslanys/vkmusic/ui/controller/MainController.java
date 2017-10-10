@@ -27,9 +27,8 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -40,31 +39,34 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Component
 @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
-public class MainController implements Runnable, MainFrame.OnSyncListener {
+public class MainController implements Runnable, MainFrame.OnSyncListener, MainFrame.OnChangeDestinationListener {
 
     private final MainFrame mainFrame;
 
     private final AudioService audioService;
     private final DownloadService downloadService;
     private final PropertyService propertyService;
+    private final ScheduledExecutorService executor;
 
     private final AtomicLong counter = new AtomicLong();
 
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
-    private ScheduledExecutorService scheduler;
-
+    private ScheduledFuture syncFuture;
 
     @Autowired
     public MainController(@NonNull MainFrame mainFrame,
                           @NonNull AudioService audioService,
                           @NonNull DownloadService downloadService,
-                          @NonNull PropertyService propertyService) {
+                          @NonNull PropertyService propertyService,
+                          @NonNull ScheduledExecutorService executor) {
         this.mainFrame = mainFrame;
         this.audioService = audioService;
         this.downloadService = downloadService;
         this.propertyService = propertyService;
+        this.executor = executor;
 
-        mainFrame.setListener(this);
+
+        mainFrame.setSyncListener(this);
+        mainFrame.setDestinationListener(this);
     }
 
     @Override
@@ -79,7 +81,8 @@ public class MainController implements Runnable, MainFrame.OnSyncListener {
         updateAutoSyncState();
     }
 
-    private void chooseDestination() {
+    @Override
+    public void chooseDestination() {
         DownloaderProperties properties = propertyService.get(DownloaderProperties.class);
         JFileChooser chooser = new JFileChooser(properties.getDestination());
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -110,16 +113,16 @@ public class MainController implements Runnable, MainFrame.OnSyncListener {
     private void updateAutoSyncState() {
         DownloaderProperties properties = propertyService.get(DownloaderProperties.class);
 
-        if (scheduler != null) {
-            scheduler.shutdown();
-            scheduler = null;
+        if (syncFuture != null) {
+            syncFuture.cancel(true);
+            syncFuture = null;
         }
 
         if (properties.isAutoSync()) {
             mainFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
             mainFrame.setActionSync(properties.isAutoSync());
-            scheduler = Executors.newSingleThreadScheduledExecutor();
-            scheduler.scheduleAtFixedRate(this::onSync, 0, properties.getAutoSyncDelay(), TimeUnit.MINUTES);
+
+            syncFuture = executor.scheduleAtFixedRate(this::onSync, 0, properties.getAutoSyncDelay(), TimeUnit.SECONDS);
         } else {
             mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         }
@@ -150,6 +153,7 @@ public class MainController implements Runnable, MainFrame.OnSyncListener {
         propertyService.set(properties);
 
         updateAutoSyncState();
+        // TODO: hide main on menu click
     }
 
     private void download(List<Audio> audios) {
@@ -191,9 +195,6 @@ public class MainController implements Runnable, MainFrame.OnSyncListener {
 
     @EventListener
     public void onLogout(LogoutEvent event) {
-        if (scheduler != null) {
-            scheduler.shutdown();
-        }
         mainFrame.getModel().clear();
         // TODO: Remove tray icon
     }
