@@ -57,7 +57,7 @@ public class MainFrame extends LoadingFrame implements ActionListener, ItemListe
     @Override
     protected void initWindow() {
         setTitle("VKMusic");
-        setDefaultCloseOperation(HIDE_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(550, 300);
         setLocationRelativeTo(null);
     }
@@ -199,7 +199,7 @@ public class MainFrame extends LoadingFrame implements ActionListener, ItemListe
         }
     }
 
-    public void setActionSync(boolean enabled) {
+    public void setAutoSync(boolean enabled) {
         autoSyncItem.setState(enabled);
         startSyncItem.setEnabled(!enabled);
         syncMenu.updateUI();
@@ -208,10 +208,10 @@ public class MainFrame extends LoadingFrame implements ActionListener, ItemListe
     @Override
     public void itemStateChanged(ItemEvent e) {
         boolean state = e.getStateChange() == ItemEvent.SELECTED;
-        setActionSync(state);
+        setAutoSync(state);
 
         if (syncListener != null) {
-            syncListener.onAutoSyncStateChange(state);
+            syncListener.updateAutoSyncState(state);
         }
     }
 
@@ -220,7 +220,7 @@ public class MainFrame extends LoadingFrame implements ActionListener, ItemListe
 
         void onSyncFailed();
 
-        void onAutoSyncStateChange(boolean enabled);
+        void updateAutoSyncState(boolean enabled);
     }
 
     public interface OnChangeDestinationListener {

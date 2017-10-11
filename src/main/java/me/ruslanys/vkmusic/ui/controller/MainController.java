@@ -50,7 +50,7 @@ public class MainController implements Runnable, MainFrame.OnSyncListener, MainF
 
     private final AtomicLong counter = new AtomicLong();
 
-    private ScheduledFuture syncFuture;
+    private volatile ScheduledFuture syncFuture;
 
     @Autowired
     public MainController(@NonNull MainFrame mainFrame,
@@ -78,7 +78,7 @@ public class MainController implements Runnable, MainFrame.OnSyncListener, MainF
         
         displayTray();
         initComponents();
-        updateAutoSyncState();
+        mainFrame.setAutoSync(properties.isAutoSync());
     }
 
     @Override
@@ -90,7 +90,7 @@ public class MainController implements Runnable, MainFrame.OnSyncListener, MainF
             properties.setDestination(chooser.getSelectedFile().toString());
             propertyService.set(properties);
         } else if (properties.getDestination() == null) {
-            System.exit(0);
+            System.exit(1);
         }
     }
 
@@ -108,26 +108,6 @@ public class MainController implements Runnable, MainFrame.OnSyncListener, MainF
         mainFrame.setState(LoadingFrame.State.MAIN); // needs only once
 
         return audioList;
-    }
-
-    private void updateAutoSyncState() {
-        DownloaderProperties properties = propertyService.get(DownloaderProperties.class);
-
-        if (syncFuture != null) {
-            syncFuture.cancel(true);
-            syncFuture = null;
-        }
-
-        if (properties.isAutoSync()) {
-            mainFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-            mainFrame.setActionSync(properties.isAutoSync());
-            mainFrame.setVisible(false);
-
-            syncFuture = executor.scheduleWithFixedDelay(this::onSync, 0, properties.getAutoSyncDelay(),
-                    TimeUnit.SECONDS);
-        } else {
-            mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        }
     }
 
     @Override
@@ -149,12 +129,25 @@ public class MainController implements Runnable, MainFrame.OnSyncListener, MainF
     }
 
     @Override
-    public void onAutoSyncStateChange(boolean state) {
+    public void updateAutoSyncState(boolean state) {
         DownloaderProperties properties = propertyService.get(DownloaderProperties.class);
         properties.setAutoSync(state);
         propertyService.set(properties);
 
-        updateAutoSyncState();
+        if (syncFuture != null) {
+            syncFuture.cancel(true);
+            syncFuture = null;
+        }
+
+        if (state) {
+            mainFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+            mainFrame.setVisible(false);
+
+            syncFuture = executor.scheduleWithFixedDelay(this::onSync, 0, properties.getAutoSyncDelay(),
+                    TimeUnit.SECONDS);
+        } else {
+            mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        }
     }
 
     private void download(List<Audio> audios) {
