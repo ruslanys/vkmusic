@@ -59,8 +59,12 @@ public abstract class LoadingFrame extends JFrame {
      * @param state window state
      */
     public final void setState(LoginFrame.State state) {
-        CardLayout cl = (CardLayout) (getContentPane().getLayout());
-        cl.show(getContentPane(), state.name());
+        if (SwingUtilities.isEventDispatchThread()) {
+            CardLayout cl = (CardLayout) (getContentPane().getLayout());
+            cl.show(getContentPane(), state.name());
+        } else {
+            SwingUtilities.invokeLater(() -> setState(state));
+        }
     }
 
     public enum State {

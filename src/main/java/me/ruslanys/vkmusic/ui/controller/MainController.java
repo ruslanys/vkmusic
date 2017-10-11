@@ -96,8 +96,8 @@ public class MainController implements Runnable, MainFrame.OnSyncListener, MainF
 
     private void initComponents() {
         mainFrame.setStatus(propertyService.get(VkProperties.class).getUsername());
-        mainFrame.setVisible(true);
         mainFrame.setState(LoadingFrame.State.LOADING);
+        mainFrame.setVisible(true);
 
         executor.execute(this::loadEntities);
     }
@@ -110,22 +110,26 @@ public class MainController implements Runnable, MainFrame.OnSyncListener, MainF
         return audioList;
     }
 
-    @Override
-    public void onSync() {
-        executor.execute(() -> {
-            List<Audio> entities = loadEntities();
-            entities.removeIf(e -> e.getStatus() != DownloadStatus.NEW);
+    private void sync() {
+        List<Audio> entities = loadEntities();
+        entities.removeIf(e -> e.getStatus() != DownloadStatus.NEW);
 
-            download(entities);
-        });
+        download(entities);
+    }
+
+    private void syncFailed() {
+        List<Audio> failed = audioService.findFailed();
+        download(failed);
     }
 
     @Override
-    public synchronized void onSyncFailed() {
-        executor.execute(() -> {
-            List<Audio> failed = audioService.findFailed();
-            download(failed);
-        });
+    public void onSync() {
+        executor.execute(this::sync);
+    }
+
+    @Override
+    public void onSyncFailed() {
+        executor.execute(this::syncFailed);
     }
 
     @Override
@@ -143,14 +147,14 @@ public class MainController implements Runnable, MainFrame.OnSyncListener, MainF
             mainFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
             mainFrame.setVisible(false);
 
-            syncFuture = executor.scheduleWithFixedDelay(this::onSync, 0, properties.getAutoSyncDelay(),
+            syncFuture = executor.scheduleWithFixedDelay(this::sync, 0, properties.getAutoSyncDelay(),
                     TimeUnit.SECONDS);
         } else {
             mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         }
     }
 
-    private void download(List<Audio> audios) {
+    private synchronized void download(List<Audio> audios) {
         if (audios.isEmpty()) return;
 
         Notifications.showNotification(String.format("Доступно для загрузки: %d", audios.size()));

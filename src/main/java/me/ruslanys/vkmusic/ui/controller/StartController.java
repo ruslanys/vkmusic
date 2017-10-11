@@ -73,7 +73,7 @@ public class StartController implements CommandLineRunner, Runnable, LoginFrame.
             vkClient.auth(properties);
             propertyService.set(properties);
 
-            onAuthSuccess();
+            EventQueue.invokeLater(this::onAuthSuccess);
         } catch (Exception e) {
             onAuthFailed();
         }
