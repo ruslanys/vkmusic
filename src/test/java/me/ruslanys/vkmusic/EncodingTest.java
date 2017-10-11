@@ -1,5 +1,6 @@
 package me.ruslanys.vkmusic;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.*;
@@ -7,6 +8,7 @@ import java.io.*;
 /**
  * @author Ruslan Molchanov (ruslanys@gmail.com)
  */
+@Ignore
 public class EncodingTest {
 
     @Test
