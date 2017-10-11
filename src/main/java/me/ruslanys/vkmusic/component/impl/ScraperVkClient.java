@@ -182,8 +182,8 @@ public class ScraperVkClient implements VkClient {
             offset = audioDto.getNextOffset();
         } while (audioDto.hasMore());
 
-        log.info("Total count: {}", audioDto.getTotalCount());
-        log.info("Fetched audio collection: {}", list.size());
+        log.debug("Total count: {}", audioDto.getTotalCount());
+        log.debug("Fetched audio collection: {}", list.size());
         return list;
     }
 
@@ -200,7 +200,7 @@ public class ScraperVkClient implements VkClient {
         int toIndex = Math.min(fromIndex + 10, audioList.size());
 
         while (fromIndex != toIndex) {
-            log.info("Fetching urls: {} - {}", fromIndex, toIndex);
+            log.debug("Fetching urls: {} - {}", fromIndex, toIndex);
 
             // making request
             String ids = StringUtils.join(
