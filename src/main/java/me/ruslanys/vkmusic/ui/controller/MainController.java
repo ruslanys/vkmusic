@@ -123,7 +123,8 @@ public class MainController implements Runnable, MainFrame.OnSyncListener, MainF
             mainFrame.setActionSync(properties.isAutoSync());
             mainFrame.setVisible(false);
 
-            syncFuture = executor.scheduleAtFixedRate(this::onSync, 0, properties.getAutoSyncDelay(), TimeUnit.SECONDS);
+            syncFuture = executor.scheduleWithFixedDelay(this::onSync, 0, properties.getAutoSyncDelay(),
+                    TimeUnit.SECONDS);
         } else {
             mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         }
