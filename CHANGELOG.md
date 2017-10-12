@@ -35,4 +35,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 [Неопубликованное]: https://github.com/ruslanys/vkmusic/compare/2.x.x.SWING...HEAD
-[2.0.0]: https://github.com/ruslanys/vkmusic/compare/e04e606...v.2.0.0
+[2.0.0]: https://github.com/ruslanys/vkmusic/compare/e04e606...v2.0.0
