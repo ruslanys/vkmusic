@@ -1,6 +1,12 @@
 ## VKMusic
+[![Travis](https://img.shields.io/travis/ruslanys/vkmusic.svg?style=flat-square)](https://travis-ci.org/ruslanys/vkmusic)
+[![Github All Releases](https://img.shields.io/github/downloads/ruslanys/vkmusic/total.svg?style=flat-square)](https://github.com/ruslanys/vkmusic/releases)
+[![GitHub release](https://img.shields.io/github/release/ruslanys/vkmusic.svg?style=flat-square)](https://github.com/ruslanys/vkmusic/releases)
+[![license](https://img.shields.io/github/license/ruslanys/vkmusic.svg?style=flat-square)](https://github.com/ruslanys/vkmusic)
 
-### Преамбула
+### Описание
+
+Десктопное приложение, 
 
 У меня была консольная утилита для выгрузки музыки из ВК, которую я когда-то ~~наговнокодил~~ быстренько 
 собрал на коленке. Создавал её как раз тогда, когда начался движ с жесткой вычисткой аудио из ВК по требованиям 
