@@ -1,7 +1,6 @@
 language: java
 
-script:
-  ./mvnw package
+script: ./mvnw package
 
 sudo: false
 addons:
