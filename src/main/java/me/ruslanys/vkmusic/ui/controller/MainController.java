@@ -182,8 +182,9 @@ public class MainController implements Runnable, MainFrame.OnSyncListener, MainF
     public void onDownloadStatusEvent(DownloadStatusEvent event) {
         mainFrame.setStatus(String.format("В очереди на загрузку: %d", counter.decrementAndGet()));
 
-        mainFrame.getModel().get(event.getAudio().getId()).setStatus(event.getStatus());
-        mainFrame.getModel().fireTableDataChanged();
+        Audio audio = event.getAudio();
+        mainFrame.getModel().get(audio.getId()).setStatus(event.getStatus());
+        mainFrame.getModel().fireTableRowsUpdated(audio.getPosition() - 1, audio.getPosition() - 1);
     }
 
     @EventListener
