@@ -1,11 +1,16 @@
 package me.ruslanys.vkmusic.ui.controller;
 
+import com.google.common.collect.ImmutableMap;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Worker;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import me.ruslanys.vkmusic.component.VkClient;
 import me.ruslanys.vkmusic.entity.domain.event.LogoutEvent;
-import me.ruslanys.vkmusic.property.VkProperties;
+import me.ruslanys.vkmusic.property.VkCookies;
 import me.ruslanys.vkmusic.services.PropertyService;
+import me.ruslanys.vkmusic.ui.view.LoadingFrame;
 import me.ruslanys.vkmusic.ui.view.LoginFrame;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -14,6 +19,8 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.awt.*;
+import java.net.*;
+import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 
 /**
@@ -22,7 +29,9 @@ import java.util.concurrent.ScheduledExecutorService;
 @Slf4j
 
 @Component
-public class StartController implements CommandLineRunner, Runnable, LoginFrame.OnSubmitListener {
+public class LoginController implements CommandLineRunner, Runnable, ChangeListener<Worker.State> {
+
+    private static final String SESSION_ID_KEY = "remixsid";
 
     private final LoginFrame loginFrame;
 
@@ -31,9 +40,10 @@ public class StartController implements CommandLineRunner, Runnable, LoginFrame.
     private final ScheduledExecutorService executor;
 
     private final MainController mainController;
+    private final CookieManager cookieManager;
 
     @Autowired
-    public StartController(@NonNull LoginFrame loginFrame,
+    public LoginController(@NonNull LoginFrame loginFrame,
                            @NonNull VkClient vkClient,
                            @NonNull PropertyService propertyService,
                            @NonNull ScheduledExecutorService executor,
@@ -43,11 +53,14 @@ public class StartController implements CommandLineRunner, Runnable, LoginFrame.
         this.vkClient = vkClient;
         this.executor = executor;
         this.mainController = mainController;
+
+        this.cookieManager = new CookieManager(null, CookiePolicy.ACCEPT_ALL);
     }
 
     @PostConstruct
     private void init() {
-        loginFrame.setSubmitListener(this);
+        CookieHandler.setDefault(cookieManager);
+        loginFrame.addChangeListener(this);
     }
 
     @Override
@@ -57,21 +70,23 @@ public class StartController implements CommandLineRunner, Runnable, LoginFrame.
 
     @Override
     public void run() {
-        VkProperties vkProperties = propertyService.get(VkProperties.class);
-        if (vkProperties == null) {
-            showLoginForm(LoginFrame.State.MAIN);
+        VkCookies cookies = propertyService.get(VkCookies.class);
+        if (cookies == null) {
+            loginFrame.load("https://vk.com");
+            loginFrame.setVisible(true);
         } else {
-            showLoginForm(LoginFrame.State.LOADING);
-            executor.submit(() -> onSubmit(vkProperties.getUsername(), vkProperties.getPassword()));
+            loginFrame.setState(LoadingFrame.State.LOADING);
+            executor.submit(() -> setSessionId(cookies.getSessionId()));
         }
     }
 
-    @Override
-    public void onSubmit(@NonNull String username, @NonNull String password) {
+    public void setSessionId(@NonNull String sessionId) {
         try {
-            VkProperties properties = new VkProperties(username, password);
-            vkClient.auth(properties);
-            propertyService.set(properties);
+            vkClient.setCookies(ImmutableMap.of(SESSION_ID_KEY, sessionId));
+            vkClient.fetchUserId();
+
+            VkCookies cookies = new VkCookies(sessionId);
+            propertyService.set(cookies);
 
             EventQueue.invokeLater(this::onAuthSuccess);
         } catch (Exception e) {
@@ -85,9 +100,8 @@ public class StartController implements CommandLineRunner, Runnable, LoginFrame.
     }
 
     private void onAuthFailed() {
-        vkClient.clear();
-        propertyService.remove(VkProperties.class);
-        showLoginForm(LoginFrame.State.MAIN);
+        propertyService.remove(VkCookies.class);
+        run();
     }
 
     @EventListener
@@ -96,8 +110,17 @@ public class StartController implements CommandLineRunner, Runnable, LoginFrame.
         onAuthFailed();
     }
 
-    private void showLoginForm(LoginFrame.State state) {
-        loginFrame.setState(state);
-        loginFrame.setVisible(true);
+    @Override
+    public void changed(ObservableValue<? extends Worker.State> observable, Worker.State oldValue, Worker.State newValue) {
+        if (newValue == Worker.State.SUCCEEDED) {
+            List<HttpCookie> cookies = cookieManager.getCookieStore().get(URI.create("https://vk.com"));
+            for (HttpCookie cookie : cookies) {
+                if (SESSION_ID_KEY.equals(cookie.getName())) {
+                    setSessionId(cookie.getValue());
+                    break;
+                }
+            }
+
+        }
     }
 }

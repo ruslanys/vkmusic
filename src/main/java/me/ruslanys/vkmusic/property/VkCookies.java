@@ -10,9 +10,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class VkProperties implements Properties {
+public class VkCookies implements Properties {
 
-    private String username;
-    private String password;
+    private String sessionId;
 
 }

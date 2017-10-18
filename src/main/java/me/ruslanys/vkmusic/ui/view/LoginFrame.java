@@ -1,104 +1,71 @@
 package me.ruslanys.vkmusic.ui.view;
 
-import me.ruslanys.vkmusic.util.DesktopUtils;
-import me.ruslanys.vkmusic.util.Dialogs;
-import org.apache.commons.lang3.StringUtils;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Worker;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.Scene;
+import javafx.scene.web.WebView;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.net.URI;
-import java.util.concurrent.CompletableFuture;
-
-import static java.awt.GridBagConstraints.HORIZONTAL;
-import static java.awt.GridBagConstraints.NORTH;
 
 /**
  * @author Ruslan Molchanov (ruslanys@gmail.com)
  */
 @Component
-public class LoginFrame extends LoadingFrame implements ActionListener {
+public class LoginFrame extends LoadingFrame implements ChangeListener<Worker.State> {
 
-    private JPasswordField passwordFld;
-    private JTextField usernameFld;
-
-    private OnSubmitListener submitListener;
+    private WebView webView;
 
 
     @Override
     protected void initWindow() {
-        pack();
+        setSize(640, 480);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
 
         setTitle("Авторизация");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setResizable(false);
     }
 
     @Override
-    protected JPanel initMainPanel() {
-        JPanel panel = new JPanel();
-        Insets padding = new Insets(0, 5, 5, 5);
-
-        panel.setLayout(new GridBagLayout());
-
-        // username
-        JLabel usernameLbl = new JLabel("Имя пользователя:");
-        panel.add(usernameLbl, new GridBagConstraints(0, 0, 1, 1, 1., 0., NORTH, HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
-
-        usernameFld = new JTextField();
-        panel.add(usernameFld, new GridBagConstraints(0, 1, 1, 1, 1., 0., NORTH, HORIZONTAL, padding, 0, 0));
-
-        // password
-        JLabel passwordLbl = new JLabel("Пароль:");
-        panel.add(passwordLbl, new GridBagConstraints(0, 2, 1, 1, 1., 0., NORTH, HORIZONTAL, padding, 0, 0));
-
-        passwordFld = new JPasswordField();
-        panel.add(passwordFld, new GridBagConstraints(0, 3, 1, 1, 1., 0., NORTH, HORIZONTAL, padding, 0, 0));
-
-        // submit
-        JButton loginBtn = new JButton("Войти");
-        loginBtn.addActionListener(this);
-        panel.add(loginBtn, new GridBagConstraints(0, 4, 1, 1, 1., 0., NORTH, HORIZONTAL, new Insets(5, 5, 0, 5), 0, 0));
-
-        // sign up
-        JButton joinBtn = new JButton("Регистрация");
-        joinBtn.addActionListener(event -> DesktopUtils.browse(URI.create("https://vk.com")));
-        panel.add(joinBtn, new GridBagConstraints(0, 5, 1, 1, 1., 0., NORTH, HORIZONTAL, new Insets(5, 5, 10, 5), 0, 0));
+    protected JComponent initMainPanel() {
+        JFXPanel panel = new JFXPanel();
+        Platform.runLater(() -> {
+            webView = new WebView();
+            addChangeListener(LoginFrame.this);
+            panel.setScene(new Scene(webView));
+        });
         return panel;
     }
 
-    public void setSubmitListener(OnSubmitListener submitListener) {
-        this.submitListener = submitListener;
+    public void addChangeListener(ChangeListener<Worker.State> changeListener) {
+        Platform.runLater(() -> webView.getEngine().getLoadWorker().stateProperty().addListener(changeListener));
     }
 
     @Override
-    public void actionPerformed(ActionEvent event) {
-        final String username = usernameFld.getText();
-        final String password = passwordFld.getText();
-
-        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
-            Dialogs.showError("Укажите имя пользователя и пароль!");
-            return;
-        }
-
-        if (submitListener != null) {
-            setState(State.LOADING);
-
-            CompletableFuture
-                    .runAsync(() -> submitListener.onSubmit(username, password))
-                    .exceptionally(throwable -> {
-                        Dialogs.showError(throwable.getCause());
-                        return null;
-                    })
-                    .thenRunAsync(() -> setState(State.MAIN));
+    public void changed(ObservableValue<? extends Worker.State> ov, Worker.State oldState, Worker.State newState) {
+        switch (newState) {
+            case READY:
+            case SUCCEEDED:
+            case FAILED:
+            case CANCELLED:
+                setState(State.MAIN);
+                break;
+            case SCHEDULED:
+            case RUNNING:
+                setState(State.LOADING);
+                break;
         }
     }
 
-    public interface OnSubmitListener {
-        void onSubmit(String username, String password);
+    public void load(String url) {
+        Platform.runLater(() -> {
+            setState(State.LOADING);
+            webView.getEngine().load(url);
+        });
     }
 
 }

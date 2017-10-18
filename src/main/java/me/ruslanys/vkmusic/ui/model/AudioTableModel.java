@@ -25,7 +25,7 @@ public class AudioTableModel extends AbstractTableModel {
             "Продолжительность", "Статус" };
 
     private final List<Audio> entities = Lists.newArrayList();
-    private final Map<Integer, Audio> hashMap = new HashMap<>();
+    private final Map<Long, Audio> hashMap = new HashMap<>();
 
     private final EnumMap<DownloadStatus, ImageIcon> statusIcon = new EnumMap<>(DownloadStatus.class);
 
@@ -107,7 +107,7 @@ public class AudioTableModel extends AbstractTableModel {
         fireTableDataChanged();
     }
 
-    public Audio get(int id) {
+    public Audio get(long id) {
         return hashMap.get(id);
     }
 

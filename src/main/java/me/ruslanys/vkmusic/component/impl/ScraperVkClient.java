@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import me.ruslanys.vkmusic.component.VkClient;
 import me.ruslanys.vkmusic.entity.Audio;
 import me.ruslanys.vkmusic.exception.VkException;
-import me.ruslanys.vkmusic.property.VkProperties;
 import me.ruslanys.vkmusic.util.JsonUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -44,26 +43,22 @@ public class ScraperVkClient implements VkClient {
     private static final int SLEEP_INTERVAL = 5_000;
 
     private final ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("JavaScript");
-
     private final Map<String, String> cookies = new HashMap<>();
 
-    private String homePage;
-    private Long userId;
-
-
     @Override
-    public void auth(VkProperties properties) throws VkException {
-        clear();
-
-        homePage = submitLoginForm(properties.getUsername(), properties.getPassword());
-        userId = fetchUserId();
+    public void addCookies(Map<String, String> cookies) {
+        this.cookies.putAll(cookies);
     }
 
     @Override
-    public void clear() {
-        cookies.clear();
-        homePage = null;
-        userId = null;
+    public void setCookies(Map<String, String> cookies) {
+        clearCookies();
+        addCookies(cookies);
+    }
+
+    @Override
+    public void clearCookies() {
+        this.cookies.clear();
     }
 
     private void handleCookies(Map<String, String> cookies) {
@@ -79,9 +74,10 @@ public class ScraperVkClient implements VkClient {
         handleCookies(response.cookies());
     }
 
+    @Override
     @SneakyThrows
-    private Long fetchUserId() {
-        Connection.Response response = Jsoup.connect(PATH_BASE + homePage)
+    public Long fetchUserId() {
+        Connection.Response response = Jsoup.connect(PATH_BASE)
                 .userAgent(USER_AGENT).cookies(cookies).method(Connection.Method.GET)
                 .execute();
         Matcher matcher = Pattern.compile("id: (\\d+)").matcher(response.body());
@@ -94,6 +90,7 @@ public class ScraperVkClient implements VkClient {
         return id;
     }
 
+    @Deprecated
     @SneakyThrows
     private String submitLoginForm(String username, String password) throws VkException {
         log.info("Signing in with {}...", username);
@@ -118,6 +115,7 @@ public class ScraperVkClient implements VkClient {
         return path;
     }
 
+    @Deprecated
     @SneakyThrows
     private Map<String, String> getLoginForm() {
         Connection.Response response = Jsoup.connect(PATH_BASE)
@@ -148,7 +146,7 @@ public class ScraperVkClient implements VkClient {
 
     @SneakyThrows
     @Override
-    public List<Audio> getAudio() {
+    public List<Audio> getAudio(Long ownerId) {
         VkAudioDto audioDto;
         List<Audio> list = new ArrayList<>();
         int offset = 0;
@@ -160,7 +158,7 @@ public class ScraperVkClient implements VkClient {
                     .data("al", "1")
                     .data("claim", "0")
                     .data("offset", String.valueOf(offset))
-                    .data("owner_id", userId.toString())
+                    .data("owner_id", ownerId.toString())
                     .data("playlist_id", "-1")
                     .data("type", "playlist")
                     .execute();
@@ -171,11 +169,13 @@ public class ScraperVkClient implements VkClient {
 
             audioDto = JsonUtils.fromString(json, VkAudioDto.class);
             for (List values : audioDto.getList()) {
-                Audio audio = new Audio();
-                audio.setId((Integer) values.get(0));
-                audio.setArtist(StringEscapeUtils.unescapeHtml4((String) values.get(4)));
-                audio.setTitle(StringEscapeUtils.unescapeHtml4((String) values.get(3)));
-                audio.setDuration((Integer) values.get(5));
+                Audio audio = new Audio(
+                        ((Number) values.get(0)).longValue(),
+                        ((Number) values.get(1)).longValue(),
+                        StringEscapeUtils.unescapeHtml4((String) values.get(4)),
+                        StringEscapeUtils.unescapeHtml4((String) values.get(3)),
+                        (Integer) values.get(5)
+                );
 
                 list.add(audio);
             }
@@ -190,7 +190,7 @@ public class ScraperVkClient implements VkClient {
     @SneakyThrows
     @Override
     public void fetchUrls(List<Audio> audioList) {
-        Map<Integer, Audio> audioMap = new HashMap<>();
+        Map<Long, Audio> audioMap = new HashMap<>(audioList.size());
         for (Audio audio : audioList) {
             audioMap.put(audio.getId(), audio);
         }
@@ -205,7 +205,7 @@ public class ScraperVkClient implements VkClient {
             // making request
             String ids = StringUtils.join(
                     audioList.subList(fromIndex, toIndex).stream()
-                            .map(audio -> userId + "_" + audio.getId())
+                            .map(audio -> audio.getOwnerId() + "_" + audio.getId())
                             .collect(Collectors.toList()),
                     ","
             );

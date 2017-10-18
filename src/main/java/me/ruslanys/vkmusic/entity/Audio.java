@@ -2,6 +2,8 @@ package me.ruslanys.vkmusic.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import me.ruslanys.vkmusic.entity.domain.DownloadStatus;
 import org.apache.commons.lang3.StringUtils;
 
@@ -12,13 +14,17 @@ import java.io.Serializable;
  * @author Ruslan Molchanov (ruslanys@gmail.com)
  */
 @Data
-@EqualsAndHashCode(exclude = {"url", "status", "position"})
+@EqualsAndHashCode(of = {"id", "ownerId"})
+@NoArgsConstructor
 
 @Entity
 public class Audio implements Serializable {
 
     @Id
-    private Integer id;
+    private Long id;
+
+    @Column(nullable = false)
+    private Long ownerId;
 
     @Column(nullable = false)
     private String artist;
@@ -39,6 +45,15 @@ public class Audio implements Serializable {
     @Transient
     private String url;
 
+
+    public Audio(@NonNull Long id, @NonNull Long ownerId, @NonNull String artist, @NonNull String title, @NonNull Integer duration) {
+        this.id = id;
+        this.ownerId = ownerId;
+        this.artist = artist;
+        this.title = title;
+        this.duration = duration;
+    }
+
     public String getFilename() {
         StringBuilder sb = new StringBuilder();
 
@@ -53,5 +68,4 @@ public class Audio implements Serializable {
 
         return sb.toString();
     }
-
 }

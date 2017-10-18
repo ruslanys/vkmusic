@@ -15,8 +15,8 @@ public abstract class LoadingFrame extends JFrame {
     }
 
     private void initComponents() {
-        JPanel loginPanel = initMainPanel();
-        JPanel loadingPanel = initLoadingPanel();
+        JComponent loginPanel = initMainPanel();
+        JComponent loadingPanel = initLoadingPanel();
 
         getContentPane().setLayout(new CardLayout());
         add(loginPanel, State.MAIN.name());
@@ -40,13 +40,13 @@ public abstract class LoadingFrame extends JFrame {
      * Main panel method creation.
      * @return content panel
      */
-    protected abstract JPanel initMainPanel();
+    protected abstract JComponent initMainPanel();
 
     /**
      * Loading panel method creation.
      * @return loading panel
      */
-    protected JPanel initLoadingPanel() {
+    protected JComponent initLoadingPanel() {
         URL spinner = getClass().getClassLoader().getResource("images/loading.gif");
 
         JPanel panel = new JPanel(new BorderLayout(0, 0));

@@ -11,7 +11,7 @@ import java.util.List;
  * @author Ruslan Molchanov (ruslanys@gmail.com)
  */
 @Repository
-public interface AudioRepository extends JpaRepository<Audio, Integer> {
+public interface AudioRepository extends JpaRepository<Audio, Long> {
 
     List<Audio> findAllByOrderByPositionAsc();
 

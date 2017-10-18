@@ -9,7 +9,6 @@ import me.ruslanys.vkmusic.entity.domain.event.DownloadFinishEvent;
 import me.ruslanys.vkmusic.entity.domain.event.DownloadStatusEvent;
 import me.ruslanys.vkmusic.entity.domain.event.LogoutEvent;
 import me.ruslanys.vkmusic.property.DownloaderProperties;
-import me.ruslanys.vkmusic.property.VkProperties;
 import me.ruslanys.vkmusic.services.AudioService;
 import me.ruslanys.vkmusic.services.DownloadService;
 import me.ruslanys.vkmusic.services.PropertyService;
@@ -40,6 +39,8 @@ import java.util.concurrent.atomic.AtomicLong;
 @Component
 @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class MainController implements Runnable, MainFrame.OnSyncListener, MainFrame.OnChangeDestinationListener {
+
+    private static final String DEFAULT_STATUS = "OK";
 
     private final MainFrame mainFrame;
 
@@ -95,7 +96,7 @@ public class MainController implements Runnable, MainFrame.OnSyncListener, MainF
     }
 
     private void initComponents() {
-        mainFrame.setStatus(propertyService.get(VkProperties.class).getUsername());
+        mainFrame.setStatus(DEFAULT_STATUS);
         mainFrame.setState(LoadingFrame.State.LOADING);
         mainFrame.setVisible(true);
 
@@ -187,7 +188,7 @@ public class MainController implements Runnable, MainFrame.OnSyncListener, MainF
 
     @EventListener
     public void onDownloadFinishEvent(DownloadFinishEvent event) {
-        mainFrame.setStatus(propertyService.get(VkProperties.class).getUsername());
+        mainFrame.setStatus(DEFAULT_STATUS);
         Notifications.showNotification("Синхронизация завершена, обработано " + event.getAudioList().size() + ".");
     }
 
