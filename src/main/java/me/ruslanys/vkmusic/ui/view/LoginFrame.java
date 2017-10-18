@@ -6,6 +6,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
+import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,8 @@ import javax.swing.*;
  */
 @Component
 public class LoginFrame extends LoadingFrame implements ChangeListener<Worker.State> {
+
+    private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36";
 
     private WebView webView;
 
@@ -35,6 +38,10 @@ public class LoginFrame extends LoadingFrame implements ChangeListener<Worker.St
         JFXPanel panel = new JFXPanel();
         Platform.runLater(() -> {
             webView = new WebView();
+            WebEngine engine = webView.getEngine();
+            engine.setJavaScriptEnabled(true);
+            engine.setUserAgent(USER_AGENT);
+
             addChangeListener(LoginFrame.this);
             panel.setScene(new Scene(webView));
         });
