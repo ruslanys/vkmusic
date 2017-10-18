@@ -233,7 +233,7 @@ public class ScraperVkClient implements VkClient {
 
             // models mapping
             for (List object : lists) {
-                Audio audio = audioMap.get(object.get(0));
+                Audio audio = audioMap.get(((Number) object.get(0)).longValue());
                 String url = (String) object.get(2);
                 url = decrypt(url);
 
