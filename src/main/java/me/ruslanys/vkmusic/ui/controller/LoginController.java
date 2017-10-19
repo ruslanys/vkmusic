@@ -11,6 +11,7 @@ import me.ruslanys.vkmusic.component.VkClient;
 import me.ruslanys.vkmusic.entity.domain.event.LogoutEvent;
 import me.ruslanys.vkmusic.property.VkCookies;
 import me.ruslanys.vkmusic.services.PropertyService;
+import me.ruslanys.vkmusic.ui.view.LoadingFrame;
 import me.ruslanys.vkmusic.ui.view.LoginFrame;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -74,8 +75,9 @@ public class LoginController implements CommandLineRunner, Runnable, ChangeListe
     public void run() {
         VkCookies cookies = propertyService.get(VkCookies.class);
         if (cookies == null) {
-            loginFrame.load(LOGIN_PATH);
+            loginFrame.setState(LoadingFrame.State.LOADING);
             loginFrame.setVisible(true);
+            loginFrame.load(LOGIN_PATH);
         } else {
             executor.submit(() -> setSessionId(cookies.getSessionId()));
         }
