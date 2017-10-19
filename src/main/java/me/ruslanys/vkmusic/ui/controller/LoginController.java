@@ -37,6 +37,8 @@ import java.util.concurrent.ScheduledExecutorService;
 public class LoginController implements CommandLineRunner, Runnable, ChangeListener<Worker.State> {
 
     private static final String SESSION_ID_KEY = "remixsid";
+    private static final String LOGIN_PATH = "https://vk.com/login";
+    private static final URI COOKIE_DOMAIN_URI = URI.create("https://vk.com/");
 
     private final LoginFrame loginFrame;
 
@@ -73,7 +75,7 @@ public class LoginController implements CommandLineRunner, Runnable, ChangeListe
     public void run() {
         VkCookies cookies = propertyService.get(VkCookies.class);
         if (cookies == null) {
-            loginFrame.load("https://vk.com/login");
+            loginFrame.load(LOGIN_PATH);
             loginFrame.setVisible(true);
         } else {
             loginFrame.setState(LoadingFrame.State.LOADING);
@@ -129,7 +131,7 @@ public class LoginController implements CommandLineRunner, Runnable, ChangeListe
      */
     @SneakyThrows
     private String fetchSessionId() {
-        Map<String, List<String>> headers = CookieManager.getDefault().get(URI.create("https://vk.com/"), new HashMap<>());
+        Map<String, List<String>> headers = CookieManager.getDefault().get(COOKIE_DOMAIN_URI, new HashMap<>());
         List<String> values = headers.getOrDefault("Cookie", new ArrayList<>());
         if (values.isEmpty()) {
             return null;
