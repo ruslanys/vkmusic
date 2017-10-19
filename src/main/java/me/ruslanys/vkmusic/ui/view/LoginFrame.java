@@ -11,6 +11,7 @@ import javafx.scene.web.WebView;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
+import java.net.CookieManager;
 
 /**
  * @author Ruslan Molchanov (ruslanys@gmail.com)
@@ -54,18 +55,20 @@ public class LoginFrame extends LoadingFrame implements ChangeListener<Worker.St
     @Override
     public void changed(ObservableValue<? extends Worker.State> ov, Worker.State oldState, Worker.State newState) {
         switch (newState) {
+            case SUCCEEDED:
+                setState(State.MAIN);
+                break;
             case SCHEDULED:
-            case RUNNING:
                 setState(State.LOADING);
                 break;
-            default:
-                setState(State.MAIN);
         }
     }
 
     public void load(String url) {
+        CookieManager.setDefault(new com.sun.webkit.network.CookieManager()); // clear cookies
+
         Platform.runLater(() -> {
-            setState(State.LOADING);
+            webView.getEngine().loadContent(""); // clear view
             webView.getEngine().load(url);
         });
     }

@@ -81,7 +81,7 @@ public class ScraperVkClient implements VkClient {
                 .userAgent(USER_AGENT).cookies(cookies).method(Connection.Method.GET)
                 .execute();
         Matcher matcher = Pattern.compile("id: (\\d+)").matcher(response.body());
-        if (!matcher.find()) {
+        if (!matcher.find() || "0".equals(matcher.group(1).trim())) {
             throw new VkException("Не удалось получить ID пользователя.");
         }
         Long id = Long.valueOf(matcher.group(1));

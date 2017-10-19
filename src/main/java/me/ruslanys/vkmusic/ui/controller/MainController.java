@@ -169,12 +169,24 @@ public class MainController implements Runnable, MainFrame.OnSyncListener, MainF
     @SneakyThrows
     private void displayTray() {
         SystemTray tray = SystemTray.getSystemTray();
+        if (tray.getTrayIcons().length > 0) {
+            return;
+        }
 
         TrayIcon trayIcon = new TrayIcon(ImageIO.read(getClass().getClassLoader().getResource("images/tray/base.png")), "VKMusic");
         trayIcon.setImageAutoSize(true);
         trayIcon.addActionListener(e -> mainFrame.setVisible(true));
 
         tray.add(trayIcon);
+    }
+
+    private void hideTray() {
+        SystemTray tray = SystemTray.getSystemTray();
+        TrayIcon[] icons = tray.getTrayIcons();
+
+        for (TrayIcon icon : icons) {
+            tray.remove(icon);
+        }
     }
 
     @Async
@@ -196,7 +208,7 @@ public class MainController implements Runnable, MainFrame.OnSyncListener, MainF
     @EventListener
     public void onLogout(LogoutEvent event) {
         mainFrame.getModel().clear();
-        // TODO: Remove tray icon
+        hideTray();
     }
 
 }

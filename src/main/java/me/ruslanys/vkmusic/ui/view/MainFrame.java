@@ -55,7 +55,7 @@ public class MainFrame extends LoadingFrame implements ActionListener, ItemListe
     protected void initWindow() {
         setTitle("VKMusic");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setSize(550, 300);
+        setSize(640, 480);
         setLocationRelativeTo(null);
     }
 
