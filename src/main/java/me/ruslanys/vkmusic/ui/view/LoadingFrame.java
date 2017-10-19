@@ -9,7 +9,18 @@ import java.net.URL;
  */
 public abstract class LoadingFrame extends JFrame {
 
+    private final Color bgColor;
+    private final URL spinner;
+
+
     public LoadingFrame() {
+        this(new Color(80, 114, 153), LoadingFrame.class.getClassLoader().getResource("images/loading-heart.gif"));
+    }
+
+    public LoadingFrame(Color bgColor, URL spinner) {
+        this.bgColor = bgColor;
+        this.spinner = spinner;
+
         initComponents();
         initWindow();
     }
@@ -47,9 +58,8 @@ public abstract class LoadingFrame extends JFrame {
      * @return loading panel
      */
     protected JComponent initLoadingPanel() {
-        URL spinner = getClass().getClassLoader().getResource("images/loading.gif");
-
         JPanel panel = new JPanel(new BorderLayout(0, 0));
+        panel.setBackground(bgColor);
         panel.add(new JLabel(new ImageIcon(spinner)), BorderLayout.CENTER);
         return panel;
     }
