@@ -23,3 +23,14 @@
 #### Linux / Windows / MacOS
 
 ```$ java -jar vkmusic-*.jar```
+
+
+### Используемые технологии
+
+VKMusic написан на Java 8 с применением нижеследующих технологий.
+
+* Spring Boot
+* JPA/Hibernate
+* SQLite
+* Swing
+* Java FX
