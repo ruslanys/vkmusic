@@ -25,8 +25,7 @@ public class LoginFrame extends LoadingFrame implements ChangeListener<Worker.St
 
     @Override
     protected void initWindow() {
-        setSize(640, 480);
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setSize(1000, 660);
         setLocationRelativeTo(null);
 
         setTitle("Авторизация");

@@ -5,6 +5,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker;
 import lombok.NonNull;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import me.ruslanys.vkmusic.component.VkClient;
 import me.ruslanys.vkmusic.entity.domain.event.LogoutEvent;
@@ -19,8 +20,12 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.awt.*;
-import java.net.*;
+import java.net.CookieManager;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 
 /**
@@ -40,7 +45,6 @@ public class LoginController implements CommandLineRunner, Runnable, ChangeListe
     private final ScheduledExecutorService executor;
 
     private final MainController mainController;
-    private final CookieManager cookieManager;
 
     @Autowired
     public LoginController(@NonNull LoginFrame loginFrame,
@@ -53,13 +57,10 @@ public class LoginController implements CommandLineRunner, Runnable, ChangeListe
         this.vkClient = vkClient;
         this.executor = executor;
         this.mainController = mainController;
-
-        this.cookieManager = new CookieManager(null, CookiePolicy.ACCEPT_ALL);
     }
 
     @PostConstruct
     private void init() {
-        CookieHandler.setDefault(cookieManager);
         loginFrame.addChangeListener(this);
     }
 
@@ -72,7 +73,7 @@ public class LoginController implements CommandLineRunner, Runnable, ChangeListe
     public void run() {
         VkCookies cookies = propertyService.get(VkCookies.class);
         if (cookies == null) {
-            loginFrame.load("https://vk.com");
+            loginFrame.load("https://vk.com/login");
             loginFrame.setVisible(true);
         } else {
             loginFrame.setState(LoadingFrame.State.LOADING);
@@ -110,17 +111,49 @@ public class LoginController implements CommandLineRunner, Runnable, ChangeListe
         onAuthFailed();
     }
 
+    /**
+     * <p>It isn't possible to follow
+     * <a href="https://docs.oracle.com/javase/tutorial/deployment/doingMoreWithRIA/accessingCookies.html">Oracle Accessing Cookies Tutorial</a>
+     * via default {@link CookieManager} with {@link java.net.InMemoryCookieStore} under the hood.
+     *
+     * <p>{@link CookieManager} is the implementation of <a href="http://www.ietf.org/rfc/rfc2965.txt">RFC 2965</a>.
+     * But the website needs to implement <a href="http://www.ietf.org/rfc/rfc6265.txt">RFC 6265</a>.
+     *
+     * <p>RFC 2965: "x.y.com domain-matches .Y.com but not Y.com."<br/>
+     * RFC 6265: "The domain string is a suffix of the string. The last character of the string that is not included in the domain string is a "." character." <br/>
+     * Take a look at <a href="https://github.com/square/okhttp/issues/991">OkHttp #991</a>.
+     *
+     * <p>So, private {@link com.sun.webkit.network.CookieManager} is implementing RFC 6265, that's why it's using.
+     *
+     * @return session id if it exists or {@code null}
+     */
+    @SneakyThrows
+    private String fetchSessionId() {
+        Map<String, List<String>> headers = CookieManager.getDefault().get(URI.create("https://vk.com/"), new HashMap<>());
+        List<String> values = headers.getOrDefault("Cookie", new ArrayList<>());
+        if (values.isEmpty()) {
+            return null;
+        }
+
+        String headerValue = values.get(0);
+        String[] cookieEntries = headerValue.split(";");
+        for (String cookieEntry : cookieEntries) {
+            String[] cookieParts = cookieEntry.split("=");
+            if ("remixsid".equals(cookieParts[0].trim())) {
+                return cookieParts[1].trim();
+            }
+        }
+
+        return null;
+    }
+
     @Override
     public void changed(ObservableValue<? extends Worker.State> observable, Worker.State oldValue, Worker.State newValue) {
         if (newValue == Worker.State.SUCCEEDED) {
-            List<HttpCookie> cookies = cookieManager.getCookieStore().get(URI.create("https://vk.com"));
-            for (HttpCookie cookie : cookies) {
-                if (SESSION_ID_KEY.equals(cookie.getName())) {
-                    setSessionId(cookie.getValue());
-                    break;
-                }
+            String sessionId = fetchSessionId();
+            if (sessionId != null) {
+                setSessionId(sessionId);
             }
-
         }
     }
 }
