@@ -6,9 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Неопубликованное]
 
+## [2.1.0] - 2017-10-19
 ### Добавлено
-- Использование кук (#1): для того, чтобы не хранить логин/пароль и не отправлять их при каждом запуске, можно 
-хранить ID сессии из кук. 
+- Использование кук (#1): для того, чтобы не хранить логин/пароль и не отправлять их при каждом запуске, 
+хранится ID сессии. 
 
 ### Изменено
 - Окно авторизации (#11): ВК переодически показывает капчу, вместо того, чтобы пытаться её обойти,
@@ -16,7 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - При синхронизации на UI обновляется не вся таблица, а только необходимая строка.
 - Spring Boot обновлен до 1.5.8.RELEASE.
 - Изменен загрузочный спиннер. Спасибо loading.io за это.
-- При смене юзера/логауте, БД треков не очищается.
+- При смене юзера/логауте БД не очищается.
 
 
 ## [2.0.0] - 2017-10-10
@@ -48,4 +49,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 [Неопубликованное]: https://github.com/ruslanys/vkmusic/compare/HEAD...2.x.x.SWING
+[2.1.0]: https://github.com/ruslanys/vkmusic/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/ruslanys/vkmusic/compare/e04e606...v2.0.0
