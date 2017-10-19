@@ -18,7 +18,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Spring Boot обновлен до 1.5.8.RELEASE.
 - Изменен загрузочный спиннер. Спасибо loading.io за это.
 - При смене юзера/логауте БД не очищается.
-- Стратегия миграции БД изменилась с `update` на `create-drop`.
 
 ### Исправлено
 - Баг с иконкой в трее в случае смены пользователя.
