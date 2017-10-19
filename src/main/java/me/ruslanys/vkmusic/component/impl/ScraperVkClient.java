@@ -90,6 +90,9 @@ public class ScraperVkClient implements VkClient {
         return id;
     }
 
+    /**
+     * @deprecated This method is unsecured and not reliable because of ReCaptcha on the VK side.
+     */
     @Deprecated
     @SneakyThrows
     private String submitLoginForm(String username, String password) throws VkException {
@@ -115,6 +118,9 @@ public class ScraperVkClient implements VkClient {
         return path;
     }
 
+    /**
+     * @deprecated This method is unsecured and not reliable because of ReCaptcha on the VK side.
+     */
     @Deprecated
     @SneakyThrows
     private Map<String, String> getLoginForm() {

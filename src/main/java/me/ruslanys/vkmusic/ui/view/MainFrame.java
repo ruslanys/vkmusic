@@ -26,18 +26,15 @@ public class MainFrame extends LoadingFrame implements ActionListener, ItemListe
     private static final String ACTION_SYNC_FAILED = "SYNC_FAILED";
     private static final String ACTION_CHANGE_DESTINATION = "DESTINATION";
 
-    private final ApplicationEventPublisher publisher;
+    private final transient ApplicationEventPublisher publisher;
     private final AboutFrame aboutFrame;
 
 
     private AudioTableModel model;
     private JLabel toolbarLabel;
 
-    @Setter
-    private OnSyncListener syncListener;
-
-    @Setter
-    private OnChangeDestinationListener destinationListener;
+    @Setter private transient OnSyncListener syncListener;
+    @Setter private transient OnChangeDestinationListener destinationListener;
 
     private JMenu syncMenu;
     private JCheckBoxMenuItem autoSyncItem;

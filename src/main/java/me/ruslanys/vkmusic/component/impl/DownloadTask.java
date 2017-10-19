@@ -1,8 +1,8 @@
 package me.ruslanys.vkmusic.component.impl;
 
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import me.ruslanys.vkmusic.entity.Audio;
+import me.ruslanys.vkmusic.entity.domain.DownloadResult;
 import me.ruslanys.vkmusic.exception.DownloadException;
 
 import java.io.BufferedInputStream;
@@ -17,7 +17,7 @@ import java.util.concurrent.Callable;
  * @author Ruslan Molchanov (ruslanys@gmail.com)
  */
 @Slf4j
-public class DownloadTask implements Callable<DownloadTask.Result> {
+public class DownloadTask implements Callable<DownloadResult> {
 
     private final File destinationFolder;
     private final Audio audio;
@@ -28,7 +28,7 @@ public class DownloadTask implements Callable<DownloadTask.Result> {
     }
 
     @Override
-    public Result call() throws Exception {
+    public DownloadResult call() throws Exception {
         try {
             log.debug("Download started for {}", audio.getUrl());
 
@@ -46,18 +46,12 @@ public class DownloadTask implements Callable<DownloadTask.Result> {
                 }
 
                 log.debug("Download finished for {}", audio.getUrl());
-                return new Result(audio, file);
+                return new DownloadResult(audio, file);
             }
         } catch (Exception e) {
             log.error("Download file error (audio #" + audio.getId() + ")", e);
             throw new DownloadException(e, audio);
         }
-    }
-
-    @Data
-    public static class Result {
-        private final Audio audio;
-        private final File file;
     }
 
 }

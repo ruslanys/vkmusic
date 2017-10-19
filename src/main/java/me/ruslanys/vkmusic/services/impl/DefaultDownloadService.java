@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.ruslanys.vkmusic.component.VkClient;
 import me.ruslanys.vkmusic.component.impl.DownloadTask;
 import me.ruslanys.vkmusic.entity.Audio;
+import me.ruslanys.vkmusic.entity.domain.DownloadResult;
 import me.ruslanys.vkmusic.entity.domain.event.DownloadFailEvent;
 import me.ruslanys.vkmusic.entity.domain.event.DownloadFinishEvent;
 import me.ruslanys.vkmusic.entity.domain.event.DownloadSuccessEvent;
@@ -71,7 +72,7 @@ public class DefaultDownloadService implements DownloadService {
         }
 
         ExecutorService executor = Executors.newFixedThreadPool(properties.getPoolSize());
-        CompletionService<DownloadTask.Result> completionService = new ExecutorCompletionService<>(executor);
+        CompletionService<DownloadResult> completionService = new ExecutorCompletionService<>(executor);
 
         for (Audio audio : audios) {
             completionService.submit(new DownloadTask(destinationFolder, audio));
@@ -80,7 +81,7 @@ public class DefaultDownloadService implements DownloadService {
         int n = audios.size();
         for (int i = 0; i < n; i++) {
             try {
-                DownloadTask.Result result = completionService.take().get();
+                DownloadResult result = completionService.take().get();
                 publisher.publishEvent(new DownloadSuccessEvent(this, result));
             } catch (ExecutionException ex) {
                 publisher.publishEvent(new DownloadFailEvent(this, (DownloadException) ex.getCause()));

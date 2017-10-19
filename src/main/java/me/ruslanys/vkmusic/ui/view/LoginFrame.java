@@ -54,16 +54,12 @@ public class LoginFrame extends LoadingFrame implements ChangeListener<Worker.St
     @Override
     public void changed(ObservableValue<? extends Worker.State> ov, Worker.State oldState, Worker.State newState) {
         switch (newState) {
-            case READY:
-            case SUCCEEDED:
-            case FAILED:
-            case CANCELLED:
-                setState(State.MAIN);
-                break;
             case SCHEDULED:
             case RUNNING:
                 setState(State.LOADING);
                 break;
+            default:
+                setState(State.MAIN);
         }
     }
 
