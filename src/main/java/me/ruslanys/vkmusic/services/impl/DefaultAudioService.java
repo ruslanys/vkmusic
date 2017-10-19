@@ -5,11 +5,9 @@ import me.ruslanys.vkmusic.component.VkClient;
 import me.ruslanys.vkmusic.entity.Audio;
 import me.ruslanys.vkmusic.entity.domain.DownloadStatus;
 import me.ruslanys.vkmusic.entity.domain.event.DownloadStatusEvent;
-import me.ruslanys.vkmusic.entity.domain.event.LogoutEvent;
 import me.ruslanys.vkmusic.repository.AudioRepository;
 import me.ruslanys.vkmusic.services.AudioService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +18,7 @@ import java.util.List;
  */
 @Transactional
 @Service
-public class DefaultAudioService implements AudioService, ApplicationListener<LogoutEvent> {
+public class DefaultAudioService implements AudioService {
 
     private final VkClient vkClient;
     private final AudioRepository audioRepository;
@@ -75,8 +73,4 @@ public class DefaultAudioService implements AudioService, ApplicationListener<Lo
         save(entity);
     }
 
-    @Override
-    public void onApplicationEvent(LogoutEvent event) {
-        audioRepository.deleteAll();
-    }
 }
