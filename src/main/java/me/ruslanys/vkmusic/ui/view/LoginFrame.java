@@ -65,12 +65,12 @@ public class LoginFrame extends LoadingFrame implements ChangeListener<Worker.St
     }
 
     public void load(String url) {
-        CookieManager.setDefault(new com.sun.webkit.network.CookieManager()); // clear cookies
+        Platform.runLater(() -> webView.getEngine().load(url));
+    }
 
-        Platform.runLater(() -> {
-            webView.getEngine().loadContent(""); // clear view
-            webView.getEngine().load(url);
-        });
+    public void clear() {
+        CookieManager.setDefault(new com.sun.webkit.network.CookieManager());
+        Platform.runLater(() -> webView.getEngine().loadContent(""));
     }
 
 }

@@ -101,6 +101,7 @@ public class LoginController implements CommandLineRunner, Runnable, ChangeListe
 
     private void onAuthSuccess() {
         loginFrame.setVisible(false);
+        loginFrame.clear();
         mainController.run();
     }
 
