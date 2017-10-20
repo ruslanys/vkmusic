@@ -11,6 +11,7 @@ import javafx.scene.web.WebView;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
+import java.awt.*;
 import java.net.CookieManager;
 
 /**
@@ -26,11 +27,12 @@ public class LoginFrame extends LoadingFrame implements ChangeListener<Worker.St
 
     @Override
     protected void initWindow() {
-        setSize(1000, 660);
-        setLocationRelativeTo(null);
-
         setTitle("Авторизация");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+        setSize(1000, 660);
+        setMinimumSize(new Dimension(640, 480));
+        setLocationRelativeTo(null);
     }
 
     @Override
