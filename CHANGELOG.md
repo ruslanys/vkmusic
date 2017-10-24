@@ -1,14 +1,14 @@
-# Changelog
-All notable changes to this project will be documented in this file.
+# Лог изменений
+Все значимые изменения в этом проекте будут задокументированы в этом файле.
 
-The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
-and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+Формат лога основан на [Ведите changelog](http://keepachangelog.com/ru/1.0.0/)
+и [Семантическом версионировании](http://semver.org/lang/ru/spec/v2.0.0.html).
 
-## [Неопубликованное]
+## [Новое]
 ### Исправлено
 - Установлены минимальные размеры окон.
 - Очистка WebView после успешно пройденной авторизации.
-- Ошибка при копировании содержимого из таблицы в буфер (#16)
+- Ошибка при копировании содержимого из таблицы в буфер (#16).
 
 
 ## [2.1.0] - 2017-10-19
@@ -56,6 +56,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Поддержка ВК API по работе с музыкой.
 
 
-[Неопубликованное]: https://github.com/ruslanys/vkmusic/compare/HEAD...2.x.x.SWING
+[Новое]: https://github.com/ruslanys/vkmusic/compare/HEAD...2.x.x.SWING
 [2.1.0]: https://github.com/ruslanys/vkmusic/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/ruslanys/vkmusic/compare/e04e606...v2.0.0
