@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -29,12 +31,12 @@ public class MainFrame extends LoadingFrame implements ActionListener, ItemListe
     private final transient ApplicationEventPublisher publisher;
     private final AboutFrame aboutFrame;
 
-
-    private AudioTableModel model;
-    private JLabel toolbarLabel;
-
     @Setter private transient OnSyncListener syncListener;
     @Setter private transient OnChangeDestinationListener destinationListener;
+
+    private JTable table;
+    private AudioTableModel model;
+    private JLabel toolbarLabel;
 
     private JMenu syncMenu;
     private JCheckBoxMenuItem autoSyncItem;
@@ -68,7 +70,7 @@ public class MainFrame extends LoadingFrame implements ActionListener, ItemListe
         final JScrollPane scrollPane = new JScrollPane();
         panel.add(scrollPane, BorderLayout.CENTER);
 
-        JTable table = new JTable() {
+        table = new JTable() {
             @Override
             public Class<?> getColumnClass(int column) {
                 return getValueAt(0, column).getClass();
@@ -76,6 +78,17 @@ public class MainFrame extends LoadingFrame implements ActionListener, ItemListe
         };
         model = new AudioTableModel();
         table.setModel(model);
+        table.setTransferHandler(new TransferHandler() {
+            @Override
+            public void exportToClipboard(JComponent comp, Clipboard clip, int action) throws IllegalStateException {
+                int selectedRow = table.getSelectedRow();
+                String artist = model.getValueAt(selectedRow, 1).toString();
+                String title = model.getValueAt(selectedRow, 2).toString();
+
+                StringSelection selection = new StringSelection(artist + " - " + title);
+                clip.setContents(selection, null);
+            }
+        });
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
