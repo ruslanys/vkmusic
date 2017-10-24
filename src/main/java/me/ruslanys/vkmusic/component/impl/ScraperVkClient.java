@@ -11,9 +11,6 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
 import org.springframework.stereotype.Component;
 
 import javax.script.Invocable;
@@ -21,7 +18,10 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -37,7 +37,6 @@ public class ScraperVkClient implements VkClient {
     private static final String USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36";
     private static final String PATH_BASE = "https://vk.com";
     
-    private static final String FORM_ACTION_KEY = "action";
     private static final String JSON_DELIMITER = "<!json>";
     
     private static final int SLEEP_INTERVAL = 5_000;
@@ -61,19 +60,6 @@ public class ScraperVkClient implements VkClient {
         this.cookies.clear();
     }
 
-    private void handleCookies(Map<String, String> cookies) {
-        this.cookies.putAll(cookies);
-
-        Set<Map.Entry<String, String>> entries = cookies.entrySet();
-        entries.removeIf(entry -> entry.getKey().isEmpty());
-        entries.removeIf(entry -> entry.getValue().isEmpty());
-        entries.removeIf(entry -> "DELETED".equals(entry.getValue()));
-    }
-
-    private void handleCookies(Connection.Response response) {
-        handleCookies(response.cookies());
-    }
-
     @Override
     @SneakyThrows
     public Long fetchUserId() {
@@ -88,66 +74,6 @@ public class ScraperVkClient implements VkClient {
         log.info("User ID: {}", id);
 
         return id;
-    }
-
-    /**
-     * @deprecated This method is unsecured and not reliable because of ReCaptcha on the VK side.
-     */
-    @Deprecated
-    @SneakyThrows
-    private String submitLoginForm(String username, String password) throws VkException {
-        log.info("Signing in with {}...", username);
-
-        Map<String, String> loginForm = getLoginForm();
-        loginForm.put("email", username);
-        loginForm.put("pass", password);
-
-        Connection connection = Jsoup.connect(loginForm.get(FORM_ACTION_KEY))
-                .userAgent(USER_AGENT).cookies(cookies).method(Connection.Method.POST)
-                .data(loginForm);
-        Connection.Response response = connection.execute();
-        handleCookies(response);
-
-        Matcher matcher = Pattern.compile("parent.onLoginDone\\('(.+)'\\)").matcher(response.body());
-        if (!matcher.find()) {
-            throw new VkException("Не удалось пройти авторизацию.");
-        }
-        String path = matcher.group(1);
-        log.info("Home page path: {}", path);
-
-        return path;
-    }
-
-    /**
-     * @deprecated This method is unsecured and not reliable because of ReCaptcha on the VK side.
-     */
-    @Deprecated
-    @SneakyThrows
-    private Map<String, String> getLoginForm() {
-        Connection.Response response = Jsoup.connect(PATH_BASE)
-                .userAgent(USER_AGENT).cookies(cookies).method(Connection.Method.GET)
-                .execute();
-
-        handleCookies(response);
-
-        Document document = response.parse();
-        Element element = document.getElementById("quick_login_form");
-
-        Map<String, String> loginForm = new HashMap<>();
-        loginForm.put(FORM_ACTION_KEY, element.attr(FORM_ACTION_KEY));
-
-        for (Node node : element.childNodes()) {
-            if (!(node instanceof Element)) continue;
-            Element childElement = (Element) node;
-
-            String key = childElement.attr("name");
-            String value = childElement.attr("value");
-            if (!key.isEmpty()) {
-                loginForm.put(key, value);
-            }
-        }
-
-        return loginForm;
     }
 
     @SneakyThrows
@@ -275,7 +201,7 @@ public class ScraperVkClient implements VkClient {
 
         private List<List> list;
 
-        public boolean hasMore() {
+        boolean hasMore() {
             return Integer.valueOf(1).equals(hasMore);
         }
     }
