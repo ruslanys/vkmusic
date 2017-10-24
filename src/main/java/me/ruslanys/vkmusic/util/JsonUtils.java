@@ -2,7 +2,6 @@ package me.ruslanys.vkmusic.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
-import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
@@ -16,7 +15,7 @@ public class JsonUtils implements ApplicationContextAware {
     private static ObjectMapper mapper;
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    public void setApplicationContext(ApplicationContext applicationContext) {
         mapper = applicationContext.getBean(ObjectMapper.class);
     }
 

@@ -80,7 +80,7 @@ public class MainFrame extends LoadingFrame implements ActionListener, ItemListe
         table.setModel(model);
         table.setTransferHandler(new TransferHandler() {
             @Override
-            public void exportToClipboard(JComponent comp, Clipboard clip, int action) throws IllegalStateException {
+            public void exportToClipboard(JComponent comp, Clipboard clip, int action) {
                 int selectedRow = table.getSelectedRow();
                 String artist = model.getValueAt(selectedRow, 1).toString();
                 String title = model.getValueAt(selectedRow, 2).toString();
