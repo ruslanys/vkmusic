@@ -1,6 +1,6 @@
 language: java
 
-script: mvn package
+script: ./gradlew build
 
 sudo: false
 addons:
