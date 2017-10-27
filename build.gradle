@@ -47,3 +47,7 @@ jar {
         attributes("Implementation-Version": version)
     }
 }
+
+springBoot {
+    executable = true
+}
