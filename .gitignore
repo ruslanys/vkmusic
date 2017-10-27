@@ -4,3 +4,4 @@ target/
 *.log
 *.db
 Music/
+build/
