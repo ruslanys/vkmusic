@@ -49,8 +49,9 @@ jar {
     manifest {
         attributes("Implementation-Version": version)
     }
+    archiveName = rootProject.name + ".jar"
 }
 
-springBoot {
+bootRepackage {
     executable = true
 }
