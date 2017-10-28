@@ -8,6 +8,7 @@ import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import me.ruslanys.vkmusic.util.DesktopUtils;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
@@ -29,6 +30,7 @@ public class LoginFrame extends LoadingFrame implements ChangeListener<Worker.St
     protected void initWindow() {
         setTitle("Авторизация");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setIconImage(DesktopUtils.getIcon());
 
         setSize(1000, 660);
         setMinimumSize(new Dimension(640, 480));

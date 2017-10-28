@@ -4,6 +4,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import me.ruslanys.vkmusic.entity.domain.event.LogoutEvent;
 import me.ruslanys.vkmusic.ui.model.AudioTableModel;
+import me.ruslanys.vkmusic.util.DesktopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
@@ -57,6 +58,7 @@ public class MainFrame extends LoadingFrame implements ActionListener, ItemListe
     protected void initWindow() {
         setTitle("VKMusic");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setIconImage(DesktopUtils.getIcon());
 
         setSize(new Dimension(640, 480));
         setMinimumSize(new Dimension(640, 240));
