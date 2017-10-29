@@ -5,6 +5,9 @@
 и [Семантическом версионировании](http://semver.org/lang/ru/spec/v2.0.0.html).
 
 ## [Новое]
+
+
+## [2.1.1] - 2017-10-29
 ### Добавлено
 - Установочные пакеты приложения для Windows, Unix, MacOS со встроенной JRE.
 - Установлена иконка (#14). 
@@ -64,5 +67,6 @@
 
 
 [Новое]: https://github.com/ruslanys/vkmusic/compare/HEAD...2.x.x.SWING
+[2.1.1]: https://github.com/ruslanys/vkmusic/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/ruslanys/vkmusic/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/ruslanys/vkmusic/compare/e04e606...v2.0.0
