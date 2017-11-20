@@ -35,4 +35,4 @@ VKMusic написан на Java 8 с применением нижеследу�
 * JPA/Hibernate
 * SQLite
 * Swing
-* Java FX
+* JavaFX
