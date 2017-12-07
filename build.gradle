@@ -1,18 +1,7 @@
-buildscript {
-    ext {
-        springBootVersion = '1.5.8.RELEASE'
-        jacksonVersion = '2.9.2'
-    }
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-    }
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '1.5.9.RELEASE'
 }
-
-apply plugin: 'java'
-apply plugin: 'org.springframework.boot'
 
 group = 'me.ruslanys'
 version = '2.1.1'
@@ -23,25 +12,35 @@ repositories {
 }
 
 
+ext.jacksonVersion = '2.9.2'
+
 dependencies {
+    // Spring
     compile('org.springframework.boot:spring-boot-starter')
     compile('org.springframework.boot:spring-boot-starter-cache')
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
 
+    // DB
     compile('com.enigmabridge:hibernate4-sqlite-dialect:0.1.2')
     compile('org.xerial:sqlite-jdbc:3.20.0')
-    compile('com.fasterxml.jackson.core:jackson-databind:' + jacksonVersion)
-    compile('com.fasterxml.jackson.core:jackson-annotations:' + jacksonVersion)
-    compile('com.fasterxml.jackson.core:jackson-core:' + jacksonVersion)
+
+    // Jackson
+    compile("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
+    compile("com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion")
+    compile("com.fasterxml.jackson.core:jackson-core:$jacksonVersion")
+
+    // Utils
     compile('commons-cli:commons-cli:1.3.1')
     compile('commons-codec:commons-codec:1.10')
     compile('org.apache.commons:commons-lang3:3.6')
-    compile('com.mpatric:mp3agic:0.9.0')
     compile('com.google.guava:guava:23.0')
     compile('org.jsoup:jsoup:1.10.3')
+    compile('com.mpatric:mp3agic:0.9.0')
 
+    // DevTools
     compileOnly('org.projectlombok:lombok')
 
+    // Tests
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
