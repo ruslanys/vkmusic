@@ -6,6 +6,13 @@
 
 ## [Новое]
 
+## [2.1.2] - 2017-12-08
+### Исправлено
+- Обновлен алгоритм дешифрации адресов mp3 файлов (#20).
+- Упрощен (обновлен) Gradle скрипт сборки проекта.
+
+### Изменено
+- Gradle обновлен до 4.4.
 
 ## [2.1.1] - 2017-10-29
 ### Добавлено
@@ -67,6 +74,7 @@
 
 
 [Новое]: https://github.com/ruslanys/vkmusic/compare/HEAD...2.x.x.SWING
+[2.1.2]: https://github.com/ruslanys/vkmusic/compare/v2.1.1...v2.1.2
 [2.1.1]: https://github.com/ruslanys/vkmusic/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/ruslanys/vkmusic/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/ruslanys/vkmusic/compare/e04e606...v2.0.0
