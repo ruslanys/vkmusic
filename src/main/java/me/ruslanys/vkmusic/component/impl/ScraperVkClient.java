@@ -7,8 +7,8 @@ import me.ruslanys.vkmusic.component.VkClient;
 import me.ruslanys.vkmusic.entity.Audio;
 import me.ruslanys.vkmusic.exception.VkException;
 import me.ruslanys.vkmusic.util.JsonUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.springframework.stereotype.Component;
@@ -17,6 +17,7 @@ import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,7 +43,21 @@ public class ScraperVkClient implements VkClient {
     private static final int SLEEP_INTERVAL = 5_000;
 
     private final ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("JavaScript");
+    private final String script;
+
     private final Map<String, String> cookies = new HashMap<>();
+
+
+    public ScraperVkClient() throws IOException {
+        StringBuilder sb = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("decrypt.js")))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line).append(System.lineSeparator());
+            }
+        }
+        script = sb.toString();
+    }
 
     @Override
     public void addCookies(Map<String, String> cookies) {
@@ -121,12 +136,13 @@ public class ScraperVkClient implements VkClient {
 
     @SneakyThrows
     @Override
-    public void fetchUrls(List<Audio> audioList) {
+    public void fetchUrls(List<Audio> audioList) { // TODO: refactor
         Map<Long, Audio> audioMap = new HashMap<>(audioList.size());
         for (Audio audio : audioList) {
             audioMap.put(audio.getId(), audio);
         }
 
+        Long userId = fetchUserId();
         int sleepInterval = SLEEP_INTERVAL;
         int fromIndex = 0;
         int toIndex = Math.min(fromIndex + 10, audioList.size());
@@ -167,7 +183,7 @@ public class ScraperVkClient implements VkClient {
             for (List object : lists) {
                 Audio audio = audioMap.get(((Number) object.get(0)).longValue());
                 String url = (String) object.get(2);
-                url = decrypt(url);
+                url = decrypt(userId, url);
 
                 audio.setUrl(url);
             }
@@ -180,13 +196,12 @@ public class ScraperVkClient implements VkClient {
     }
 
     @SneakyThrows
-    private String decrypt(String url) {
-        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("decrypt.js")))) {
-            scriptEngine.eval(bufferedReader);
+    private String decrypt(Long vkId, String url) {
+        String script = this.script.replace("${vkId}", vkId.toString()); // TODO: replace with bindings
+        scriptEngine.eval(script);
 
-            Invocable inv = (Invocable) scriptEngine;
-            return (String) inv.invokeFunction("decode", url);
-        }
+        Invocable inv = (Invocable) scriptEngine;
+        return (String) inv.invokeFunction("decode", url);
     }
 
     @Data
