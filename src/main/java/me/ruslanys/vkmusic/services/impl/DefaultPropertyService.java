@@ -52,7 +52,7 @@ public class DefaultPropertyService implements PropertyService {
     @Cacheable
     @Override
     public <T extends Properties> T get(Class<T> clazz) {
-        Property entity = propertyRepository.findOne(clazz.getSimpleName());
+        Property entity = propertyRepository.findById(clazz.getSimpleName()).orElse(null);
         if (entity != null) {
             return JsonUtils.fromString(entity.getJson(), clazz);
         }
@@ -64,8 +64,8 @@ public class DefaultPropertyService implements PropertyService {
     @Override
     public <T extends Properties> void remove(Class<T> clazz) {
         String key = clazz.getSimpleName();
-        if (propertyRepository.exists(key)) {
-            propertyRepository.delete(key);
+        if (propertyRepository.existsById(key)) {
+            propertyRepository.deleteById(key);
         }
     }
 

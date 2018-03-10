@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Ruslan Molchanov (ruslanys@gmail.com)
@@ -48,12 +49,13 @@ public class DefaultAudioService implements AudioService {
             Audio audio = audioList.get(i);
             audio.setPosition(i + 1);
 
-            Audio audioInDb = audioRepository.findOne(audio.getId());
-            if (audioInDb == null) {
+            Optional<Audio> audioInDb = audioRepository.findById(audio.getId());
+            if (audioInDb.isPresent()) {
+                Audio model = audioInDb.get();
+                model.setPosition(audio.getPosition());
+                audioRepository.save(model);
+            } else {
                 audioRepository.save(audio);
-            } else if (!audioInDb.getPosition().equals(audio.getPosition())) {
-                audioInDb.setPosition(audio.getPosition());
-                audioRepository.save(audioInDb);
             }
         }
 
@@ -68,7 +70,7 @@ public class DefaultAudioService implements AudioService {
     @Override
     public void onDownloadStatusEvent(DownloadStatusEvent event) {
         Audio audio = event.getAudio();
-        Audio entity = audioRepository.findOne(audio.getId());
+        Audio entity = audioRepository.findById(audio.getId()).get();
         entity.setStatus(event.getStatus());
         save(entity);
     }
