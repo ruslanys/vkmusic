@@ -69,13 +69,13 @@ public class MainController {
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
 
         TableColumn<Audio, String> nameColumn = new TableColumn<>("Исполнитель");
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("artist"));
 
         TableColumn<Audio, String> phoneColumn = new TableColumn<>("Наименование");
-        phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
+        phoneColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
 
         TableColumn<Audio, String> emailColumn = new TableColumn<>("Продолжительность");
-        emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
+        emailColumn.setCellValueFactory(new PropertyValueFactory<>("duration"));
 
         TableColumn<Audio, String> statusColumn = new TableColumn<>("Статус");
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
