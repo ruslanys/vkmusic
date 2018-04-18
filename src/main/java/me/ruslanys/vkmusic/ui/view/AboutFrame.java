@@ -62,7 +62,7 @@ public class AboutFrame extends JFrame implements HyperlinkListener {
     }
 
     private String getContent() {
-        InputStream resource = getClass().getClassLoader().getResourceAsStream("about.html");
+        InputStream resource = getClass().getClassLoader().getResourceAsStream("views/html/about.html");
         StringBuilder sb = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource))) {
             String line;

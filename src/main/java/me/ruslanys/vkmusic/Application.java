@@ -1,19 +1,34 @@
 package me.ruslanys.vkmusic;
 
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import me.ruslanys.vkmusic.config.ControllersConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-
-import javax.swing.*;
 
 @SpringBootApplication
-public class Application {
+public class Application extends AbstractJavaFxApplicationSupport {
 
-    public static void main(String[] args) throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException {
-        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+    @Value("${controller.title:JavaFX приложение}")//
+    private String windowTitle;
 
-        new SpringApplicationBuilder(Application.class)
-                .headless(false)
-                .run(args);
+    @Qualifier("mainView")
+    @Autowired
+    private ControllersConfiguration.ViewHolder view;
+
+    @Override
+    public void start(Stage stage) {
+        stage.setTitle(windowTitle);
+        stage.setScene(new Scene(view.getView()));
+        stage.setResizable(true);
+        stage.centerOnScreen();
+        stage.show();
+    }
+
+    public static void main(String[] args) {
+        launchApp(Application.class, args);
     }
 
 }
