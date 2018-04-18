@@ -1,4 +1,4 @@
-package me.ruslanys.vkmusic.services.impl;
+package me.ruslanys.vkmusic.service.impl;
 
 import lombok.NonNull;
 import me.ruslanys.vkmusic.component.VkClient;
@@ -6,7 +6,7 @@ import me.ruslanys.vkmusic.entity.Audio;
 import me.ruslanys.vkmusic.entity.domain.DownloadStatus;
 import me.ruslanys.vkmusic.entity.domain.event.DownloadStatusEvent;
 import me.ruslanys.vkmusic.repository.AudioRepository;
-import me.ruslanys.vkmusic.services.AudioService;
+import me.ruslanys.vkmusic.service.AudioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

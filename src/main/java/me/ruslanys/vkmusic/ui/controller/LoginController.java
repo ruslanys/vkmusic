@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.ruslanys.vkmusic.component.VkClient;
 import me.ruslanys.vkmusic.entity.domain.event.LogoutEvent;
 import me.ruslanys.vkmusic.property.VkCookies;
-import me.ruslanys.vkmusic.services.PropertyService;
+import me.ruslanys.vkmusic.service.PropertyService;
 import me.ruslanys.vkmusic.ui.view.LoadingFrame;
 import me.ruslanys.vkmusic.ui.view.LoginFrame;
 import org.springframework.beans.factory.annotation.Autowired;

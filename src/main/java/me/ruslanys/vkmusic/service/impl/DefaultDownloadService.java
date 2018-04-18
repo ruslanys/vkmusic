@@ -1,4 +1,4 @@
-package me.ruslanys.vkmusic.services.impl;
+package me.ruslanys.vkmusic.service.impl;
 
 import lombok.NonNull;
 import lombok.SneakyThrows;
@@ -12,8 +12,8 @@ import me.ruslanys.vkmusic.entity.domain.event.DownloadFinishEvent;
 import me.ruslanys.vkmusic.entity.domain.event.DownloadSuccessEvent;
 import me.ruslanys.vkmusic.exception.DownloadException;
 import me.ruslanys.vkmusic.property.DownloaderProperties;
-import me.ruslanys.vkmusic.services.DownloadService;
-import me.ruslanys.vkmusic.services.PropertyService;
+import me.ruslanys.vkmusic.service.DownloadService;
+import me.ruslanys.vkmusic.service.PropertyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Async;

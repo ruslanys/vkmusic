@@ -1,4 +1,4 @@
-package me.ruslanys.vkmusic.services;
+package me.ruslanys.vkmusic.service;
 
 import me.ruslanys.vkmusic.entity.Audio;
 

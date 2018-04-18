@@ -1,11 +1,11 @@
-package me.ruslanys.vkmusic.services.impl;
+package me.ruslanys.vkmusic.service.impl;
 
 import lombok.NonNull;
 import me.ruslanys.vkmusic.entity.Property;
 import me.ruslanys.vkmusic.property.DownloaderProperties;
 import me.ruslanys.vkmusic.property.Properties;
 import me.ruslanys.vkmusic.repository.PropertyRepository;
-import me.ruslanys.vkmusic.services.PropertyService;
+import me.ruslanys.vkmusic.service.PropertyService;
 import me.ruslanys.vkmusic.util.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
