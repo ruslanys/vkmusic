@@ -5,7 +5,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import me.ruslanys.vkmusic.entity.Audio;
 import me.ruslanys.vkmusic.service.AudioService;
@@ -30,9 +29,6 @@ public class MainController {
 
     // Инъекции JavaFX
     @FXML private TableView<Audio> table;
-    @FXML private TextField txtName;
-    @FXML private TextField txtPhone;
-    @FXML private TextField txtEmail;
 
     // Variables
     private ObservableList<Audio> data;
@@ -77,11 +73,11 @@ public class MainController {
         TableColumn<Audio, Integer> durationColumn = new TableColumn<>("Продолжительность");
         durationColumn.setCellValueFactory(new PropertyValueFactory<>("duration"));
 
-//        TableColumn<Audio, DownloadStatus> statusColumn = new TableColumn<>("Статус");
-//        durationColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+        TableColumn<Audio, String> statusColumn = new TableColumn<>("Статус");
+        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
 
         table.getColumns()
-                .setAll(idColumn, artistColumn, titleColumn, durationColumn);
+                .setAll(idColumn, artistColumn, titleColumn, durationColumn, statusColumn);
 
         // Данные таблицы
         table.setItems(data);
