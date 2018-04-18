@@ -68,20 +68,20 @@ public class MainController {
         TableColumn<Audio, String> idColumn = new TableColumn<>("ID");
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
 
-        TableColumn<Audio, String> nameColumn = new TableColumn<>("Исполнитель");
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("artist"));
+        TableColumn<Audio, String> artistColumn = new TableColumn<>("Исполнитель");
+        artistColumn.setCellValueFactory(new PropertyValueFactory<>("artist"));
 
-        TableColumn<Audio, String> phoneColumn = new TableColumn<>("Наименование");
-        phoneColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
+        TableColumn<Audio, String> titleColumn = new TableColumn<>("Наименование");
+        titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
 
-        TableColumn<Audio, String> emailColumn = new TableColumn<>("Продолжительность");
-        emailColumn.setCellValueFactory(new PropertyValueFactory<>("duration"));
+        TableColumn<Audio, Integer> durationColumn = new TableColumn<>("Продолжительность");
+        durationColumn.setCellValueFactory(new PropertyValueFactory<>("duration"));
 
-        TableColumn<Audio, String> statusColumn = new TableColumn<>("Статус");
-        emailColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+//        TableColumn<Audio, DownloadStatus> statusColumn = new TableColumn<>("Статус");
+//        durationColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
 
         table.getColumns()
-                .setAll(idColumn, nameColumn, phoneColumn, emailColumn, statusColumn);
+                .setAll(idColumn, artistColumn, titleColumn, durationColumn);
 
         // Данные таблицы
         table.setItems(data);
