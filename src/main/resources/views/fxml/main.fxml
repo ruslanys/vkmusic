@@ -1,52 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.VBox?>
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
-      prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="me.ruslanys.vkmusic.javafx.controller.MainController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.ruslanys.vkmusic.javafx.controller.MainController">
     <children>
         <MenuBar>
             <menus>
                 <Menu mnemonicParsing="false" text="File">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Close"/>
+                        <MenuItem mnemonicParsing="false" text="Close" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Edit">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Delete"/>
+                        <MenuItem mnemonicParsing="false" text="Delete" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Language">
                     <items>
                         <RadioMenuItem mnemonicParsing="false" text="English">
                             <toggleGroup>
-                                <ToggleGroup fx:id="language"/>
+                                <ToggleGroup fx:id="language" />
                             </toggleGroup>
                         </RadioMenuItem>
-                        <RadioMenuItem mnemonicParsing="false" text="Русский" toggleGroup="$language"/>
+                        <RadioMenuItem mnemonicParsing="false" text="Русский" toggleGroup="$language" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="About"/>
+                        <MenuItem mnemonicParsing="false" text="About" />
                     </items>
                 </Menu>
             </menus>
         </MenuBar>
-        <TableView focusTraversable="false" fx:id="table">
+        <TableView fx:id="table" focusTraversable="false" style="-fx-focus-color: transparent;">
             <contextMenu>
                 <ContextMenu>
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Select All"/>
-                        <MenuItem mnemonicParsing="false" text="Download Selected"/>
+                        <MenuItem mnemonicParsing="false" onAction="#selectAll" text="Select All" />
+                        <MenuItem mnemonicParsing="false" text="Download Selected" />
                     </items>
                 </ContextMenu>
             </contextMenu>
             <columnResizePolicy>
-                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>
         </TableView>
     </children>

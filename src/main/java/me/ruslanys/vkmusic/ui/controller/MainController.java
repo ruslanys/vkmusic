@@ -79,7 +79,8 @@ public class MainController implements Runnable, MainFrame.OnSyncListener, MainF
         
         displayTray();
         initComponents();
-        mainFrame.setAutoSync(properties.isAutoSync());
+//        mainFrame.setAutoSync(properties.isAutoSync());
+        mainFrame.setVisible(false);
     }
 
     @Override

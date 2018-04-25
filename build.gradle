@@ -30,6 +30,7 @@ dependencies {
     compile("com.fasterxml.jackson.core:jackson-core:${jacksonVersion}")
 
     // Utils
+    compile('org.reflections:reflections:0.9.11')
     compile('commons-codec:commons-codec:1.10')
     compile('org.apache.commons:commons-text:1.1')
     compile('org.apache.commons:commons-lang3:3.6')

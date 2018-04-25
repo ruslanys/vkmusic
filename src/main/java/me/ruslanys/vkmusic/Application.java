@@ -1,8 +1,8 @@
 package me.ruslanys.vkmusic;
 
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import me.ruslanys.vkmusic.config.ControllersConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,12 +16,12 @@ public class Application extends AbstractJavaFxApplicationSupport {
 
     @Qualifier("mainView")
     @Autowired
-    private ControllersConfiguration.ViewHolder view;
+    private Parent view;
 
     @Override
     public void start(Stage stage) {
         stage.setTitle(windowTitle);
-        stage.setScene(new Scene(view.getView()));
+        stage.setScene(new Scene(view));
         stage.setResizable(true);
         stage.centerOnScreen();
         stage.show();
