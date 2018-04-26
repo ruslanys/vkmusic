@@ -14,14 +14,19 @@ public class Application extends AbstractJavaFxApplicationSupport {
     @Value("${controller.title:JavaFX приложение}")//
     private String windowTitle;
 
-    @Qualifier("mainView")
+    @Qualifier("loginView")
     @Autowired
     private Parent view;
 
     @Override
     public void start(Stage stage) {
         stage.setTitle(windowTitle);
+
         stage.setScene(new Scene(view));
+
+        stage.setMinWidth(640);
+        stage.setMinHeight(480);
+
         stage.setResizable(true);
         stage.centerOnScreen();
         stage.show();

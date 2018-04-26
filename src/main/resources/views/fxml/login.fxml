@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
+<StackPane fx:id="loadingView" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="480.0" minWidth="640.0"
+           prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.141"
+           xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.ruslanys.vkmusic.javafx.controller.LoginController">
 
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.web.WebView?>
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="480.0" minWidth="640.0" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <WebView maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" />
-   </children>
-</Pane>
+    <BorderPane fx:id="loadingFrame" style="-fx-background-color: rgb(80, 114, 153);">
+        <center>
+            <ImageView fx:id="loadingImageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true"
+                       preserveRatio="true" BorderPane.alignment="CENTER"/>
+
+        </center>
+    </BorderPane>
+
+</StackPane>
