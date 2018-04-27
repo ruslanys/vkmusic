@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'me.ruslanys'
-version = '2.2.0'
+version = '3.0.0-SNAPSHOT'
 sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
