@@ -16,11 +16,8 @@ import me.ruslanys.vkmusic.ui.view.LoadingFrame;
 import me.ruslanys.vkmusic.ui.view.MainFrame;
 import me.ruslanys.vkmusic.util.Notifications;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Component;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -36,8 +33,9 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 @Slf4j
 
-@Component
-@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
+@Deprecated
+//@Component
+//@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class MainController implements Runnable, MainFrame.OnSyncListener, MainFrame.OnChangeDestinationListener {
 
     private static final String DEFAULT_STATUS = "OK";

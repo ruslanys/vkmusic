@@ -7,40 +7,43 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import me.ruslanys.vkmusic.annotation.FxmlController;
+import me.ruslanys.vkmusic.component.VkClient;
 import me.ruslanys.vkmusic.entity.Audio;
-import me.ruslanys.vkmusic.service.AudioService;
+import me.ruslanys.vkmusic.util.IconUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.annotation.PostConstruct;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
 
 @FxmlController(view = "views/fxml/main.fxml")
 public class MainController {
 
-    // Инъекции Spring
+    @FXML public Pane loadingView;
+    @FXML public ImageView loadingImageView;
+    @FXML private TableView<Audio> tableView;
+
     @Autowired
-    private AudioService audioService;
+    private VkClient vkClient;
 
-    // Инъекции JavaFX
-    @FXML private TableView<Audio> table;
 
-    // Variables
     private ObservableList<Audio> data;
+
 
     @FXML
     public void initialize() {
-        // Этап инициализации JavaFX
+        initLoadingIcon();
+        initTableView();
     }
 
-    /**
-     * На этом этапе уже произведены все возможные инъекции.
-     */
-    @SuppressWarnings("unchecked")
-    @PostConstruct
-    public void init() {
-        List<Audio> audio = audioService.findAll();
-        data = FXCollections.observableArrayList(audio);
+    private void initLoadingIcon() {
+        loadingImageView.setImage(IconUtils.getLoadingIcon());
+    }
+
+    private void initTableView() {
+        data = FXCollections.observableArrayList(new ArrayList<>());
 
         // Столбцы таблицы
         TableColumn<Audio, String> idColumn = new TableColumn<>("ID");
@@ -58,19 +61,31 @@ public class MainController {
         TableColumn<Audio, String> statusColumn = new TableColumn<>("Статус");
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
 
-        table.getColumns()
+        tableView.getColumns()
                 .setAll(idColumn, artistColumn, titleColumn, durationColumn, statusColumn);
 
-        table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
         // Данные таблицы
-        table.setItems(data);
+        tableView.setItems(data);
     }
-
 
     @FXML
     public void selectAll() {
-        table.getSelectionModel().selectAll();
+        tableView.getSelectionModel().selectAll();
+    }
+
+    @FXML
+    public void refreshTable() {
+        tableView.setVisible(false);
+
+        CompletableFuture
+                .supplyAsync(() -> vkClient.getAudio(vkClient.fetchUserId()))
+                .thenAccept(audio -> {
+                    data.clear();
+                    data.addAll(audio);
+                    tableView.setVisible(true);
+                });
     }
 
 }

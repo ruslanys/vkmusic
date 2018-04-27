@@ -9,6 +9,7 @@ import java.util.List;
 /**
  * @author Ruslan Molchanov (ruslanys@gmail.com)
  */
+@Deprecated
 public interface AudioService {
 
     List<Audio> findAll();

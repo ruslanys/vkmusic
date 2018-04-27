@@ -11,7 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class Application extends AbstractJavaFxApplicationSupport {
 
-    @Value("${controller.title:JavaFX приложение}")//
+    @Value("${application.title:Авторизация :: VKMusic}")
     private String windowTitle;
 
     @Qualifier("loginView")

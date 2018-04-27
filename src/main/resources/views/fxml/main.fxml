@@ -1,52 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.VBox?>
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
-      prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="me.ruslanys.vkmusic.javafx.controller.MainController">
-    <children>
-        <MenuBar>
-            <menus>
-                <Menu mnemonicParsing="false" text="File">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="Close"/>
-                    </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="Delete"/>
-                    </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Language">
-                    <items>
-                        <RadioMenuItem mnemonicParsing="false" text="English">
-                            <toggleGroup>
-                                <ToggleGroup fx:id="language"/>
-                            </toggleGroup>
-                        </RadioMenuItem>
-                        <RadioMenuItem mnemonicParsing="false" text="Русский" toggleGroup="$language"/>
-                    </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Help">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="About"/>
-                    </items>
-                </Menu>
-            </menus>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+            prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="me.ruslanys.vkmusic.javafx.controller.MainController">
+    <top>
+        <MenuBar BorderPane.alignment="CENTER">
+            <Menu mnemonicParsing="false" text="Файл">
+                <MenuItem mnemonicParsing="false" text="Закрыть"/>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Помощь">
+                <MenuItem mnemonicParsing="false" text="О программе"/>
+            </Menu>
         </MenuBar>
-        <TableView fx:id="table" focusTraversable="false" style="-fx-focus-color: transparent;">
-            <contextMenu>
-                <ContextMenu>
-                    <items>
-                        <MenuItem mnemonicParsing="false" onAction="#selectAll" text="Select All"/>
-                        <MenuItem mnemonicParsing="false" text="Download Selected"/>
-                    </items>
-                </ContextMenu>
-            </contextMenu>
-            <columnResizePolicy>
-                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-            </columnResizePolicy>
-        </TableView>
-    </children>
-</VBox>
+    </top>
+    <center>
+        <StackPane BorderPane.alignment="CENTER">
+            <BorderPane fx:id="loadingView" style="-fx-background-color: rgb(80, 114, 153);">
+                <center>
+                    <ImageView fx:id="loadingImageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true"
+                               preserveRatio="true" BorderPane.alignment="CENTER"/>
+
+                </center>
+            </BorderPane>
+            <TableView fx:id="tableView" focusTraversable="false" style="-fx-focus-color: transparent;">
+                <contextMenu>
+                    <ContextMenu>
+                        <items>
+                            <MenuItem mnemonicParsing="false" onAction="#selectAll" text="Выделить все"/>
+                            <MenuItem mnemonicParsing="false" text="Скачать выделенные"/>
+                            <MenuItem mnemonicParsing="false" onAction="#refreshTable" text="Обновить"/>
+                        </items>
+                    </ContextMenu>
+                </contextMenu>
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                </columnResizePolicy>
+            </TableView>
+        </StackPane>
+    </center>
+
+
+</BorderPane>
