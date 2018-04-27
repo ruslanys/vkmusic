@@ -22,13 +22,13 @@ import me.ruslanys.vkmusic.util.IconUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import javax.annotation.PostConstruct;
 import java.net.CookieManager;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 @FxmlController(view = "views/fxml/login.fxml")
 public class LoginController implements ChangeListener<Worker.State> {
@@ -100,12 +100,6 @@ public class LoginController implements ChangeListener<Worker.State> {
         loadingImageView.setImage(IconUtils.getLoadingIcon());
     }
 
-
-    @PostConstruct
-    private void init() {
-
-    }
-
     @SneakyThrows
     private String fetchSessionId() {
         Map<String, List<String>> headers = CookieManager.getDefault().get(COOKIE_DOMAIN_URI, new HashMap<>());
@@ -127,21 +121,21 @@ public class LoginController implements ChangeListener<Worker.State> {
     }
 
     private void setSessionId(@NonNull String sessionId) {
-        try {
-            vkClient.setCookies(ImmutableMap.of(SESSION_ID_KEY, sessionId));
-
-            // check that session ID is good
-            vkClient.fetchUserId();
-
-            // open main stage
-            mainController.refreshTable();
-            openMainStage();
-        } catch (Exception e) {
-            webView.getEngine().load(LOGIN_PATH);
-        }
+        CompletableFuture
+                .runAsync(() -> {
+                    vkClient.setCookies(ImmutableMap.of(SESSION_ID_KEY, sessionId));
+                    vkClient.fetchUserId();
+                })
+                .thenRun(() -> Platform.runLater(this::openMainStage))
+                .exceptionally(throwable -> {
+                    Platform.runLater(() -> webView.getEngine().load(LOGIN_PATH));
+                    return null;
+                });
     }
 
     private void openMainStage() {
+        mainController.refreshTable();
+
         Stage stage = (Stage) view.sceneProperty().get().getWindow();
         stage.setTitle("VKMusic");
 

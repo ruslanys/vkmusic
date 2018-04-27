@@ -5,14 +5,10 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class Application extends AbstractJavaFxApplicationSupport {
-
-    @Value("${application.title:Авторизация :: VKMusic}")
-    private String windowTitle;
 
     @Qualifier("loginView")
     @Autowired
@@ -20,7 +16,7 @@ public class Application extends AbstractJavaFxApplicationSupport {
 
     @Override
     public void start(Stage stage) {
-        stage.setTitle(windowTitle);
+        stage.setTitle("Авторизация");
 
         stage.setScene(new Scene(view));
 
