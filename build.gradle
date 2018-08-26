@@ -1,8 +1,14 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '2.0.1.RELEASE'
-    id 'io.spring.dependency-management' version '1.0.5.RELEASE'
+    id 'idea'
+    id 'org.jetbrains.kotlin.jvm' version '1.2.61'
+    id 'org.jetbrains.kotlin.kapt' version '1.2.61'
+    id 'org.jetbrains.kotlin.plugin.spring' version '1.2.61'
+    id 'org.jetbrains.kotlin.plugin.jpa' version '1.2.61'
+    id 'org.springframework.boot' version '2.0.4.RELEASE'
 }
+
+apply plugin: 'io.spring.dependency-management'
 
 group = 'me.ruslanys'
 version = '3.0.0-SNAPSHOT'
@@ -12,7 +18,10 @@ repositories {
     mavenCentral()
 }
 
-ext['jacksonVersion'] = '2.9.4'
+ext {
+    kotlinVersion = '1.2.61'
+    jacksonVersion = '2.9.4'
+}
 
 dependencies {
     // Spring
@@ -44,6 +53,11 @@ dependencies {
 
     // Tests
     testCompile('org.springframework.boot:spring-boot-starter-test')
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+}
+
+sourceSets {
+    main.kotlin.srcDirs += 'src/main/kotlin'
 }
 
 // Jar
@@ -56,4 +70,30 @@ jar {
 
 bootJar {
     launchScript()
+}
+
+// Kotlin
+compileKotlin {
+    kotlinOptions {
+        freeCompilerArgs = ["-Xjsr305=strict"]
+        jvmTarget = "1.8"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        freeCompilerArgs = ["-Xjsr305=strict"]
+        jvmTarget = "1.8"
+    }
+}
+noArg {
+    annotations("javax.persistence.MappedSuperclass", "javax.persistence.Entity")
+}
+
+// IDEA
+idea {
+    module {
+        def kaptMain = file('build/generated/source/kapt/main')
+        sourceDirs += kaptMain
+        generatedSourceDirs += kaptMain
+    }
 }
