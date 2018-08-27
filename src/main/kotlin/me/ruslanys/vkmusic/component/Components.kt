@@ -1,6 +1,6 @@
 package me.ruslanys.vkmusic.component
 
-import me.ruslanys.vkmusic.entity.Audio
+import me.ruslanys.vkmusic.domain.Audio
 import java.io.File
 
 interface PlaylistCreator {

@@ -1,6 +1,7 @@
 package me.ruslanys.vkmusic.component
 
-import me.ruslanys.vkmusic.entity.Audio
+import me.ruslanys.vkmusic.domain.Audio
+import me.ruslanys.vkmusic.service.filename
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.io.BufferedWriter
@@ -24,7 +25,7 @@ class M3uPlaylistCreator : PlaylistCreator {
                     writer.write(String.format("#EXTINF:%d, %s - %s", audio.duration, audio.artist, audio.title))
                     writer.newLine()
 
-                    writer.write(audio.filename)
+                    writer.write(audio.filename())
                     writer.newLine()
                     writer.newLine()
                 }
