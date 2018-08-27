@@ -111,12 +111,10 @@ class ScraperVkClient : VkClient {
     }
 
     override fun fetchUrls(audioList: List<Audio>) {
-        val audioMap = audioList.associateBy { it.id }.toSortedMap()
-
         val userId = fetchUserId()
         var sleepInterval = SLEEP_INTERVAL
 
-        val chunks = audioMap.values.chunked(10)
+        val chunks = audioList.chunked(10)
         var chunkNumber = 0
         while (chunkNumber < chunks.size) {
             val chunkContent = chunks[chunkNumber]
