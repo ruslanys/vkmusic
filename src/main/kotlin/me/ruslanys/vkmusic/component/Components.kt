@@ -15,3 +15,21 @@ interface Id3vTagManager {
     fun fix(file: File): File
 
 }
+
+interface VkClient {
+
+    fun setCookies(cookies: Map<String, String>)
+
+    fun addCookies(cookies: Map<String, String>)
+
+    fun clearCookies()
+
+    fun getAudio(): List<Audio>
+
+    fun getAudio(ownerId: Long): List<Audio>
+
+    fun fetchUserId(): Long
+
+    fun fetchUrls(audioList: List<Audio>)
+
+}
