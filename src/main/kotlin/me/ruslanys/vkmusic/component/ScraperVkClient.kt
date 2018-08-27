@@ -1,7 +1,7 @@
 package me.ruslanys.vkmusic.component
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import me.ruslanys.vkmusic.entity.Audio
+import me.ruslanys.vkmusic.domain.Audio
 import me.ruslanys.vkmusic.exception.VkException
 import org.apache.commons.text.StringEscapeUtils
 import org.jsoup.Connection
