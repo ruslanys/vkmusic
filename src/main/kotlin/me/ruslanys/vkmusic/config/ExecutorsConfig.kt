@@ -2,6 +2,7 @@ package me.ruslanys.vkmusic.config
 
 import org.slf4j.LoggerFactory
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.scheduling.annotation.AsyncConfigurer
 import org.springframework.scheduling.annotation.EnableAsync
@@ -26,6 +27,7 @@ class ExecutorsConfig : SchedulingConfigurer, AsyncConfigurer {
         taskRegistrar.setTaskScheduler(taskScheduler)
     }
 
+    @Bean(name = ["asyncExecutor"])
     override fun getAsyncExecutor(): Executor {
         val executor = ThreadPoolTaskExecutor()
         executor.corePoolSize = 5
