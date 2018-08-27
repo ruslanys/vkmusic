@@ -2,7 +2,7 @@ package me.ruslanys.vkmusic.service
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import me.ruslanys.vkmusic.entity.Property
-import me.ruslanys.vkmusic.property.DownloaderProperties
+import me.ruslanys.vkmusic.property.DownloadProperties
 import me.ruslanys.vkmusic.property.Properties
 import me.ruslanys.vkmusic.repository.PropertyRepository
 import org.springframework.stereotype.Service
@@ -17,8 +17,8 @@ class DefaultPropertyService(private val propertyRepository: PropertyRepository)
 
     @PostConstruct
     private fun init() {
-        if (get(DownloaderProperties::class.java) == null) {
-            set(DownloaderProperties())
+        if (get(DownloadProperties::class.java) == null) {
+            set(DownloadProperties())
         }
     }
 
