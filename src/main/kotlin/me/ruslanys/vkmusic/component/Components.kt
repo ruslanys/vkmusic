@@ -9,6 +9,7 @@ interface PlaylistCreator {
 
 }
 
+@Deprecated("Needs to be rewritten")
 interface Id3vTagManager {
 
     @Deprecated("Needs to be rewritten")
