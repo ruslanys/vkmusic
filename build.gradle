@@ -20,7 +20,7 @@ repositories {
 
 ext {
     kotlinVersion = '1.2.61'
-    jacksonVersion = '2.9.4'
+    jacksonVersion = '2.9.6'
 }
 
 dependencies {
@@ -36,6 +36,7 @@ dependencies {
     compile("com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}")
     compile("com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}")
     compile("com.fasterxml.jackson.core:jackson-core:${jacksonVersion}")
+    compile("com.fasterxml.jackson.module:jackson-module-kotlin:${jacksonVersion}")
 
     // Utils
     compile('org.reflections:reflections:0.9.11')
