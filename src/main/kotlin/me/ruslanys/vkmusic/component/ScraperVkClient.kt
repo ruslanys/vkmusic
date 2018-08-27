@@ -26,6 +26,7 @@ class ScraperVkClient : VkClient {
         private const val USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36"
         private const val PATH_BASE = "https://vk.com"
         private const val JSON_DELIMITER = "<!json>"
+        private const val BLOCK_DELIMITER = "<!>"
         private const val SLEEP_INTERVAL = 5000L
 
         private val SCRIPT_ENGINE = ScriptEngineManager().getEngineByName("JavaScript")
@@ -104,7 +105,7 @@ class ScraperVkClient : VkClient {
 
         val body = response.body()
         val trimmed = body.substring(body.indexOf(JSON_DELIMITER) + JSON_DELIMITER.length)
-        val json = trimmed.substring(0..body.indexOf("<!>"))
+        val json = trimmed.substring(0..body.indexOf(BLOCK_DELIMITER))
 
         return jacksonObjectMapper().readValue(json, VkAudioDto::class.java)
     }
@@ -154,7 +155,7 @@ class ScraperVkClient : VkClient {
         }
 
         val trimmed = body.substring(body.indexOf(JSON_DELIMITER) + JSON_DELIMITER.length)
-        val json = trimmed.substring(0, trimmed.indexOf("<!>"))
+        val json = trimmed.substring(0, trimmed.indexOf(BLOCK_DELIMITER))
 
         val list = jacksonObjectMapper().readValue<List<*>>(json, List::class.java)
         list.forEach {
