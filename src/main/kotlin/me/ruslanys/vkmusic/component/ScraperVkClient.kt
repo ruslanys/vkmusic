@@ -109,7 +109,7 @@ class ScraperVkClient : VkClient {
         return jacksonObjectMapper().readValue(json, VkAudioDto::class.java)
     }
 
-    override fun fetchUrls(audioList: List<Audio>) { // TODO: refactor
+    override fun fetchUrls(audioList: List<Audio>) {
         val audioMap = audioList.associateBy { it.id }.toSortedMap()
 
         val userId = fetchUserId()
