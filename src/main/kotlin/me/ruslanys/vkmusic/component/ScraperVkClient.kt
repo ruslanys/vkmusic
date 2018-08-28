@@ -1,5 +1,6 @@
 package me.ruslanys.vkmusic.component
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import me.ruslanys.vkmusic.domain.Audio
 import me.ruslanys.vkmusic.exception.VkException
@@ -78,7 +79,7 @@ class ScraperVkClient : VkClient {
         val list = mutableListOf<Audio>()
         var offset = 0
 
-        var audioDto: VkAudioDto
+        var audioDto: AudioPageDto
         do {
             audioDto = fetchAudioChunk(ownerId, offset)
             list.addAll(audioDto.audio)
@@ -90,7 +91,7 @@ class ScraperVkClient : VkClient {
         return list
     }
 
-    private fun fetchAudioChunk(ownerId: Long, offset: Int): VkAudioDto {
+    private fun fetchAudioChunk(ownerId: Long, offset: Int): AudioPageDto {
         val response = Jsoup.connect("$PATH_BASE/al_audio.php")
                 .userAgent(USER_AGENT).cookies(cookies).method(Connection.Method.POST)
                 .data("access_hash", "")
@@ -105,9 +106,9 @@ class ScraperVkClient : VkClient {
 
         val body = response.body()
         val trimmed = body.substring(body.indexOf(JSON_DELIMITER) + JSON_DELIMITER.length)
-        val json = trimmed.substring(0..body.indexOf(BLOCK_DELIMITER))
+        val json = trimmed.substring(0 until trimmed.indexOf(BLOCK_DELIMITER))
 
-        return jacksonObjectMapper().readValue(json, VkAudioDto::class.java)
+        return jacksonObjectMapper().readValue(json, AudioPageDto::class.java)
     }
 
     override fun fetchUrls(audioList: List<Audio>) {
@@ -148,12 +149,12 @@ class ScraperVkClient : VkClient {
                 .execute()
 
         val body = response.body()
-        if(!body.contains(JSON_DELIMITER)) {
+        if (!body.contains(JSON_DELIMITER)) {
             throw VkException("Can not fetch audio urls.")
         }
 
         val trimmed = body.substring(body.indexOf(JSON_DELIMITER) + JSON_DELIMITER.length)
-        val json = trimmed.substring(0, trimmed.indexOf(BLOCK_DELIMITER))
+        val json = trimmed.substring(0 until trimmed.indexOf(BLOCK_DELIMITER))
 
         val list = jacksonObjectMapper().readValue<List<*>>(json, List::class.java)
         list.forEach {
@@ -172,10 +173,10 @@ class ScraperVkClient : VkClient {
     }
 
 
-    private data class VkAudioDto(
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class AudioPageDto(
             val type: String,
             val ownerId: Long,
-            val albumId: Int,
             val title: String,
             val hasMore: Int,
             val nextOffset: Int,
@@ -191,9 +192,7 @@ class ScraperVkClient : VkClient {
                 )
             }.toList()
     ) {
-        fun hasMore(): Boolean {
-            return hasMore == 1
-        }
+        fun hasMore(): Boolean = hasMore == 1
     }
 
 }
