@@ -11,7 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import me.ruslanys.vkmusic.annotation.FxmlController;
 import me.ruslanys.vkmusic.component.VkClient;
-import me.ruslanys.vkmusic.entity.Audio;
+import me.ruslanys.vkmusic.domain.Audio;
 import me.ruslanys.vkmusic.util.IconUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 

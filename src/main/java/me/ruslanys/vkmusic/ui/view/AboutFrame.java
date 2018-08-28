@@ -1,6 +1,5 @@
 package me.ruslanys.vkmusic.ui.view;
 
-import lombok.extern.slf4j.Slf4j;
 import me.ruslanys.vkmusic.util.DesktopUtils;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +13,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-@Slf4j
 @Component
 public class AboutFrame extends JFrame implements HyperlinkListener {
 
@@ -70,7 +68,7 @@ public class AboutFrame extends JFrame implements HyperlinkListener {
                 sb.append(line).append(System.lineSeparator());
             }
         } catch (IOException e) {
-            log.error("Can not load about content", e);
+//            log.error("Can not load about content", e);
         }
 
         return sb.toString();
@@ -79,7 +77,7 @@ public class AboutFrame extends JFrame implements HyperlinkListener {
     @Override
     public void hyperlinkUpdate(HyperlinkEvent event) {
         if (HyperlinkEvent.EventType.ACTIVATED.equals(event.getEventType())) {
-            DesktopUtils.browse(event.getURL());
+            DesktopUtils.INSTANCE.browse(event.getURL());
         }
     }
 }

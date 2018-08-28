@@ -30,7 +30,7 @@ public class LoginFrame extends LoadingFrame implements ChangeListener<Worker.St
     protected void initWindow() {
         setTitle("Авторизация");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setIconImage(DesktopUtils.getIcon());
+        setIconImage(DesktopUtils.INSTANCE.getIcon());
 
         setSize(1000, 660);
         setMinimumSize(new Dimension(640, 480));

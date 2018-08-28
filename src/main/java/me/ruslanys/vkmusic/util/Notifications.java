@@ -1,11 +1,9 @@
 package me.ruslanys.vkmusic.util;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.awt.*;
 
-@Slf4j
 public class Notifications {
 
     private Notifications() {

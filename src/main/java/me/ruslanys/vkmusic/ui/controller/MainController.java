@@ -1,41 +1,11 @@
 package me.ruslanys.vkmusic.ui.controller;
 
-import lombok.NonNull;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import me.ruslanys.vkmusic.entity.Audio;
-import me.ruslanys.vkmusic.entity.domain.DownloadStatus;
-import me.ruslanys.vkmusic.entity.domain.event.DownloadFinishEvent;
-import me.ruslanys.vkmusic.entity.domain.event.DownloadStatusEvent;
-import me.ruslanys.vkmusic.entity.domain.event.LogoutEvent;
-import me.ruslanys.vkmusic.property.DownloaderProperties;
-import me.ruslanys.vkmusic.service.AudioService;
-import me.ruslanys.vkmusic.service.DownloadService;
-import me.ruslanys.vkmusic.service.PropertyService;
-import me.ruslanys.vkmusic.ui.view.LoadingFrame;
-import me.ruslanys.vkmusic.ui.view.MainFrame;
-import me.ruslanys.vkmusic.util.Notifications;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
-import java.util.List;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
-
 /**
  * @author Ruslan Molchanov (ruslanys@gmail.com)
  */
-@Slf4j
-
-@Deprecated
 //@Component
 //@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
+/*
 public class MainController implements Runnable, MainFrame.OnSyncListener, MainFrame.OnChangeDestinationListener {
 
     private static final String DEFAULT_STATUS = "OK";
@@ -70,11 +40,11 @@ public class MainController implements Runnable, MainFrame.OnSyncListener, MainF
 
     @Override
     public void run() {
-        DownloaderProperties properties = propertyService.get(DownloaderProperties.class);
+        DownloadProperties properties = propertyService.get(DownloadProperties.class);
         if (properties.getDestination() == null) {
             chooseDestination();
         }
-        
+
         displayTray();
         initComponents();
 //        mainFrame.setAutoSync(properties.isAutoSync());
@@ -83,7 +53,7 @@ public class MainController implements Runnable, MainFrame.OnSyncListener, MainF
 
     @Override
     public void chooseDestination() {
-        DownloaderProperties properties = propertyService.get(DownloaderProperties.class);
+        DownloadProperties properties = propertyService.get(DownloadProperties.class);
         JFileChooser chooser = new JFileChooser(properties.getDestination());
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         if (chooser.showDialog(mainFrame, "Choose") == JFileChooser.APPROVE_OPTION) {
@@ -134,7 +104,7 @@ public class MainController implements Runnable, MainFrame.OnSyncListener, MainF
 
     @Override
     public void updateAutoSyncState(boolean state) {
-        DownloaderProperties properties = propertyService.get(DownloaderProperties.class);
+        DownloadProperties properties = propertyService.get(DownloadProperties.class);
         properties.setAutoSync(state);
         propertyService.set(properties);
 
@@ -211,3 +181,4 @@ public class MainController implements Runnable, MainFrame.OnSyncListener, MainF
     }
 
 }
+*/

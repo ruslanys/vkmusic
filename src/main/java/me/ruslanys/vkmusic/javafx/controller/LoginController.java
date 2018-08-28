@@ -14,14 +14,13 @@ import javafx.scene.layout.Pane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
-import lombok.NonNull;
-import lombok.SneakyThrows;
 import me.ruslanys.vkmusic.annotation.FxmlController;
 import me.ruslanys.vkmusic.component.VkClient;
 import me.ruslanys.vkmusic.util.IconUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import java.io.IOException;
 import java.net.CookieManager;
 import java.net.URI;
 import java.util.ArrayList;
@@ -100,9 +99,13 @@ public class LoginController implements ChangeListener<Worker.State> {
         loadingImageView.setImage(IconUtils.getLoadingIcon());
     }
 
-    @SneakyThrows
     private String fetchSessionId() {
-        Map<String, List<String>> headers = CookieManager.getDefault().get(COOKIE_DOMAIN_URI, new HashMap<>());
+        Map<String, List<String>> headers = null;
+        try {
+            headers = CookieManager.getDefault().get(COOKIE_DOMAIN_URI, new HashMap<>());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         List<String> values = headers.getOrDefault("Cookie", new ArrayList<>());
         if (values.isEmpty()) {
             return null;
@@ -120,7 +123,7 @@ public class LoginController implements ChangeListener<Worker.State> {
         return null;
     }
 
-    private void setSessionId(@NonNull String sessionId) {
+    private void setSessionId(String sessionId) {
         CompletableFuture
                 .runAsync(() -> {
                     vkClient.setCookies(ImmutableMap.of(SESSION_ID_KEY, sessionId));

@@ -1,15 +1,15 @@
 package me.ruslanys.vkmusic.ui.model;
 
 import com.google.common.collect.Lists;
-import lombok.SneakyThrows;
-import me.ruslanys.vkmusic.entity.Audio;
-import me.ruslanys.vkmusic.entity.domain.DownloadStatus;
+import me.ruslanys.vkmusic.domain.Audio;
+import me.ruslanys.vkmusic.domain.DownloadStatus;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
+import java.io.IOException;
 import java.net.URL;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -55,10 +55,13 @@ public class AudioTableModel extends AbstractTableModel {
         }
     }
 
-    @SneakyThrows
     private Image loadImage(DownloadStatus status) {
         URL resource = getClass().getClassLoader().getResource("images/status/" + status.name().toLowerCase() + ".png");
-        return ImageIO.read(resource);
+        try {
+            return ImageIO.read(resource);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private String getDuration(int durationInSec) {

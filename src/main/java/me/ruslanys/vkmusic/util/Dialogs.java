@@ -1,10 +1,7 @@
 package me.ruslanys.vkmusic.util;
 
-import lombok.extern.slf4j.Slf4j;
-
 import javax.swing.*;
 
-@Slf4j
 public class Dialogs {
 
     private Dialogs() {
@@ -13,7 +10,7 @@ public class Dialogs {
 
     public static void showError(Throwable ex) {
         if (ex instanceof RuntimeException) {
-            log.error("Execution error", ex);
+//            log.error("Execution error", ex);
         }
         showError(ex.getClass().getSimpleName() + ":\r\n" + ex.getMessage());
     }

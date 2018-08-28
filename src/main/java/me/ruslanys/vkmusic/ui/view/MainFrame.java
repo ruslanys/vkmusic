@@ -1,7 +1,5 @@
 package me.ruslanys.vkmusic.ui.view;
 
-import lombok.NonNull;
-import lombok.Setter;
 import me.ruslanys.vkmusic.entity.domain.event.LogoutEvent;
 import me.ruslanys.vkmusic.ui.model.AudioTableModel;
 import me.ruslanys.vkmusic.util.DesktopUtils;
@@ -32,8 +30,8 @@ public class MainFrame extends LoadingFrame implements ActionListener, ItemListe
     private final transient ApplicationEventPublisher publisher;
     private final AboutFrame aboutFrame;
 
-    @Setter private transient OnSyncListener syncListener;
-    @Setter private transient OnChangeDestinationListener destinationListener;
+    private transient OnSyncListener syncListener;
+    private transient OnChangeDestinationListener destinationListener;
 
     private JTable table;
     private AudioTableModel model;
@@ -45,8 +43,8 @@ public class MainFrame extends LoadingFrame implements ActionListener, ItemListe
 
 
     @Autowired
-    public MainFrame(@NonNull ApplicationEventPublisher publisher,
-                     @NonNull AboutFrame aboutFrame) {
+    public MainFrame(ApplicationEventPublisher publisher,
+                     AboutFrame aboutFrame) {
         super();
         this.publisher = publisher;
         this.aboutFrame = aboutFrame;
@@ -58,7 +56,7 @@ public class MainFrame extends LoadingFrame implements ActionListener, ItemListe
     protected void initWindow() {
         setTitle("VKMusic");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setIconImage(DesktopUtils.getIcon());
+        setIconImage(DesktopUtils.INSTANCE.getIcon());
 
         setSize(new Dimension(640, 480));
         setMinimumSize(new Dimension(640, 240));
@@ -182,7 +180,7 @@ public class MainFrame extends LoadingFrame implements ActionListener, ItemListe
         return fileMenu;
     }
 
-    public void setStatus(@NonNull String status) {
+    public void setStatus(String status) {
         toolbarLabel.setText(status);
     }
 
