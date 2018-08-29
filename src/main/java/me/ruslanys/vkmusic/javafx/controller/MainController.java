@@ -39,7 +39,7 @@ public class MainController {
     }
 
     private void initLoadingIcon() {
-        loadingImageView.setImage(IconUtils.getLoadingIcon());
+        loadingImageView.setImage(IconUtils.INSTANCE.getLoadingIcon());
     }
 
     private void initTableView() {
