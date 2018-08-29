@@ -142,7 +142,7 @@ class LoginController : ChangeListener<Worker.State> {
     }
 
     companion object {
-        private const val USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36"
+        private const val USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36"
         private const val SESSION_ID_KEY = "remixsid"
         private const val LOGIN_PATH = "https://vk.com/login"
 

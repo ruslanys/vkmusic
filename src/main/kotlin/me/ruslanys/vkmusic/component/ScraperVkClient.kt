@@ -24,7 +24,7 @@ import javax.script.ScriptEngineManager
 class ScraperVkClient : VkClient {
 
     companion object {
-        private const val USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36"
+        private const val USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36"
         private const val PATH_BASE = "https://vk.com"
         private const val JSON_DELIMITER = "<!json>"
         private const val BLOCK_DELIMITER = "<!>"
