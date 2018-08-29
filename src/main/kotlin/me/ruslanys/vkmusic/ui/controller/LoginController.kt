@@ -5,48 +5,45 @@ import javafx.beans.value.ChangeListener
 import javafx.beans.value.ObservableValue
 import javafx.concurrent.Worker
 import javafx.fxml.FXML
-import javafx.scene.Parent
 import javafx.scene.Scene
 import javafx.scene.image.ImageView
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.Pane
+import javafx.scene.layout.StackPane
 import javafx.scene.web.WebView
 import javafx.stage.Stage
 import me.ruslanys.vkmusic.annotation.FxmlController
 import me.ruslanys.vkmusic.component.VkClient
 import me.ruslanys.vkmusic.javafx.controller.MainController
 import me.ruslanys.vkmusic.util.IconUtils
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 import java.net.CookieManager
 import java.net.URI
 import java.util.concurrent.CompletableFuture
+import javax.annotation.PostConstruct
 
 @FxmlController(view = "views/fxml/login.fxml")
-class LoginController : ChangeListener<Worker.State> {
+class LoginController(
+        private val vkClient: VkClient,
+        private val mainController: MainController) : ChangeListener<Worker.State> {
 
     @FXML private lateinit var view: Pane
     @FXML private lateinit var loadingView: BorderPane
     @FXML private lateinit var loadingImageView: ImageView
 
-    @Autowired
-    private lateinit var vkClient: VkClient
-
-    @Autowired
-    @Qualifier("mainView")
-    private lateinit var mainView: Parent
-
-    @Autowired
-    private lateinit var mainController: MainController
-
-
     private lateinit var webView: WebView
 
     @FXML
     fun initialize() {
+        println("fxml: " + this.hashCode())
         initCookieManager()
         initLoading()
         Platform.runLater(this::initWebView)
+    }
+
+    @PostConstruct
+    fun post() {
+        println("spring: " + this.hashCode())
+        println()
     }
 
     /**
@@ -131,7 +128,7 @@ class LoginController : ChangeListener<Worker.State> {
         val stage = view.sceneProperty().get().window as Stage
         stage.title = "VKMusic"
 
-        stage.scene = Scene(mainView)
+        stage.scene = Scene(StackPane())
 
         stage.width = 640.0
         stage.height = 480.0
