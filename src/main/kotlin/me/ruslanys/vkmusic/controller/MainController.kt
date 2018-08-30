@@ -1,4 +1,4 @@
-package me.ruslanys.vkmusic.ui.controller
+package me.ruslanys.vkmusic.controller
 
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList

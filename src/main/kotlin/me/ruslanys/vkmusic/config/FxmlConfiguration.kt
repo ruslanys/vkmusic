@@ -2,7 +2,7 @@ package me.ruslanys.vkmusic.config
 
 import javafx.fxml.FXMLLoader
 import me.ruslanys.vkmusic.annotation.FxmlController
-import me.ruslanys.vkmusic.ui.controller.BaseController
+import me.ruslanys.vkmusic.controller.BaseController
 import org.reflections.Reflections
 import org.springframework.beans.BeansException
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory
