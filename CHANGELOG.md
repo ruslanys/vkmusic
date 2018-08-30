@@ -5,6 +5,9 @@
 и [Семантическом версионировании](http://semver.org/lang/ru/spec/v2.0.0.html).
 
 ## [Новое]
+
+
+## [3.0.0] - 2018-08-30
 ### Изменено
 - Swing заменен на JavaFX
 - Spring Boot обновлен до версии 2.0.4
@@ -15,7 +18,6 @@
 
 ### Удалено
 - Слой работы с БД
-
 
 ## [2.1.2] - 2017-12-08
 ### Исправлено
@@ -84,7 +86,8 @@
 - Поддержка ВК API по работе с музыкой.
 
 
-[Новое]: https://github.com/ruslanys/vkmusic/compare/HEAD...2.x.x.SWING
+[Новое]: https://github.com/ruslanys/vkmusic/compare/HEAD...3.x.x.JAVAFX
+[3.0.0]: https://github.com/ruslanys/vkmusic/compare/v2.1.2...v3.0.0
 [2.1.2]: https://github.com/ruslanys/vkmusic/compare/v2.1.1...v2.1.2
 [2.1.1]: https://github.com/ruslanys/vkmusic/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/ruslanys/vkmusic/compare/v2.0.0...v2.1.0
