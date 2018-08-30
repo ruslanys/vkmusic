@@ -1,24 +1,26 @@
 package me.ruslanys.vkmusic;
 
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import me.ruslanys.vkmusic.ui.controller.LoginController;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class Application extends AbstractJavaFxApplicationSupport {
 
-    @Qualifier("loginView")
+    private LoginController loginController;
+
     @Autowired
-    private Parent view;
+    public void setLoginController(LoginController loginController) {
+        this.loginController = loginController;
+    }
 
     @Override
     public void start(Stage stage) {
         stage.setTitle("Авторизация");
 
-        stage.setScene(new Scene(view));
+        stage.setScene(new Scene(loginController.getRootView()));
 
         stage.setMinWidth(640);
         stage.setMinHeight(480);
