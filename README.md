@@ -13,19 +13,9 @@
 
 ## Запуск
 
+Воспользуйтесь портативной версией приложения, либо установщиком.
+
 Последняя версия приложения доступна в разделе [релизы](https://github.com/ruslanys/vkmusic/releases).
-
-### Linux
-
-```$ chmod +x vkmusic-*.jar```
-
-```$ ./vkmusic-*.jar```
-
-
-### Linux / Windows / MacOS
-
-```$ java -jar vkmusic-*.jar```
-
 
 ## Используемые технологии
 
@@ -34,3 +24,4 @@
 * JPA/Hibernate
 * SQLite
 * JavaFX
+* [Install4j](https://www.ej-technologies.com/products/install4j/overview.html): multi-platform installer builder ![install4j](https://www.ej-technologies.com/images/product_banners/install4j_small.png)
