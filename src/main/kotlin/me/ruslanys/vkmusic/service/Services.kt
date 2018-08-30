@@ -2,6 +2,7 @@ package me.ruslanys.vkmusic.service
 
 import me.ruslanys.vkmusic.domain.Audio
 import me.ruslanys.vkmusic.property.Properties
+import java.io.File
 
 interface PropertyService {
 
@@ -15,8 +16,8 @@ interface PropertyService {
 
 interface DownloadService {
 
-    fun download(destination: String, audio: Audio)
+    fun download(destination: File, audio: Audio)
 
-    fun download(destination: String, audioList: List<Audio>)
+    fun download(destination: File, audioList: List<Audio>)
 
 }

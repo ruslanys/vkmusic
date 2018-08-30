@@ -34,18 +34,21 @@ class DefaultDownloadService(
     }
 
     @Async
-    override fun download(destination: String, audio: Audio) {
+    override fun download(destination: File, audio: Audio) {
         download(destination, listOf(audio))
     }
 
     @Async
-    override fun download(destination: String, audioList: List<Audio>) {
+    override fun download(destination: File, audioList: List<Audio>) {
         log.info("Download [{}]", audioList.joinToString { it.id.toString() })
         vkClient.fetchUrls(audioList)
 
-        val destinationFolder = File(destination)
+        if (!destination.exists() || !destination.isDirectory) {
+            throw IllegalArgumentException("Destination path is incorrect.")
+        }
+
         for (audio in audioList) {
-            executor.submit { downloadFile(destinationFolder, audio) }
+            executor.submit { downloadFile(destination, audio) }
         }
     }
 

@@ -9,6 +9,7 @@ import javafx.scene.control.TableView
 import javafx.scene.control.cell.PropertyValueFactory
 import javafx.scene.image.ImageView
 import javafx.scene.layout.Pane
+import javafx.stage.DirectoryChooser
 import me.ruslanys.vkmusic.annotation.FxmlController
 import me.ruslanys.vkmusic.component.VkClient
 import me.ruslanys.vkmusic.domain.Audio
@@ -96,11 +97,16 @@ class MainController(
 
     @FXML
     fun downloadSelected() {
+        val directoryChooser = DirectoryChooser()
+        directoryChooser.title = "Укажите папку назначения"
+        val selectedDirectory = directoryChooser.showDialog(rootView!!.scene.window) ?: return
+
+
         tableView.selectionModel.selectedItems.apply {
             forEach { it.status = DownloadStatus.QUEUED }
             tableView.refresh()
 
-            downloadService.download("/Users/ruslanys/Downloads/music", this.toList())
+            downloadService.download(selectedDirectory, this.toList())
         }
     }
 
