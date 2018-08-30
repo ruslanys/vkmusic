@@ -29,10 +29,8 @@
 
 ## Используемые технологии
 
-VKMusic написан на Java 8 с применением нижеследующих технологий.
-
+* Kotlin
 * Spring Boot
 * JPA/Hibernate
 * SQLite
-* Swing
 * JavaFX
