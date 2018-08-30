@@ -26,17 +26,16 @@ ext {
 dependencies {
     // Spring
     compile('org.springframework.boot:spring-boot-starter')
-    compile('org.springframework.boot:spring-boot-starter-data-jpa')
 
-    // DB
-    compile('com.enigmabridge:hibernate4-sqlite-dialect:0.1.2')
-    compile('org.xerial:sqlite-jdbc:3.20.0')
+    // Kotlin
+    compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    compile("org.jetbrains.kotlin:kotlin-reflect")
+    compile('com.fasterxml.jackson.module:jackson-module-kotlin')
 
     // Jackson
-    compile("com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}")
-    compile("com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}")
-    compile("com.fasterxml.jackson.core:jackson-core:${jacksonVersion}")
-    compile("com.fasterxml.jackson.module:jackson-module-kotlin:${jacksonVersion}")
+    compile("com.fasterxml.jackson.core:jackson-databind")
+    compile("com.fasterxml.jackson.core:jackson-annotations")
+    compile("com.fasterxml.jackson.core:jackson-core")
 
     // Utils
     compile('org.reflections:reflections:0.9.11')
@@ -52,7 +51,6 @@ dependencies {
 
     // Tests
     testCompile('org.springframework.boot:spring-boot-starter-test')
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 
 sourceSets {
