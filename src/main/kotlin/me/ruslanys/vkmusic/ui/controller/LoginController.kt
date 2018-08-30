@@ -13,7 +13,6 @@ import javafx.scene.web.WebView
 import javafx.stage.Stage
 import me.ruslanys.vkmusic.annotation.FxmlController
 import me.ruslanys.vkmusic.component.VkClient
-import me.ruslanys.vkmusic.javafx.controller.MainController
 import me.ruslanys.vkmusic.util.IconUtils
 import java.net.CookieManager
 import java.net.URI
