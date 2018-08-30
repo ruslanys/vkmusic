@@ -5,8 +5,8 @@ import me.ruslanys.vkmusic.domain.Audio
 import me.ruslanys.vkmusic.event.DownloadFailEvent
 import me.ruslanys.vkmusic.event.DownloadInProgressEvent
 import me.ruslanys.vkmusic.event.DownloadSuccessEvent
-import me.ruslanys.vkmusic.property.DownloadProperties
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
@@ -16,22 +16,14 @@ import java.io.File
 import java.io.FileOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
+import java.util.concurrent.Executor
 
 @Service
 class DefaultDownloadService(
-        propertyService: PropertyService,
         private val vkClient: VkClient,
-        private val publisher: ApplicationEventPublisher
+        private val publisher: ApplicationEventPublisher,
+        @Qualifier("downloadExecutor") private val executor: Executor
 ) : DownloadService {
-
-    private val executor: ExecutorService
-
-    init {
-        val downloadProperties = propertyService.get(DownloadProperties::class.java)
-        executor = Executors.newFixedThreadPool(downloadProperties!!.poolSize)
-    }
 
     @Async
     override fun download(destination: File, audio: Audio) {
@@ -48,11 +40,13 @@ class DefaultDownloadService(
         }
 
         for (audio in audioList) {
-            executor.submit { downloadFile(destination, audio) }
+            executor.execute {
+                downloadFile(destination, audio)
+            }
         }
     }
 
-    private fun downloadFile(destinationFolder: File, audio: Audio) {
+    private fun downloadFile(destination: File, audio: Audio) {
         log.info("Download file {}", audio.url)
         publisher.publishEvent(DownloadInProgressEvent(this, audio))
 
@@ -61,7 +55,7 @@ class DefaultDownloadService(
             connection.connectTimeout = 10000
             connection.readTimeout = 10000
 
-            val file = File(destinationFolder, audio.filename())
+            val file = File(destination, audio.filename())
             BufferedInputStream(connection.inputStream, 5120).use { input ->
                 BufferedOutputStream(FileOutputStream(file), 5120).use { output ->
                     val buff = ByteArray(5120)
