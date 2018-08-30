@@ -18,7 +18,7 @@ import java.net.CookieManager
 import java.net.URI
 import java.util.concurrent.CompletableFuture
 
-@FxmlController(view = "views/fxml/login.fxml")
+@FxmlController(view = "views/login.fxml")
 class LoginController(
         private val vkClient: VkClient,
         private val mainController: MainController) : ChangeListener<Worker.State>, BaseController() {

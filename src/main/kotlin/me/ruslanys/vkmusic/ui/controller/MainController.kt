@@ -15,15 +15,12 @@ import me.ruslanys.vkmusic.domain.Audio
 import me.ruslanys.vkmusic.util.IconUtils
 import java.util.concurrent.CompletableFuture
 
-@FxmlController(view = "views/fxml/main.fxml")
+@FxmlController(view = "views/main.fxml")
 class MainController(private val vkClient: VkClient) : BaseController() {
 
-    @FXML
-    private lateinit var loadingView: Pane
-    @FXML
-    private lateinit var loadingImageView: ImageView
-    @FXML
-    private lateinit var tableView: TableView<Audio>
+    @FXML private lateinit var loadingView: Pane
+    @FXML private lateinit var loadingImageView: ImageView
+    @FXML private lateinit var tableView: TableView<Audio>
 
     private lateinit var data: ObservableList<Audio>
 
