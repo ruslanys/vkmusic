@@ -27,6 +27,11 @@ dependencies {
     // Spring
     compile('org.springframework.boot:spring-boot-starter')
 
+    // DB
+    compile('org.springframework.boot:spring-boot-starter-data-jpa')
+    compile('com.enigmabridge:hibernate4-sqlite-dialect:0.1.2')
+    compile('org.xerial:sqlite-jdbc:3.20.0')
+
     // Kotlin
     compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     compile("org.jetbrains.kotlin:kotlin-reflect")

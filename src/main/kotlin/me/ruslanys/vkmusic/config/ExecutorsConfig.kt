@@ -1,5 +1,7 @@
 package me.ruslanys.vkmusic.config
 
+import me.ruslanys.vkmusic.property.DownloadProperties
+import me.ruslanys.vkmusic.service.PropertyService
 import org.slf4j.LoggerFactory
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler
 import org.springframework.context.ApplicationListener
@@ -13,7 +15,7 @@ import java.util.concurrent.Executor
 
 @EnableAsync
 @Configuration
-class ExecutorsConfig : AsyncConfigurer, ApplicationListener<ContextStoppedEvent> {
+class ExecutorsConfig(private val propertyService: PropertyService) : AsyncConfigurer, ApplicationListener<ContextStoppedEvent> {
 
     @Bean(name = ["asyncExecutor"])
     override fun getAsyncExecutor(): Executor {
@@ -29,7 +31,7 @@ class ExecutorsConfig : AsyncConfigurer, ApplicationListener<ContextStoppedEvent
     @Bean(name = ["downloadExecutor"])
     fun getDownloadExecutor(): Executor {
         val executor = ThreadPoolTaskExecutor()
-        executor.corePoolSize = 5
+        executor.corePoolSize = propertyService.get(DownloadProperties::class.java)!!.poolSize
         executor.setThreadNamePrefix("DownloadExecutor-")
         executor.initialize()
 
