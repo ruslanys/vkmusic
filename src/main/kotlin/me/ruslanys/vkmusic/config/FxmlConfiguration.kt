@@ -12,7 +12,6 @@ import org.springframework.context.ApplicationListener
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.event.ContextRefreshedEvent
-import java.io.IOException
 import java.util.regex.Pattern
 
 /**
@@ -50,24 +49,19 @@ class FxmlFirstConfiguration : ApplicationListener<ContextRefreshedEvent> {
                 }
                 val prefix = matcher.group(1)
 
-                try {
-                    javaClass.classLoader.getResourceAsStream(viewPath).use { fxmlStream ->
-                        val loader = FXMLLoader()
-                        loader.load<Any>(fxmlStream)
+                javaClass.classLoader.getResourceAsStream(viewPath).use { fxmlStream ->
+                    val loader = FXMLLoader()
+                    loader.load<Any>(fxmlStream)
 
-                        val viewName = prefix + "View"
-                        val controllerName = prefix + "FxmlController"
+                    val viewName = prefix + "View"
+                    val controllerName = prefix + "FxmlController"
 
-                        val view = loader.getRoot<Any>()
-                        val controller = loader.getController<Any>()
+                    val view = loader.getRoot<Any>()
+                    val controller = loader.getController<Any>()
 
-                        beanFactory.registerSingleton(viewName, view)
-                        beanFactory.registerSingleton(controllerName, controller)
-                    }
-                } catch (e: IOException) {
-                    throw RuntimeException(e)
+                    beanFactory.registerSingleton(viewName, view)
+                    beanFactory.registerSingleton(controllerName, controller)
                 }
-
             }
 
         }
