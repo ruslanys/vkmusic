@@ -3,10 +3,12 @@ package me.ruslanys.vkmusic.service
 import me.ruslanys.vkmusic.component.VkClient
 import me.ruslanys.vkmusic.domain.Audio
 import me.ruslanys.vkmusic.event.DownloadFailEvent
+import me.ruslanys.vkmusic.event.DownloadInProgressEvent
 import me.ruslanys.vkmusic.event.DownloadSuccessEvent
 import me.ruslanys.vkmusic.property.DownloadProperties
 import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationEventPublisher
+import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
@@ -31,30 +33,25 @@ class DefaultDownloadService(
         executor = Executors.newFixedThreadPool(downloadProperties!!.poolSize)
     }
 
+    @Async
     override fun download(destination: String, audio: Audio) {
         download(destination, listOf(audio))
     }
 
+    @Async
     override fun download(destination: String, audioList: List<Audio>) {
         log.info("Download [{}]", audioList.joinToString { it.id.toString() })
         vkClient.fetchUrls(audioList)
 
         val destinationFolder = File(destination)
-        if (destinationFolder.exists() && !destinationFolder.isDirectory) {
-            throw IllegalArgumentException("Incorrect destination path.")
-        } else if (!destinationFolder.mkdirs()) {
-            throw IllegalStateException("Can not create destination folder.")
-        }
-
-        audioList.forEach {
-            executor.submit {
-                downloadFile(destinationFolder, it)
-            }
+        for (audio in audioList) {
+            executor.submit { downloadFile(destinationFolder, audio) }
         }
     }
 
     private fun downloadFile(destinationFolder: File, audio: Audio) {
         log.info("Download file {}", audio.url)
+        publisher.publishEvent(DownloadInProgressEvent(this, audio))
 
         try {
             val connection = URL(audio.url).openConnection() as HttpURLConnection
@@ -76,7 +73,7 @@ class DefaultDownloadService(
 
             publisher.publishEvent(DownloadSuccessEvent(this, audio, file))
         } catch (e: Exception) {
-            publisher.publishEvent(DownloadFailEvent(this, audio))
+            publisher.publishEvent(DownloadFailEvent(this, audio, e))
         }
     }
 
@@ -91,5 +88,5 @@ fun Audio.filename(): String {
     val formattedArtist = artist.trim().replace(regex, "")
     val formattedTitle = title.trim().replace(regex, "")
 
-    return "${formattedArtist.substring(0..15)} - ${formattedTitle.substring(0..20)}.mp3"
+    return "${formattedArtist.take(10)} - ${formattedTitle.take(20)}.mp3"
 }

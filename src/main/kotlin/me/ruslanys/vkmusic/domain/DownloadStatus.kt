@@ -1,5 +1,5 @@
 package me.ruslanys.vkmusic.domain
 
 enum class DownloadStatus {
-    NEW, SUCCESS, FAIL
+    NEW, QUEUED, IN_PROGRESS, SUCCESS, FAIL
 }

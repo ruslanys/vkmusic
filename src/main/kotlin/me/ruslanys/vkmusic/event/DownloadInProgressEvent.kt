@@ -2,8 +2,7 @@ package me.ruslanys.vkmusic.event
 
 import me.ruslanys.vkmusic.domain.Audio
 
-class DownloadFailEvent(
+class DownloadInProgressEvent(
         source: Any,
-        audio: Audio,
-        val cause: Throwable
+        audio: Audio
 ) : DownloadEvent(source, audio)
