@@ -9,10 +9,9 @@
             <BorderPane fx:id="loadingView" style="-fx-background-color: rgb(80, 114, 153);">
                 <center>
                     <ImageView fx:id="loadingImageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
-
                 </center>
             </BorderPane>
-            <TableView fx:id="tableView" focusTraversable="false" style="-fx-focus-color: transparent;">
+            <TableView fx:id="tableView" style="-fx-focus-color: -fx-control-inner-background; -fx-faint-focus-color: -fx-control-inner-background;">
                 <contextMenu>
                     <ContextMenu>
                         <items>

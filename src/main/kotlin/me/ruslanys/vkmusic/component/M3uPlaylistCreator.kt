@@ -22,7 +22,7 @@ class M3uPlaylistCreator : PlaylistCreator {
                 writer.newLine()
 
                 for (audio in audios) {
-                    writer.write(String.format("#EXTINF:%d, %s - %s", audio.duration, audio.artist, audio.title))
+                    writer.write(String.format("#EXTINF:%d, %s - %s", audio.durationInSec, audio.artist, audio.title))
                     writer.newLine()
 
                     writer.write(audio.filename())

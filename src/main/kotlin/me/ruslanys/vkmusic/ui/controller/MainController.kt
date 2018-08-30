@@ -7,6 +7,7 @@ import javafx.scene.control.SelectionMode
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
 import javafx.scene.control.cell.PropertyValueFactory
+import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.layout.Pane
 import javafx.stage.DirectoryChooser
@@ -50,23 +51,31 @@ class MainController(
 
         // Columns
         val idColumn = TableColumn<Audio, String>("ID").also {
-            it.setCellValueFactory(PropertyValueFactory<Audio, String>("id"))
+            it.cellValueFactory = PropertyValueFactory<Audio, String>("id")
+            it.maxWidth = 100.0
+            it.minWidth = 100.0
         }
 
         val artistColumn = TableColumn<Audio, String>("Исполнитель").also {
-            it.setCellValueFactory(PropertyValueFactory<Audio, String>("artist"))
+            it.cellValueFactory = PropertyValueFactory<Audio, String>("artist")
         }
 
         val titleColumn = TableColumn<Audio, String>("Наименование").also {
-            it.setCellValueFactory(PropertyValueFactory<Audio, String>("title"))
+            it.cellValueFactory = PropertyValueFactory<Audio, String>("title")
         }
 
         val durationColumn = TableColumn<Audio, String>("Продолжительность").also {
-            it.setCellValueFactory(PropertyValueFactory<Audio, String>("duration"))
+            it.cellValueFactory = PropertyValueFactory<Audio, String>("duration")
+            it.style = "-fx-alignment: CENTER;"
+            it.maxWidth = 80.0
+            it.minWidth = 80.0
         }
 
-        val statusColumn = TableColumn<Audio, String>("Статус").also {
-            it.setCellValueFactory(PropertyValueFactory<Audio, String>("status"))
+        val statusColumn = TableColumn<Audio, Image>("Статус").also {
+            it.cellValueFactory = PropertyValueFactory<Audio, Image>("statusIcon")
+            it.style = "-fx-alignment: CENTER;"
+            it.minWidth = 50.0
+            it.maxWidth = 50.0
         }
 
         // --
