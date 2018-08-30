@@ -13,6 +13,8 @@ import javafx.scene.web.WebView
 import javafx.stage.Stage
 import me.ruslanys.vkmusic.annotation.FxmlController
 import me.ruslanys.vkmusic.component.VkClient
+import me.ruslanys.vkmusic.property.VkCookies
+import me.ruslanys.vkmusic.service.PropertyService
 import me.ruslanys.vkmusic.util.IconUtils
 import java.net.CookieManager
 import java.net.URI
@@ -20,6 +22,7 @@ import java.util.concurrent.CompletableFuture
 
 @FxmlController(view = "views/login.fxml")
 class LoginController(
+        private val propertyService: PropertyService,
         private val vkClient: VkClient,
         private val mainController: MainController) : ChangeListener<Worker.State>, BaseController() {
 
@@ -70,6 +73,9 @@ class LoginController(
         view.children.add(webView)
 
         webView.engine.load(LOGIN_PATH)
+        propertyService.get(VkCookies::class.java)?.let {
+            setSessionId(it.sessionId)
+        }
     }
 
     override fun changed(observable: ObservableValue<out Worker.State>?, oldValue: Worker.State?, newValue: Worker.State?) {
@@ -104,6 +110,7 @@ class LoginController(
         CompletableFuture.runAsync {
             vkClient.setCookies(mapOf(SESSION_ID_KEY to sessionId))
             vkClient.fetchUserId()
+            propertyService.set(VkCookies(sessionId))
         }.thenRun {
             Platform.runLater(this::openMainStage)
         }.exceptionally {
