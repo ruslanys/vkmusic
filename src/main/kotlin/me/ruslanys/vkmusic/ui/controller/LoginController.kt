@@ -24,7 +24,7 @@ import javax.annotation.PostConstruct
 @FxmlController(view = "views/fxml/login.fxml")
 class LoginController(
         private val vkClient: VkClient,
-        private val mainController: MainController) : ChangeListener<Worker.State> {
+        private val mainController: MainController) : ChangeListener<Worker.State>, BaseController() {
 
     @FXML private lateinit var view: Pane
     @FXML private lateinit var loadingView: BorderPane
