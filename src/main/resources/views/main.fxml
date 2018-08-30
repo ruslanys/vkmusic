@@ -17,7 +17,7 @@
                     <ContextMenu>
                         <items>
                             <MenuItem mnemonicParsing="false" onAction="#selectAll" text="Выделить все" />
-                            <MenuItem mnemonicParsing="false" text="Скачать выделенные" />
+                            <MenuItem mnemonicParsing="false" onAction="#downloadSelected" text="Скачать выделенные" />
                             <MenuItem mnemonicParsing="false" onAction="#refreshTable" text="Обновить" />
                         </items>
                     </ContextMenu>
