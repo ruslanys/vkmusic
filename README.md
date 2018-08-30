@@ -13,26 +13,15 @@
 
 ## Запуск
 
+Воспользуйтесь портативной версией приложения, либо установщиком.
+
 Последняя версия приложения доступна в разделе [релизы](https://github.com/ruslanys/vkmusic/releases).
-
-### Linux
-
-```$ chmod +x vkmusic-*.jar```
-
-```$ ./vkmusic-*.jar```
-
-
-### Linux / Windows / MacOS
-
-```$ java -jar vkmusic-*.jar```
-
 
 ## Используемые технологии
 
-VKMusic написан на Java 8 с применением нижеследующих технологий.
-
+* Kotlin
 * Spring Boot
 * JPA/Hibernate
 * SQLite
-* Swing
 * JavaFX
+* [install4j](https://www.ej-technologies.com/products/install4j/overview.html): multi-platform installer builder 

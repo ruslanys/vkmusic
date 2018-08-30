@@ -1,35 +1,44 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '1.5.9.RELEASE'
+    id 'idea'
+    id 'org.jetbrains.kotlin.jvm' version '1.2.61'
+    id 'org.jetbrains.kotlin.kapt' version '1.2.61'
+    id 'org.jetbrains.kotlin.plugin.spring' version '1.2.61'
+    id 'org.jetbrains.kotlin.plugin.jpa' version '1.2.61'
+    id 'org.springframework.boot' version '2.0.4.RELEASE'
 }
 
+apply plugin: 'io.spring.dependency-management'
+
 group = 'me.ruslanys'
-version = '2.1.2'
+version = '3.0.0'
 sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
     mavenCentral()
 }
 
-
-ext.jacksonVersion = '2.9.2'
+ext {
+    kotlinVersion = '1.2.61'
+    jacksonVersion = '2.9.6'
+}
 
 dependencies {
     // Spring
     compile('org.springframework.boot:spring-boot-starter')
-    compile('org.springframework.boot:spring-boot-starter-cache')
-    compile('org.springframework.boot:spring-boot-starter-data-jpa')
 
-    // DB
-    compile('com.enigmabridge:hibernate4-sqlite-dialect:0.1.2')
-    compile('org.xerial:sqlite-jdbc:3.20.0')
+    // Kotlin
+    compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    compile("org.jetbrains.kotlin:kotlin-reflect")
+    compile('com.fasterxml.jackson.module:jackson-module-kotlin')
 
     // Jackson
-    compile("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
-    compile("com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion")
-    compile("com.fasterxml.jackson.core:jackson-core:$jacksonVersion")
+    compile("com.fasterxml.jackson.core:jackson-databind")
+    compile("com.fasterxml.jackson.core:jackson-annotations")
+    compile("com.fasterxml.jackson.core:jackson-core")
 
     // Utils
+    compile('org.reflections:reflections:0.9.11')
     compile('commons-codec:commons-codec:1.10')
     compile('org.apache.commons:commons-text:1.1')
     compile('org.apache.commons:commons-lang3:3.6')
@@ -38,12 +47,17 @@ dependencies {
     compile('com.mpatric:mp3agic:0.9.0')
 
     // DevTools
-    compileOnly('org.projectlombok:lombok')
+    kapt('org.springframework.boot:spring-boot-configuration-processor')
 
     // Tests
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
+sourceSets {
+    main.kotlin.srcDirs += 'src/main/kotlin'
+}
+
+// Jar
 jar {
     manifest {
         attributes("Implementation-Version": version)
@@ -51,6 +65,32 @@ jar {
     archiveName = rootProject.name + ".jar"
 }
 
-bootRepackage {
-    executable = true
+bootJar {
+    launchScript()
+}
+
+// Kotlin
+compileKotlin {
+    kotlinOptions {
+        freeCompilerArgs = ["-Xjsr305=strict"]
+        jvmTarget = "1.8"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        freeCompilerArgs = ["-Xjsr305=strict"]
+        jvmTarget = "1.8"
+    }
+}
+noArg {
+    annotations("javax.persistence.MappedSuperclass", "javax.persistence.Entity")
+}
+
+// IDEA
+idea {
+    module {
+        def kaptMain = file('build/generated/source/kapt/main')
+        sourceDirs += kaptMain
+        generatedSourceDirs += kaptMain
+    }
 }
