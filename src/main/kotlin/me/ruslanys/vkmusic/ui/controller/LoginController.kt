@@ -5,7 +5,6 @@ import javafx.beans.value.ChangeListener
 import javafx.beans.value.ObservableValue
 import javafx.concurrent.Worker
 import javafx.fxml.FXML
-import javafx.scene.Parent
 import javafx.scene.Scene
 import javafx.scene.image.ImageView
 import javafx.scene.layout.BorderPane
@@ -16,29 +15,18 @@ import me.ruslanys.vkmusic.annotation.FxmlController
 import me.ruslanys.vkmusic.component.VkClient
 import me.ruslanys.vkmusic.javafx.controller.MainController
 import me.ruslanys.vkmusic.util.IconUtils
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 import java.net.CookieManager
 import java.net.URI
 import java.util.concurrent.CompletableFuture
 
 @FxmlController(view = "views/fxml/login.fxml")
-class LoginController : ChangeListener<Worker.State> {
+class LoginController(
+        private val vkClient: VkClient,
+        private val mainController: MainController) : ChangeListener<Worker.State>, BaseController() {
 
     @FXML private lateinit var view: Pane
     @FXML private lateinit var loadingView: BorderPane
     @FXML private lateinit var loadingImageView: ImageView
-
-    @Autowired
-    private lateinit var vkClient: VkClient
-
-    @Autowired
-    @Qualifier("mainView")
-    private lateinit var mainView: Parent
-
-    @Autowired
-    private lateinit var mainController: MainController
-
 
     private lateinit var webView: WebView
 
@@ -131,7 +119,7 @@ class LoginController : ChangeListener<Worker.State> {
         val stage = view.sceneProperty().get().window as Stage
         stage.title = "VKMusic"
 
-        stage.scene = Scene(mainView)
+        stage.scene = Scene(mainController.rootView)
 
         stage.width = 640.0
         stage.height = 480.0

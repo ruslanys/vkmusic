@@ -12,6 +12,7 @@ import javafx.scene.layout.Pane;
 import me.ruslanys.vkmusic.annotation.FxmlController;
 import me.ruslanys.vkmusic.component.VkClient;
 import me.ruslanys.vkmusic.domain.Audio;
+import me.ruslanys.vkmusic.ui.controller.BaseController;
 import me.ruslanys.vkmusic.util.IconUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
 @FxmlController(view = "views/fxml/main.fxml")
-public class MainController {
+public class MainController extends BaseController {
 
     @FXML public Pane loadingView;
     @FXML public ImageView loadingImageView;
