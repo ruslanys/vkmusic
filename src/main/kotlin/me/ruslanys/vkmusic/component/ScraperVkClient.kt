@@ -139,7 +139,7 @@ class ScraperVkClient : VkClient {
 
     private fun fetchUrlsChunk(userId: Long, audioList: List<Audio>) {
         val audioMap = audioList.associateBy { it.id }.toSortedMap()
-        val ids = audioList.joinToString { "${it.ownerId}_${it.id}" }
+        val ids = audioList.joinToString(",") { "${it.ownerId}_${it.id}" }
 
         val response = Jsoup.connect("$PATH_BASE/al_audio.php")
                 .userAgent(USER_AGENT).cookies(cookies).method(Connection.Method.POST)
