@@ -4,6 +4,7 @@ import javafx.application.Application
 import javafx.scene.Scene
 import javafx.stage.Stage
 import me.ruslanys.vkmusic.ui.controller.LoginController
+import me.ruslanys.vkmusic.util.IconUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.SpringBootApplication
 
@@ -14,6 +15,7 @@ class Application : AbstractJavaFxApplicationSupport() {
     lateinit var loginController: LoginController
 
     override fun start(stage: Stage) {
+        stage.icons.add(IconUtils.getDesktopIcon())
         stage.title = "Авторизация"
 
         stage.scene = Scene(loginController.rootView!!)
