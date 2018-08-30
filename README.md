@@ -21,7 +21,5 @@
 
 * Kotlin
 * Spring Boot
-* JPA/Hibernate
-* SQLite
 * JavaFX
 * [install4j](https://www.ej-technologies.com/products/install4j/overview.html): multi-platform installer builder 
