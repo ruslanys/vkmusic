@@ -9,7 +9,6 @@ import javafx.scene.Scene
 import javafx.scene.image.ImageView
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.Pane
-import javafx.scene.layout.StackPane
 import javafx.scene.web.WebView
 import javafx.stage.Stage
 import me.ruslanys.vkmusic.annotation.FxmlController
@@ -19,7 +18,6 @@ import me.ruslanys.vkmusic.util.IconUtils
 import java.net.CookieManager
 import java.net.URI
 import java.util.concurrent.CompletableFuture
-import javax.annotation.PostConstruct
 
 @FxmlController(view = "views/fxml/login.fxml")
 class LoginController(
@@ -34,16 +32,9 @@ class LoginController(
 
     @FXML
     fun initialize() {
-        println("fxml: " + this.hashCode())
         initCookieManager()
         initLoading()
         Platform.runLater(this::initWebView)
-    }
-
-    @PostConstruct
-    fun post() {
-        println("spring: " + this.hashCode())
-        println()
     }
 
     /**
@@ -128,7 +119,7 @@ class LoginController(
         val stage = view.sceneProperty().get().window as Stage
         stage.title = "VKMusic"
 
-        stage.scene = Scene(StackPane())
+        stage.scene = Scene(mainController.rootView)
 
         stage.width = 640.0
         stage.height = 480.0
