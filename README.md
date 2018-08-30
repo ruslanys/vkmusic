@@ -24,4 +24,4 @@
 * JPA/Hibernate
 * SQLite
 * JavaFX
-* [Install4j](https://www.ej-technologies.com/products/install4j/overview.html): multi-platform installer builder ![install4j](https://www.ej-technologies.com/images/product_banners/install4j_small.png)
+* [install4j](https://www.ej-technologies.com/products/install4j/overview.html): multi-platform installer builder 
