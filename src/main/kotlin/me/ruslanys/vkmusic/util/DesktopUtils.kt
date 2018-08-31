@@ -1,6 +1,7 @@
 package me.ruslanys.vkmusic.util
 
 import java.awt.Desktop
+import java.io.File
 import java.net.URI
 import java.net.URL
 
@@ -17,6 +18,10 @@ object DesktopUtils {
 
     fun browse(url: URL) {
         browse(url.toURI())
+    }
+
+    fun open(file: File) {
+        DESKTOP.open(file)
     }
 
 }

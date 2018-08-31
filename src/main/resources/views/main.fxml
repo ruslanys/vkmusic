@@ -18,6 +18,7 @@
                             <MenuItem mnemonicParsing="false" onAction="#selectAll" text="Выделить все" />
                             <MenuItem mnemonicParsing="false" onAction="#downloadSelected" text="Скачать выделенные" />
                             <MenuItem mnemonicParsing="false" onAction="#refreshTable" text="Обновить" />
+                            <MenuItem fx:id="openFolderMenuItem" mnemonicParsing="false" onAction="#openFolder" text="Показать в папке" />
                         </items>
                     </ContextMenu>
                 </contextMenu>

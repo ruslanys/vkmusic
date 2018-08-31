@@ -1,8 +1,10 @@
-package me.ruslanys.vkmusic.ui.controller
+package me.ruslanys.vkmusic.controller
 
 import javafx.collections.FXCollections
+import javafx.collections.ListChangeListener
 import javafx.collections.ObservableList
 import javafx.fxml.FXML
+import javafx.scene.control.MenuItem
 import javafx.scene.control.SelectionMode
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
@@ -20,6 +22,7 @@ import me.ruslanys.vkmusic.event.DownloadFailEvent
 import me.ruslanys.vkmusic.event.DownloadInProgressEvent
 import me.ruslanys.vkmusic.event.DownloadSuccessEvent
 import me.ruslanys.vkmusic.service.DownloadService
+import me.ruslanys.vkmusic.util.DesktopUtils
 import me.ruslanys.vkmusic.util.IconUtils
 import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationListener
@@ -33,6 +36,7 @@ class MainController(
     @FXML private lateinit var loadingView: Pane
     @FXML private lateinit var loadingImageView: ImageView
     @FXML private lateinit var tableView: TableView<Audio>
+    @FXML private lateinit var openFolderMenuItem: MenuItem
 
     private lateinit var data: ObservableList<Audio>
 
@@ -81,6 +85,9 @@ class MainController(
         // --
         tableView.columns.setAll(idColumn, artistColumn, titleColumn, durationColumn, statusColumn)
         tableView.selectionModel.selectionMode = SelectionMode.MULTIPLE
+        tableView.selectionModel.selectedItems.addListener(ListChangeListener {
+            openFolderMenuItem.isDisable = !(it.list.size == 1 && it.list[0].file != null)
+        })
 
         // Data
         tableView.items = data
@@ -119,11 +126,20 @@ class MainController(
         }
     }
 
+    @FXML
+    fun openFolder() {
+        val file = tableView.selectionModel.selectedItem.file
+        file?.let { DesktopUtils.open(file.parentFile) }
+    }
+
     override fun onApplicationEvent(event: DownloadEvent) {
         log.info("Event $event")
 
         when (event) {
-            is DownloadSuccessEvent -> event.audio.status = DownloadStatus.SUCCESS
+            is DownloadSuccessEvent -> {
+                event.audio.status = DownloadStatus.SUCCESS
+                event.audio.file = event.file
+            }
             is DownloadFailEvent -> event.audio.status = DownloadStatus.FAIL
             is DownloadInProgressEvent -> event.audio.status = DownloadStatus.IN_PROGRESS
         }
