@@ -37,7 +37,7 @@ class MainController(
     @FXML private lateinit var tableView: TableView<Audio>
     @FXML private lateinit var openFolderMenuItem: MenuItem
 
-    private lateinit var data: ObservableList<Audio>
+    private val data: ObservableList<Audio> = FXCollections.observableArrayList(arrayListOf())
 
     @FXML
     fun initialize() {
@@ -50,8 +50,6 @@ class MainController(
     }
 
     private fun initTable() {
-        data = FXCollections.observableArrayList(arrayListOf())
-
         // Columns
         val idColumn = TableColumn<Audio, String>("ID").also {
             it.cellValueFactory = PropertyValueFactory<Audio, String>("id")
