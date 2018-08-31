@@ -22,4 +22,9 @@
 * Kotlin
 * Spring Boot
 * JavaFX
+* [jProfiler](https://www.ej-technologies.com/products/jprofiler/overview.html): Java Profiler
 * [install4j](https://www.ej-technologies.com/products/install4j/overview.html): multi-platform installer builder 
+
+## Благодарности
+
+![jProfiler](https://www.ej-technologies.com/images/product_banners/jprofiler_medium.png) ![jProfiler](https://www.ej-technologies.com/images/product_banners/install4j_medium.png)
