@@ -11,21 +11,28 @@
                     <ImageView fx:id="loadingImageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
                 </center>
             </BorderPane>
-            <TableView fx:id="tableView" style="-fx-focus-color: -fx-control-inner-background; -fx-faint-focus-color: -fx-control-inner-background;" tableMenuButtonVisible="true">
-                <contextMenu>
-                    <ContextMenu>
-                        <items>
-                            <MenuItem mnemonicParsing="false" onAction="#selectAll" text="Выделить все" />
-                            <MenuItem mnemonicParsing="false" onAction="#downloadSelected" text="Скачать выделенные" />
-                            <MenuItem mnemonicParsing="false" onAction="#refreshTable" text="Обновить" />
-                            <MenuItem fx:id="openFolderMenuItem" mnemonicParsing="false" onAction="#openFolder" text="Показать в папке" disable="true" />
-                        </items>
-                    </ContextMenu>
-                </contextMenu>
-                <columnResizePolicy>
-                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                </columnResizePolicy>
-            </TableView>
+            <BorderPane fx:id="mainView">
+            <center>
+                  <TableView fx:id="tableView" style="-fx-focus-color: -fx-control-inner-background; -fx-faint-focus-color: -fx-control-inner-background;" tableMenuButtonVisible="true" BorderPane.alignment="CENTER">
+                      <contextMenu>
+                          <ContextMenu>
+                              <items>
+                                  <MenuItem mnemonicParsing="false" onAction="#selectAll" text="Выделить все" />
+                                  <MenuItem mnemonicParsing="false" onAction="#downloadSelected" text="Скачать выделенные" />
+                                  <MenuItem mnemonicParsing="false" onAction="#refreshTable" text="Обновить" />
+                                  <MenuItem fx:id="openFolderMenuItem" disable="true" mnemonicParsing="false" onAction="#openFolder" text="Показать в папке" />
+                              </items>
+                          </ContextMenu>
+                      </contextMenu>
+                      <columnResizePolicy>
+                          <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                      </columnResizePolicy>
+                  </TableView>
+            </center>
+            <top>
+                 <TextField fx:id="searchField" promptText="Поиск" BorderPane.alignment="CENTER" />
+            </top>
+            </BorderPane>
         </StackPane>
     </center>
 
