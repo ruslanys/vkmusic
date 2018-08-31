@@ -2,6 +2,7 @@ package me.ruslanys.vkmusic.domain
 
 import javafx.scene.image.ImageView
 import me.ruslanys.vkmusic.util.IconUtils
+import java.io.File
 
 data class Audio(
         val id: Long,
@@ -9,8 +10,10 @@ data class Audio(
         val artist: String,
         val title: String,
         val durationInSec: Int,
+
         var status: DownloadStatus = DownloadStatus.NEW,
-        var url: String? = null
+        var url: String? = null,
+        var file: File? = null
 ) {
 
     fun getStatusIcon(): ImageView {
