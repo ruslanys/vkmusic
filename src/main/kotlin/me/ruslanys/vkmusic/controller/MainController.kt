@@ -57,7 +57,8 @@ class MainController(
         val idColumn = TableColumn<Audio, String>("ID").also {
             it.cellValueFactory = PropertyValueFactory<Audio, String>("id")
             it.maxWidth = 100.0
-            it.minWidth = 100.0
+            it.minWidth = 60.0
+            it.isVisible = false
         }
 
         val artistColumn = TableColumn<Audio, String>("Исполнитель").also {
