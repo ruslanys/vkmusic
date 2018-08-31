@@ -62,10 +62,12 @@ class MainController(
 
         val artistColumn = TableColumn<Audio, String>("Исполнитель").also {
             it.cellValueFactory = PropertyValueFactory<Audio, String>("artist")
+            it.minWidth = 100.0
         }
 
         val titleColumn = TableColumn<Audio, String>("Наименование").also {
             it.cellValueFactory = PropertyValueFactory<Audio, String>("title")
+            it.minWidth = 100.0
         }
 
         val durationColumn = TableColumn<Audio, String>("Продолжительность").also {
@@ -78,8 +80,8 @@ class MainController(
         val statusColumn = TableColumn<Audio, Image>("Статус").also {
             it.cellValueFactory = PropertyValueFactory<Audio, Image>("statusIcon")
             it.style = "-fx-alignment: CENTER;"
-            it.minWidth = 50.0
-            it.maxWidth = 50.0
+            it.minWidth = 55.0
+            it.maxWidth = 55.0
         }
 
         // --
