@@ -96,24 +96,21 @@ class MainController(
 
     private fun initSearch() {
         val pauseTransition = PauseTransition(Duration.millis(300.0)) // debounce mechanism
-        searchField.textProperty().addListener { _, _, _ ->
-            println("CHANGE")
-            pauseTransition.playFromStart()
-        }
         pauseTransition.setOnFinished { _ ->
-            println("DEBOUNCE")
             val argument = searchField.text.toUpperCase()
 
-            tableView.items.clear()
-
+            val found = mutableListOf<Audio>()
             data.forEach {
                 if (it.artist.toUpperCase().contains(argument) || it.title.toUpperCase().contains(argument)) {
-                    tableView.items.add(it)
+                    found.add(it)
                 }
             }
 
+            setItems(found)
             tableView.refresh()
         }
+
+        searchField.textProperty().addListener { _, _, _ -> pauseTransition.playFromStart() }
     }
 
     @FXML
@@ -131,8 +128,7 @@ class MainController(
             data.clear()
             data.addAll(it)
 
-            tableView.items.clear()
-            tableView.items.addAll(data)
+            setItems(data)
             mainView.isVisible = true
         }
     }
@@ -161,6 +157,11 @@ class MainController(
     private fun adjustMenuAvailability() {
         val selectedItems = tableView.selectionModel.selectedItems
         openFolderMenuItem.isDisable = !(selectedItems.size == 1 && selectedItems[0].file != null)
+    }
+
+    private fun setItems(list: List<Audio>) {
+        tableView.items.clear()
+        tableView.items.addAll(list)
     }
 
     override fun onApplicationEvent(event: DownloadEvent) {
