@@ -97,11 +97,14 @@ class MainController(
     private fun initSearch() {
         val pauseTransition = PauseTransition(Duration.millis(300.0)) // debounce mechanism
         pauseTransition.setOnFinished { _ ->
-            val argument = searchField.text.toUpperCase()
+            val argument = searchField.text.toLowerCase()
 
             val found = mutableListOf<Audio>()
             data.forEach {
-                if (it.artist.toUpperCase().contains(argument) || it.title.toUpperCase().contains(argument)) {
+                val artist = it.artist.toLowerCase()
+                val title = it.title.toLowerCase()
+
+                if (artist.contains(argument) || title.contains(argument)) {
                     found.add(it)
                 }
             }
