@@ -1,7 +1,6 @@
 package me.ruslanys.vkmusic.controller
 
 import javafx.collections.FXCollections
-import javafx.collections.ListChangeListener
 import javafx.collections.ObservableList
 import javafx.fxml.FXML
 import javafx.scene.control.MenuItem
@@ -88,9 +87,7 @@ class MainController(
         // --
         tableView.columns.setAll(idColumn, artistColumn, titleColumn, durationColumn, statusColumn)
         tableView.selectionModel.selectionMode = SelectionMode.MULTIPLE
-        tableView.selectionModel.selectedItems.addListener(ListChangeListener {
-            openFolderMenuItem.isDisable = !(it.list.size == 1 && it.list[0].file != null)
-        })
+        tableView.selectionModel.selectedItemProperty().addListener { _, _, _ -> adjustMenuAvailability() }
 
         // Data
         tableView.items = data
@@ -135,6 +132,11 @@ class MainController(
         file?.let { DesktopUtils.open(file.parentFile) }
     }
 
+    private fun adjustMenuAvailability() {
+        val selectedItems = tableView.selectionModel.selectedItems
+        openFolderMenuItem.isDisable = !(selectedItems.size == 1 && selectedItems[0].file != null)
+    }
+
     override fun onApplicationEvent(event: DownloadEvent) {
         log.info("Event $event")
 
@@ -142,6 +144,7 @@ class MainController(
             is DownloadSuccessEvent -> {
                 event.audio.status = DownloadStatus.SUCCESS
                 event.audio.file = event.file
+                adjustMenuAvailability()
             }
             is DownloadFailEvent -> event.audio.status = DownloadStatus.FAIL
             is DownloadInProgressEvent -> event.audio.status = DownloadStatus.IN_PROGRESS
