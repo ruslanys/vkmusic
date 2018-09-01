@@ -97,11 +97,18 @@ class MainController(
 
     private fun initSearch() {
         val pauseTransition = PauseTransition(Duration.millis(300.0)) // debounce mechanism
-        pauseTransition.setOnFinished { _ ->
-            val argument = searchField.text.toLowerCase()
+        pauseTransition.setOnFinished { _ -> search(searchField.text) }
 
+        searchField.textProperty().addListener { _, _, _ -> pauseTransition.playFromStart() }
+    }
+
+    private fun search(input: String) {
+        val argument = input.toLowerCase()
+        val list = ArrayList<Audio>(data)
+
+        CompletableFuture.supplyAsync {
             val found = mutableListOf<Audio>()
-            data.forEach {
+            list.forEach {
                 val artist = it.artist.toLowerCase()
                 val title = it.title.toLowerCase()
 
@@ -109,12 +116,10 @@ class MainController(
                     found.add(it)
                 }
             }
-
-            setItems(found)
-            tableView.refresh()
+            found
+        }.thenAccept {
+            setItems(it)
         }
-
-        searchField.textProperty().addListener { _, _, _ -> pauseTransition.playFromStart() }
     }
 
     @FXML
@@ -148,7 +153,7 @@ class MainController(
             forEach { it.status = DownloadStatus.QUEUED }
             tableView.refresh()
 
-            downloadService.download(selectedDirectory, this.toList())
+            downloadService.download(selectedDirectory, ArrayList<Audio>(this))
         }
     }
 
