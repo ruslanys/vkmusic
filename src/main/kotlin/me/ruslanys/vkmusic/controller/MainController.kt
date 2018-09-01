@@ -30,6 +30,7 @@ class MainController(
         private val vkClient: VkClient,
         private val downloadService: DownloadService) : ApplicationListener<DownloadEvent>, BaseController() {
 
+    // @formatter:off
     @FXML private lateinit var loadingView: Pane
     @FXML private lateinit var mainView: Pane
 
@@ -37,8 +38,8 @@ class MainController(
     @FXML private lateinit var tableView: TableView<Audio>
     @FXML private lateinit var openFolderMenuItem: MenuItem
     @FXML private lateinit var searchField: TextField
+    // @formatter:on
 
-//    private val data: ObservableList<Audio> = FXCollections.observableArrayList(arrayListOf())
     private val data = mutableListOf<Audio>()
 
     @FXML
