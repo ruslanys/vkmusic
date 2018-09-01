@@ -164,8 +164,10 @@ class MainController(
     }
 
     private fun setItems(list: List<Audio>) {
-        tableView.items.clear()
-        tableView.items.addAll(list)
+        synchronized(tableView) {
+            tableView.items.clear()
+            tableView.items.addAll(list)
+        }
     }
 
     override fun onApplicationEvent(event: DownloadEvent) {
