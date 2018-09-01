@@ -1,17 +1,15 @@
 package me.ruslanys.vkmusic.controller
 
+import javafx.animation.PauseTransition
 import javafx.collections.FXCollections
-import javafx.collections.ObservableList
 import javafx.fxml.FXML
-import javafx.scene.control.MenuItem
-import javafx.scene.control.SelectionMode
-import javafx.scene.control.TableColumn
-import javafx.scene.control.TableView
+import javafx.scene.control.*
 import javafx.scene.control.cell.PropertyValueFactory
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.layout.Pane
 import javafx.stage.DirectoryChooser
+import javafx.util.Duration
 import me.ruslanys.vkmusic.annotation.FxmlController
 import me.ruslanys.vkmusic.component.VkClient
 import me.ruslanys.vkmusic.domain.Audio
@@ -32,17 +30,23 @@ class MainController(
         private val vkClient: VkClient,
         private val downloadService: DownloadService) : ApplicationListener<DownloadEvent>, BaseController() {
 
+    // @formatter:off
     @FXML private lateinit var loadingView: Pane
+    @FXML private lateinit var mainView: Pane
+
     @FXML private lateinit var loadingImageView: ImageView
     @FXML private lateinit var tableView: TableView<Audio>
     @FXML private lateinit var openFolderMenuItem: MenuItem
+    @FXML private lateinit var searchField: TextField
+    // @formatter:on
 
-    private val data: ObservableList<Audio> = FXCollections.observableArrayList(arrayListOf())
+    private val data = mutableListOf<Audio>()
 
     @FXML
     fun initialize() {
         initLoading()
         initTable()
+        initSearch()
     }
 
     private fun initLoading() {
@@ -88,7 +92,34 @@ class MainController(
         tableView.selectionModel.selectedItemProperty().addListener { _, _, _ -> adjustMenuAvailability() }
 
         // Data
-        tableView.items = data
+        tableView.items = FXCollections.observableArrayList(data)
+    }
+
+    private fun initSearch() {
+        val pauseTransition = PauseTransition(Duration.millis(300.0)) // debounce mechanism
+        pauseTransition.setOnFinished { _ -> search(searchField.text) }
+
+        searchField.textProperty().addListener { _, _, _ -> pauseTransition.playFromStart() }
+    }
+
+    private fun search(input: String) {
+        val argument = input.toLowerCase()
+        val list = ArrayList<Audio>(data)
+
+        CompletableFuture.supplyAsync {
+            val found = mutableListOf<Audio>()
+            list.forEach {
+                val artist = it.artist.toLowerCase()
+                val title = it.title.toLowerCase()
+
+                if (artist.contains(argument) || title.contains(argument)) {
+                    found.add(it)
+                }
+            }
+            found
+        }.thenAccept {
+            setItems(it)
+        }
     }
 
     @FXML
@@ -98,14 +129,16 @@ class MainController(
 
     @FXML
     fun refreshTable() {
-        tableView.isVisible = false
+        mainView.isVisible = false
 
         CompletableFuture.supplyAsync {
             vkClient.getAudio()
         }.thenAccept {
             data.clear()
             data.addAll(it)
-            tableView.isVisible = true
+
+            setItems(data)
+            mainView.isVisible = true
         }
     }
 
@@ -120,7 +153,7 @@ class MainController(
             forEach { it.status = DownloadStatus.QUEUED }
             tableView.refresh()
 
-            downloadService.download(selectedDirectory, this.toList())
+            downloadService.download(selectedDirectory, ArrayList<Audio>(this))
         }
     }
 
@@ -133,6 +166,13 @@ class MainController(
     private fun adjustMenuAvailability() {
         val selectedItems = tableView.selectionModel.selectedItems
         openFolderMenuItem.isDisable = !(selectedItems.size == 1 && selectedItems[0].file != null)
+    }
+
+    private fun setItems(list: List<Audio>) {
+        synchronized(tableView) {
+            tableView.items.clear()
+            tableView.items.addAll(list)
+        }
     }
 
     override fun onApplicationEvent(event: DownloadEvent) {
