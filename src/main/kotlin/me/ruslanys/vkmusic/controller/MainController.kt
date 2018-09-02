@@ -1,6 +1,7 @@
 package me.ruslanys.vkmusic.controller
 
 import javafx.animation.PauseTransition
+import javafx.application.Platform
 import javafx.collections.FXCollections
 import javafx.fxml.FXML
 import javafx.scene.control.*
@@ -38,9 +39,12 @@ class MainController(
     @FXML private lateinit var tableView: TableView<Audio>
     @FXML private lateinit var openFolderMenuItem: MenuItem
     @FXML private lateinit var searchField: TextField
+    @FXML private lateinit var progressBar: ProgressBar
     // @formatter:on
 
     private val data = mutableListOf<Audio>()
+    private val progress = Progress(0, 0)
+
 
     @FXML
     fun initialize() {
@@ -148,12 +152,13 @@ class MainController(
         directoryChooser.title = "Укажите папку назначения"
         val selectedDirectory = directoryChooser.showDialog(rootView!!.scene.window) ?: return
 
-
-        tableView.selectionModel.selectedItems.apply {
+        val selected = ArrayList<Audio>(tableView.selectionModel.selectedItems)
+        selected.apply {
             forEach { it.status = DownloadStatus.QUEUED }
             tableView.refresh()
+            progressAddTotal(size)
 
-            downloadService.download(selectedDirectory, ArrayList<Audio>(this))
+            downloadService.download(selectedDirectory, this)
         }
     }
 
@@ -175,6 +180,28 @@ class MainController(
         }
     }
 
+    private fun progressAddTotal(number: Int) {
+        synchronized(progressBar) {
+            val value = if (progress.total == progress.current) {
+                progress.total = number
+                progress.current = 0
+                ProgressBar.INDETERMINATE_PROGRESS
+            } else {
+                progress.total += number
+                progress.getValue()
+            }
+
+            Platform.runLater { progressBar.progress = value }
+        }
+    }
+
+    private fun progressInc() {
+        synchronized(progressBar) {
+            progress.current++
+            Platform.runLater { progressBar.progress = progress.getValue() }
+        }
+    }
+
     override fun onApplicationEvent(event: DownloadEvent) {
         log.info("Event $event")
 
@@ -182,17 +209,28 @@ class MainController(
             is DownloadSuccessEvent -> {
                 event.audio.status = DownloadStatus.SUCCESS
                 event.audio.file = event.file
+
                 adjustMenuAvailability()
+                progressInc()
             }
-            is DownloadFailEvent -> event.audio.status = DownloadStatus.FAIL
+            is DownloadFailEvent -> {
+                event.audio.status = DownloadStatus.FAIL
+                progressInc()
+            }
             is DownloadInProgressEvent -> event.audio.status = DownloadStatus.IN_PROGRESS
         }
 
-        tableView.refresh()
+        Platform.runLater { tableView.refresh() }
     }
 
     companion object {
         private val log = LoggerFactory.getLogger(MainController::class.java)
+    }
+
+    data class Progress(@Volatile var total: Int, @Volatile var current: Int) {
+        fun getValue(): Double {
+            return 1.0 * current / total
+        }
     }
 
 }
