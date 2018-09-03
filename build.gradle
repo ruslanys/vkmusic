@@ -21,7 +21,6 @@ repositories {
 
 ext {
     kotlinVersion = '1.2.61'
-    jacksonVersion = '2.9.6'
 }
 
 dependencies {
