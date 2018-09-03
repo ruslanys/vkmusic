@@ -182,16 +182,14 @@ class MainController(
 
     private fun progressAddTotal(number: Int) {
         synchronized(progressBar) {
-            val value = if (progress.total == progress.current) {
+            if (progress.total == progress.current) {
                 progress.total = number
                 progress.current = 0
-                ProgressBar.INDETERMINATE_PROGRESS
             } else {
                 progress.total += number
-                progress.getValue()
             }
 
-            Platform.runLater { progressBar.progress = value }
+            Platform.runLater { progressBar.progress = progress.getValue() }
         }
     }
 
@@ -229,7 +227,11 @@ class MainController(
 
     data class Progress(@Volatile var total: Int, @Volatile var current: Int) {
         fun getValue(): Double {
-            return 1.0 * current / total
+            return if (current == 0) {
+                ProgressBar.INDETERMINATE_PROGRESS
+            } else {
+                1.0 * current / total
+            }
         }
     }
 
