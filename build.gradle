@@ -12,7 +12,7 @@ plugins {
 apply plugin: 'io.spring.dependency-management'
 
 group = 'me.ruslanys'
-version = versionDetails().lastTag[1..-1] + (versionDetails().isCleanTag ? '' : '-' + versionDetails().gitHash)
+version = versionDetails().lastTag[1..-1] + (versionDetails().isCleanTag ? '' : "-${versionDetails().gitHash}")
 sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
