@@ -6,12 +6,13 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.spring' version '1.2.61'
     id 'org.jetbrains.kotlin.plugin.jpa' version '1.2.61'
     id 'org.springframework.boot' version '2.0.4.RELEASE'
+    id 'com.palantir.git-version' version '0.12.0-rc2'
 }
 
 apply plugin: 'io.spring.dependency-management'
 
 group = 'me.ruslanys'
-version = '3.0.0'
+version = versionDetails().lastTag[1..-1]
 sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
