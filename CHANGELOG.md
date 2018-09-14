@@ -6,6 +6,9 @@
 
 ## [Новое]
 
+## [3.1.2] - 2018-09-14
+### Исправлено
+- Высвобождение ресурсов после аутентификации.
 
 ## [3.1.1] - 2018-09-04
 ### Исправлено
@@ -105,6 +108,7 @@
 
 
 [Новое]: https://github.com/ruslanys/vkmusic/compare/HEAD...3.x.x-JAVAFX
+[3.1.2]: https://github.com/ruslanys/vkmusic/compare/v3.1.1...v3.1.2
 [3.1.1]: https://github.com/ruslanys/vkmusic/compare/v3.1.0...v3.1.1
 [3.1.0]: https://github.com/ruslanys/vkmusic/compare/v3.0.0...v3.1.0
 [3.0.0]: https://github.com/ruslanys/vkmusic/compare/v2.1.2...v3.0.0
