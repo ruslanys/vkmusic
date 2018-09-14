@@ -59,12 +59,11 @@ class DefaultDownloadService(
             BufferedInputStream(connection.inputStream, 5120).use { input ->
                 BufferedOutputStream(FileOutputStream(file), 5120).use { output ->
                     val buff = ByteArray(5120)
-                    var len: Int
-
-                    do {
+                    var len = 0
+                    while (len != -1) {
                         len = input.read(buff)
                         if (len > 0) output.write(buff, 0, len)
-                    } while (len != -1)
+                    }
                 }
             }
 
