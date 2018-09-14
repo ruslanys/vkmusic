@@ -63,16 +63,17 @@ class LoginController(
         val engine = webView.engine
         engine.isJavaScriptEnabled = true
         engine.userAgent = USER_AGENT
-
         webView.engine.loadWorker.stateProperty().addListener(this)
 
-        //webView.isVisible = false
         view.children.add(webView)
-
         webView.engine.load(LOGIN_PATH)
     }
 
     override fun changed(observable: ObservableValue<out Worker.State>?, oldValue: Worker.State?, newValue: Worker.State?) {
+        if (webView.engine.location == null || webView.engine.location == "about:blank" || webView.engine.location == "") {
+            return
+        }
+
         when (newValue) {
             Worker.State.SUCCEEDED -> {
                 webView.isVisible = true
@@ -113,6 +114,7 @@ class LoginController(
     }
 
     private fun openMainStage() {
+        webView.engine.load(null)
         mainController.refreshTable()
 
         val stage = view.sceneProperty().get().window as Stage
