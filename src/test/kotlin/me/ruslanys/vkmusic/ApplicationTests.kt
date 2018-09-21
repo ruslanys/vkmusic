@@ -21,8 +21,10 @@ class ApplicationTests {
         @BeforeClass
         @JvmStatic
         fun before() {
-            com.sun.javafx.application.PlatformImpl.startup { }
             JFXPanel()
+            // or
+            // com.sun.javafx.application.PlatformImpl.startup { }
+            // take a look at https://stackoverflow.com/questions/14025718/javafx-toolkit-not-initialized-when-trying-to-play-an-mp3-file-through-mediap
         }
 
     }
