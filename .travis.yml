@@ -2,7 +2,9 @@ language: java
 jdk:
   - oraclejdk8
 
-script: ./gradlew build
+script:
+  - ./gradlew build
+  - sonar-scanner
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
@@ -11,6 +13,13 @@ cache:
   directories:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
+    - $HOME/.sonar/cache
+
+addons:
+  sonarcloud:
+    organization: "ruslanys-github"
+    token:
+      secure: "inukNrPtLSoTDOv6Vy3lLbcowB/g1EqrhAAR+xFM/9v8a/UQdb68Dmh7NdRlGlfsf2UhxfvsZZV5vfsM5knynkmaZN1+iwWOs7yLzx/GNu7wcDzui0jtcmqIUdFkMpuV/EeBEDWffI6bteYCLJWqPqRFoGC9FhAE+pXrYxiPT5A9Yrwco2jjfNhsiyjAHLX9/iFcuv26N2MBSJmyZZxfHYq5ZknVkLlvcc14N+vKOoaJXqBZHtNoEEA1iFV+zXOTF9koKWMybiZmqsfn7IzPy/JYQqW6/zq0tx+Cczb2L+9x/XACO5w9ph4rUl9wpZ68MYHuph1xiMWNYjxbKAUKDeUxQ4EmsSkYQc5k0tAICogzwB77yctyC0jm6InQbsb+r+tNkhLen2DJMvMx4vd4wVVTUw6Anz/6MLsr0KmhIfXCC8YS3mgXalRTEt/CekWIVYqpcREYSfKHw4hR9I693ByRu9irvUanv/J4QstczrLcpXKEEaCHJPnQdcxYuOt6KgpplvwaUoRlqrDKAOxFrVRGu+7kB43YWO4Ey+5UZ2+bhabImRN7urN5inzoz1K/e4cdmmtrnNQzcIxvvOrPXm//IwMd61gNHN63OHSKYQB15pXq5iy/R9ldepeU8PYPnn0go/GMa2msr/eTEm2nj3oXo0sBsXMMGbfECYIyBTo="
 
 #sudo: false
 #addons:
