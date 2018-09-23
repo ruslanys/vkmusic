@@ -52,13 +52,13 @@ class DefaultDownloadService(
 
         try {
             val connection = URL(audio.url).openConnection() as HttpURLConnection
-            connection.connectTimeout = 10000
-            connection.readTimeout = 10000
+            connection.connectTimeout = CONNECTION_TIMEOUT
+            connection.readTimeout = CONNECTION_TIMEOUT
 
             val file = File(destination, audio.filename())
-            BufferedInputStream(connection.inputStream, 5120).use { input ->
-                BufferedOutputStream(FileOutputStream(file), 5120).use { output ->
-                    val buff = ByteArray(5120)
+            BufferedInputStream(connection.inputStream, CONNECTION_BUFFER_SIZE).use { input ->
+                BufferedOutputStream(FileOutputStream(file), CONNECTION_BUFFER_SIZE).use { output ->
+                    val buff = ByteArray(CONNECTION_BUFFER_SIZE)
                     var len = 0
                     while (len != -1) {
                         len = input.read(buff)
@@ -75,6 +75,9 @@ class DefaultDownloadService(
 
     companion object {
         private val log = LoggerFactory.getLogger(DefaultDownloadService::class.java)
+
+        private const val CONNECTION_TIMEOUT = 10000
+        private const val CONNECTION_BUFFER_SIZE = 5120
     }
 
 }
