@@ -4,7 +4,6 @@ import javafx.fxml.FXMLLoader
 import me.ruslanys.vkmusic.annotation.FxmlController
 import me.ruslanys.vkmusic.controller.BaseController
 import org.reflections.Reflections
-import org.springframework.beans.BeansException
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory
 import org.springframework.beans.factory.support.BeanDefinitionRegistry
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor
@@ -29,11 +28,10 @@ class FxmlFirstConfiguration : ApplicationListener<ContextRefreshedEvent> {
 
     class RegistryPostProcessor : BeanDefinitionRegistryPostProcessor {
 
-        @Throws(BeansException::class)
         override fun postProcessBeanDefinitionRegistry(registry: BeanDefinitionRegistry) {
+            // No needs to override this behavior
         }
 
-        @Throws(BeansException::class)
         override fun postProcessBeanFactory(beanFactory: ConfigurableListableBeanFactory) {
             val reflections = Reflections("me.ruslanys.vkmusic")
             val fxmlControllers = reflections.getTypesAnnotatedWith(FxmlController::class.java)
