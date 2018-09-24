@@ -1,7 +1,6 @@
 # VKMusic
 
 [![Travis](https://img.shields.io/travis/ruslanys/vkmusic.svg?style=flat-square&colorB=007EC6)](https://travis-ci.org/ruslanys/vkmusic)
-[![SonarQube](https://img.shields.io/sonar/https/sonarcloud.io/me.ruslanys:vkmusic/tech_debt.svg?style=flat-square&colorB=007EC6)](https://sonarcloud.io/dashboard?id=me.ruslanys:vkmusic)
 [![GitHub Release](https://img.shields.io/github/release/ruslanys/vkmusic.svg?style=flat-square)](https://github.com/ruslanys/vkmusic/releases)
 [![Github All Releases](https://img.shields.io/github/downloads/ruslanys/vkmusic/total.svg?style=flat-square&colorB=007EC6)](https://github.com/ruslanys/vkmusic/releases)
 [![License](https://img.shields.io/github/license/ruslanys/vkmusic.svg?style=flat-square)](https://github.com/ruslanys/vkmusic)
