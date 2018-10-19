@@ -5,6 +5,8 @@
 и [Семантическом версионировании](http://semver.org/lang/ru/spec/v2.0.0.html).
 
 ## [Новое]
+
+## [3.1.3] - 2018-10-19
 ### Исправлено
 - Обновлен алгоритм выгрузки адресов MP3 файлов,
 в соответствии с правками, внесенными на стороне VK.
@@ -114,7 +116,8 @@
 - Поддержка ВК API по работе с музыкой.
 
 
-[Новое]: https://github.com/ruslanys/vkmusic/compare/HEAD...3.x.x-JAVAFX
+[Новое]: https://github.com/ruslanys/vkmusic/compare/HEAD...v3.1.3
+[3.1.3]: https://github.com/ruslanys/vkmusic/compare/v3.1.2...v3.1.3
 [3.1.2]: https://github.com/ruslanys/vkmusic/compare/v3.1.1...v3.1.2
 [3.1.1]: https://github.com/ruslanys/vkmusic/compare/v3.1.0...v3.1.1
 [3.1.0]: https://github.com/ruslanys/vkmusic/compare/v3.0.0...v3.1.0
