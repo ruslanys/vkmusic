@@ -10,6 +10,7 @@ data class Audio(
         val artist: String,
         val title: String,
         val durationInSec: Int,
+        val hash: String,
 
         var status: DownloadStatus = DownloadStatus.NEW,
         var url: String? = null,

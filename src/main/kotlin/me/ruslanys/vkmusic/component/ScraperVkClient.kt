@@ -29,6 +29,7 @@ class ScraperVkClient : VkClient {
         private const val JSON_DELIMITER = "<!json>"
         private const val BLOCK_DELIMITER = "<!>"
         private const val SLEEP_INTERVAL = 5000L
+        private const val CHUNK_SIZE = 5
 
         private val SCRIPT_ENGINE = ScriptEngineManager().getEngineByName("JavaScript")
         private val log = LoggerFactory.getLogger(ScraperVkClient::class.java)
@@ -115,7 +116,7 @@ class ScraperVkClient : VkClient {
         val userId = fetchUserId()
         var sleepInterval = SLEEP_INTERVAL
 
-        val chunks = audioList.chunked(10)
+        val chunks = audioList.chunked(CHUNK_SIZE)
         var chunkNumber = 0
         while (chunkNumber < chunks.size) {
             val chunkContent = chunks[chunkNumber]
@@ -139,7 +140,8 @@ class ScraperVkClient : VkClient {
 
     private fun fetchUrlsChunk(userId: Long, audioList: List<Audio>) {
         val audioMap = audioList.associateBy { it.id }.toSortedMap()
-        val ids = audioList.joinToString(",") { "${it.ownerId}_${it.id}" }
+        val ids = audioList.joinToString(",") { "${it.ownerId}_${it.id}_${it.hash}" }
+                .plus(",${audioList.first().ownerId}_${audioList.first().id}")
 
         val response = Jsoup.connect("$PATH_BASE/al_audio.php")
                 .userAgent(USER_AGENT).cookies(cookies).method(Connection.Method.POST)
@@ -188,7 +190,15 @@ class ScraperVkClient : VkClient {
                         (it[1] as Number).toLong(),
                         StringEscapeUtils.unescapeHtml4(it[4] as String),
                         StringEscapeUtils.unescapeHtml4(it[3] as String),
-                        it[5] as Int
+                        it[5] as Int,
+                        (it[13] as String).split("/") // hash
+                                .reduceIndexed { index, acc, s ->
+                                    when (index) {
+                                        2 -> s
+                                        5 -> acc + "_" + s
+                                        else -> acc
+                                    }
+                                }
                 )
             }.toList()
     ) {
