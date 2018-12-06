@@ -1,6 +1,5 @@
 package me.ruslanys.vkmusic
 
-import javafx.embed.swing.JFXPanel
 import org.junit.BeforeClass
 import org.junit.Ignore
 import org.junit.Test
@@ -23,9 +22,9 @@ class ApplicationTests {
         @BeforeClass
         @JvmStatic
         fun before() {
-            JFXPanel()
+            // JFXPanel() // requires javafx.swing module
             // or
-            // com.sun.javafx.application.PlatformImpl.startup { }
+            com.sun.javafx.application.PlatformImpl.startup { }
             // take a look at https://stackoverflow.com/questions/14025718/javafx-toolkit-not-initialized-when-trying-to-play-an-mp3-file-through-mediap
         }
 
