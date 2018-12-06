@@ -6,6 +6,7 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.spring' version '1.3.10'
     id 'org.jetbrains.kotlin.plugin.jpa' version '1.3.10'
     id 'org.springframework.boot' version '2.1.1.RELEASE'
+    id 'org.openjfx.javafxplugin' version '0.0.5'
     id 'io.zensoft.versioning' version '1.0.0'
 }
 
@@ -53,6 +54,11 @@ dependencies {
 sourceSets {
     main.kotlin.srcDirs += 'src/main/kotlin'
     test.kotlin.srcDirs += 'src/test/kotlin'
+}
+
+// JavaFX
+javafx {
+    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.web' ]
 }
 
 // Jar
