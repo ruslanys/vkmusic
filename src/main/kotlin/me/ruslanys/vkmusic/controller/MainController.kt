@@ -20,10 +20,10 @@ import me.ruslanys.vkmusic.event.DownloadFailEvent
 import me.ruslanys.vkmusic.event.DownloadInProgressEvent
 import me.ruslanys.vkmusic.event.DownloadSuccessEvent
 import me.ruslanys.vkmusic.service.DownloadService
-import me.ruslanys.vkmusic.util.DesktopUtils
 import me.ruslanys.vkmusic.util.IconUtils
 import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationListener
+import java.awt.Desktop
 import java.util.concurrent.CompletableFuture
 
 @FxmlController(view = "views/main.fxml")
@@ -165,7 +165,7 @@ class MainController(
     @FXML
     fun openFolder() {
         val file = tableView.selectionModel.selectedItem.file
-        file?.let { DesktopUtils.open(file.parentFile) }
+        file?.let { Desktop.getDesktop().browseFileDirectory(file) }
     }
 
     private fun adjustMenuAvailability() {
