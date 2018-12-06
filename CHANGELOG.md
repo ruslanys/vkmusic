@@ -119,7 +119,7 @@
 - Поддержка ВК API по работе с музыкой.
 
 
-[Новое]: https://github.com/ruslanys/vkmusic/compare/HEAD...v3.1.3
+[Новое]: https://github.com/ruslanys/vkmusic/compare/v3.1.3...HEAD
 [3.1.3]: https://github.com/ruslanys/vkmusic/compare/v3.1.2...v3.1.3
 [3.1.2]: https://github.com/ruslanys/vkmusic/compare/v3.1.1...v3.1.2
 [3.1.1]: https://github.com/ruslanys/vkmusic/compare/v3.1.0...v3.1.1
