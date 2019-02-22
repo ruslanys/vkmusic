@@ -63,7 +63,7 @@ class ScraperVkClient : VkClient {
                 .execute()
         val matcher = Pattern.compile("id: (\\d+)").matcher(response.body())
         if (!matcher.find() || "0" == matcher.group(1).trim()) {
-            throw VkException("Не удалось получить ID пользователя.")
+            throw VkException("Can not get user ID.")
         }
         val id = matcher.group(1).toLong()
         log.info("User ID: {}", id)
@@ -163,8 +163,27 @@ class ScraperVkClient : VkClient {
             it as List<*>
 
             val audio = audioMap[(it[0] as Number).toLong()]
-            audio!!.url = decrypt(userId, it[2] as String)
+            val url = decrypt(userId, it[2] as String)
+            audio!!.url = if (url.contains(".m3u")) {
+                fetchUrlFromM3u(url)
+            } else {
+                url
+            }
         }
+    }
+
+    private fun fetchUrlFromM3u(url: String): String {
+        val response = Jsoup.connect(url).ignoreContentType(true).execute()
+        val body = response.body()
+
+        val matcher = Pattern.compile("URI=\"(.*)\"").matcher(body)
+        if (!matcher.find() || "0" == matcher.group(1).trim()) {
+            throw VkException("Не удалось получить ID пользователя.")
+        }
+        val keyUrl = matcher.group(1)
+        val mp3Url = keyUrl.replace(Regex("https://(?<domain>.*)/(.*)/(.*)/(.*)/key.pub(.*)"), "https://\${domain}/\$2/\$4.mp3\$5")
+
+        return mp3Url
     }
 
     private fun decrypt(vkId: Long, url: String): String {
