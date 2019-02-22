@@ -5,9 +5,11 @@
 и [Семантическом версионировании](http://semver.org/lang/ru/spec/v2.0.0.html).
 
 ## [Новое]
-### Изменено
-- Kotlin обновлен до 1.3.10
-- Spring Boot обновлен до 2.1.1
+
+## [3.1.3] - 2019-02-23
+### Исправлено
+- Обновлен алгоритм выгрузки адресов MP3 файлов,
+в соответствии с правками, внесенными на стороне VK.
 
 ## [3.1.3] - 2018-10-19
 ### Исправлено
@@ -119,7 +121,8 @@
 - Поддержка ВК API по работе с музыкой.
 
 
-[Новое]: https://github.com/ruslanys/vkmusic/compare/v3.1.3...HEAD
+[Новое]: https://github.com/ruslanys/vkmusic/compare/v3.1.4...HEAD
+[3.1.4]: https://github.com/ruslanys/vkmusic/compare/v3.1.3...v3.1.4
 [3.1.3]: https://github.com/ruslanys/vkmusic/compare/v3.1.2...v3.1.3
 [3.1.2]: https://github.com/ruslanys/vkmusic/compare/v3.1.1...v3.1.2
 [3.1.1]: https://github.com/ruslanys/vkmusic/compare/v3.1.0...v3.1.1
@@ -128,4 +131,4 @@
 [2.1.2]: https://github.com/ruslanys/vkmusic/compare/v2.1.1...v2.1.2
 [2.1.1]: https://github.com/ruslanys/vkmusic/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/ruslanys/vkmusic/compare/v2.0.0...v2.1.0
-[2.0.0]: https://github.com/ruslanys/vkmusic/compare/e04e606...v2.0.0
+[2.0.0]: https://github.com/ruslanys/vkmusic/releases/tag/v2.0.0
