@@ -1,6 +1,6 @@
 ![Logo](docs/header.png)
 
-<p>
+<p align="center">
     <a href="https://travis-ci.org/ruslanys/vkmusic"><img src="https://img.shields.io/travis/ruslanys/vkmusic.svg?style=flat-square&colorB=007EC6" alt="Travis" /></a>
     <a href="https://github.com/ruslanys/vkmusic/releases"><img src="https://img.shields.io/github/release/ruslanys/vkmusic.svg?style=flat-square" alt="GitHub Release" /></a>
     <a href="https://github.com/ruslanys/vkmusic/releases"><img src="https://img.shields.io/github/downloads/ruslanys/vkmusic/total.svg?style=flat-square&colorB=007EC6" alt="Github All Releases" /></a>
