@@ -177,8 +177,8 @@ class ScraperVkClient : VkClient {
         val body = response.body()
 
         val matcher = Pattern.compile("URI=\"(.*)\"").matcher(body)
-        if (!matcher.find() || "0" == matcher.group(1).trim()) {
-            throw VkException("Не удалось получить ID пользователя.")
+        if (!matcher.find()) {
+            throw VkException("Can not fetch audio url from M3U.")
         }
         val keyUrl = matcher.group(1)
         val mp3Url = keyUrl.replace(Regex("https://(?<domain>.*)/(.*)/(.*)/(.*)/key.pub(.*)"), "https://\${domain}/\$2/\$4.mp3\$5")
